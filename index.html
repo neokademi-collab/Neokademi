@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSpace | E-Course IT Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        /* Transisi halus untuk dark mode */
+        body { transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
+        /* Animasi Pop-up WA */
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .wa-float { animation: bounce-subtle 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center cursor-pointer" onclick="showPage('home')">
+                    <i class="fa-solid fa-terminal text-primary text-2xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight">TechSpace</span>
+                </div>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#" onclick="showPage('home')" class="hover:text-primary transition-colors font-medium">Beranda</a>
+                    <a href="#modul-section" onclick="showPage('home')" class="hover:text-primary transition-colors font-medium">Modul</a>
+                    <button onclick="document.getElementById('contact-section').scrollIntoView()" class="hover:text-primary transition-colors font-medium">Hubungi Kami</button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+                <div class="md:hidden flex items-center space-x-4">
+                    <button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon-mobile" class="fa-solid fa-moon"></i>
+                    </button>
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <div id="mobile-menu" class="fixed top-0 right-0 z-[60] w-64 h-full bg-white dark:bg-darkCard shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col">
+        <div class="px-4 h-16 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
+            <span class="font-bold text-lg text-primary">Menu Navigasi</span>
+            <button onclick="toggleMobileMenu()" class="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors focus:outline-none p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div class="flex-grow px-4 py-6 space-y-3 overflow-y-auto">
+            <a href="#" onclick="showPage('home'); toggleMobileMenu()" class="block px-4 py-3 rounded-xl font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all shadow-sm">
+                <i class="fa-solid fa-house w-6 text-center mr-2"></i> Beranda
+            </a>
+            <a href="#modul-section" onclick="showPage('home'); toggleMobileMenu()" class="block px-4 py-3 rounded-xl font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all shadow-sm">
+                <i class="fa-solid fa-book w-6 text-center mr-2"></i> Modul E-Course
+            </a>
+            <button onclick="document.getElementById('contact-section').scrollIntoView(); toggleMobileMenu()" class="w-full text-left block px-4 py-3 rounded-xl font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all shadow-sm">
+                <i class="fa-solid fa-envelope w-6 text-center mr-2"></i> Hubungi Kami
+            </button>
+        </div>
+        <div class="p-4 border-t border-gray-200 dark:border-gray-800 text-center">
+            <p class="text-xs text-gray-400">&copy; <span id="sidebar-year"></span> TechSpace</p>
+        </div>
+    </div>
+
+
+    <main class="flex-grow">
+        
+        <div id="page-home" class="block">
+            <section class="relative pt-20 pb-32 flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 dark:opacity-10"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    <h1 data-aos="fade-up" data-aos-duration="1000" class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6">
+                        Kuasai Infra IT <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Masa Depan</span>
+                    </h1>
+                    <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="150" class="mt-4 text-xl md:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-10">
+                        Platform e-course terbaik untuk mempelajari Linux Administration dan implementasi Cloud Modern Workspace secara praktikal.
+                    </p>
+                    <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300" class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="#modul-section" class="px-8 py-3.5 border border-transparent text-base font-medium rounded-lg text-white bg-primary hover:bg-blue-600 shadow-lg shadow-blue-500/30 transition-all">
+                            Lihat Modul
+                        </a>
+                        <button onclick="document.getElementById('contact-section').scrollIntoView()" class="px-8 py-3.5 border border-gray-300 dark:border-gray-600 text-base font-medium rounded-lg text-gray-700 dark:text-gray-200 bg-white dark:bg-darkCard hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                            Hubungi Kami
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="modul-section" class="py-20 bg-white dark:bg-darkCard transition-colors overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16" data-aos="fade-down" data-aos-duration="800">
+                        <h2 class="text-3xl font-bold uppercase tracking-wider text-primary mb-2">Program Pembelajaran</h2>
+                        <p class="text-lg text-gray-600 dark:text-gray-400">Pilih modul sesuai dengan jenjang karir yang ingin Anda capai.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+                        <div data-aos="fade-right" data-aos-duration="1000" class="bg-gray-50 dark:bg-darkBg rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
+                            <div class="w-16 h-16 rounded-lg bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center mb-6">
+                                <i class="fa-brands fa-linux text-3xl text-yellow-600 dark:text-yellow-500"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Linux System Administration</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+                                Pelajari fundamental sistem operasi Linux, manajemen user, file permission, bash scripting, hingga konfigurasi server tingkat lanjut (Web Server, Database, Firewall).
+                            </p>
+                            <ul class="mb-8 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Pengenalan & Arsitektur Linux</li>
+                                <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Manajemen Server & Jaringan</li>
+                                <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Keamanan Infrastruktur</li>
+                            </ul>
+                            <button onclick="showDetail('linux')" class="w-full py-3 px-4 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-semibold rounded-lg hover:bg-gray-800 dark:hover:bg-white transition-colors">
+                                Detail & Enroll
+                            </button>
+                        </div>
+
+                        <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="150" class="bg-gray-50 dark:bg-darkBg rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
+                            <div class="w-16 h-16 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-6">
+                                <i class="fa-solid fa-cloud text-3xl text-blue-600 dark:text-blue-400"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Cloud Modern Workspace</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+                                Kuasai pengelolaan ekosistem kerja modern menggunakan Microsoft 365 dan Google Workspace. Pelajari manajemen identitas, endpoint security, dan kolaborasi tim.
+                            </p>
+                            <ul class="mb-8 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Setup & Migrasi Tenant</li>
+                                <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Identity & Access Management</li>
+                                <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Mobile Device Management (MDM)</li>
+                            </ul>
+                            <button onclick="showDetail('cloud')" class="w-full py-3 px-4 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors">
+                                Detail & Enroll
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact-section" class="py-20 bg-gray-50 dark:bg-darkBg transition-colors border-t border-gray-200 dark:border-gray-800">
+                <div class="max-w-3xl mx-auto px-4 text-center" data-aos="zoom-in" data-aos-duration="800">
+                    <h2 class="text-3xl font-bold mb-6">Butuh Konsultasi Modul?</h2>
+                    <p class="text-gray-600 dark:text-gray-400 mb-8 text-lg">
+                        Tim kami siap membantu Anda memilih jalur pembelajaran yang paling tepat untuk kebutuhan perusahaan atau karir Anda.
+                    </p>
+                    <a href="mailto:halo@techspace.com" class="inline-flex items-center justify-center px-8 py-3.5 border-2 border-primary text-primary dark:text-white dark:border-primary hover:bg-primary hover:text-white dark:hover:bg-primary font-medium rounded-lg transition-all text-lg">
+                        <i class="fa-regular fa-envelope mr-3"></i> Hubungi Kami via Email
+                    </a>
+                </div>
+            </section>
+        </div>
+
+
+        <div id="page-detail" class="hidden py-10">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <button onclick="showPage('home')" class="mb-8 inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors font-medium">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Beranda
+                </button>
+
+                <div class="bg-white dark:bg-darkCard rounded-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700 shadow-sm mb-8 animate-[fade-in_0.5s_ease-out]">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div id="detail-icon-container" class="w-16 h-16 rounded-lg flex items-center justify-center">
+                            <i id="detail-icon" class="text-3xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm font-semibold text-primary uppercase tracking-wider">Detail E-Course</span>
+                            <h1 id="detail-title" class="text-3xl md:text-4xl font-bold mt-1">Judul Modul</h1>
+                        </div>
+                    </div>
+                    
+                    <p id="detail-desc" class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                        Deskripsi lengkap modul akan tampil di sini.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-200 dark:border-gray-700 pt-8">
+                        <a id="btn-enroll-gform" href="https://forms.gle/YOUR_GOOGLE_FORM_LINK" target="_blank" class="flex-1 text-center py-3.5 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center shadow-lg shadow-blue-500/30">
+                            <i class="fa-solid fa-user-plus mr-2"></i> Enroll Sekarang (G-Form)
+                        </a>
+                        <a id="btn-diskusi-wa" href="https://chat.whatsapp.com/YOUR_WA_GROUP_LINK" target="_blank" class="flex-1 text-center py-3.5 px-6 bg-[#25D366] text-white font-semibold rounded-lg hover:bg-[#1ebe57] transition-colors flex items-center justify-center shadow-lg shadow-green-500/20">
+                            <i class="fa-brands fa-whatsapp text-xl mr-2"></i> Grup Diskusi WA
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-darkCard rounded-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700 shadow-sm animate-[fade-in_0.7s_ease-out]">
+                    <h3 class="text-2xl font-bold mb-6">Materi Pembelajaran</h3>
+                    <div class="space-y-4" id="detail-syllabus">
+                        </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-800 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 md:mb-0">
+                <i class="fa-solid fa-terminal text-primary text-xl mr-2"></i>
+                <span class="font-bold text-lg">TechSpace</span>
+            </div>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">
+                &copy; <span id="year"></span> TechSpace E-Course. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/6281234567890?text=Halo%20Admin%20TechSpace,%20saya%20ingin%20bertanya%20tentang%20e-course" target="_blank" class="wa-float fixed bottom-6 right-6 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-[#1ebe57] transition-colors group">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+        <span class="absolute right-16 bg-white dark:bg-darkCard text-gray-800 dark:text-white text-sm font-medium py-2 px-4 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-gray-100 dark:border-gray-700">
+            Hubungi Admin
+        </span>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // Inisialisasi AOS (Animasi Scroll)
+        AOS.init({
+            once: true, // Animasi hanya berjalan sekali saat pertama kali di-scroll
+            offset: 50, // Jarak trigger animasi dari bawah layar
+        });
+
+        // Set Year in Footer & Sidebar
+        const currentYear = new Date().getFullYear();
+        document.getElementById('year').textContent = currentYear;
+        document.getElementById('sidebar-year').textContent = currentYear;
+
+        // --- Dark Mode Logic ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+        const themeIconMobile = document.getElementById('theme-icon-mobile');
+
+        // Check local storage or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            updateIcons('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateIcons('light');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                updateIcons('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                updateIcons('dark');
+            }
+        }
+
+        function updateIcons(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                themeIconMobile.classList.remove('fa-moon');
+                themeIconMobile.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                themeIconMobile.classList.remove('fa-sun');
+                themeIconMobile.classList.add('fa-moon');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        themeToggleBtnMobile.addEventListener('click', toggleTheme);
+
+        // --- Mobile Menu (Sidebar Slide-over) Logic ---
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+        let isMobileMenuOpen = false;
+
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            
+            if (isMobileMenuOpen) {
+                // Tampilkan backdrop
+                mobileBackdrop.classList.remove('hidden');
+                
+                // Gunakan setTimeout kecil untuk memicu transisi opacity
+                setTimeout(() => {
+                    mobileBackdrop.classList.remove('opacity-0');
+                    mobileBackdrop.classList.add('opacity-100');
+                    
+                    // Slide masuk sidebar
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                }, 10);
+                
+                // Kunci scroll halaman belakang
+                document.body.style.overflow = 'hidden';
+            } else {
+                // Hilangkan opacity backdrop
+                mobileBackdrop.classList.remove('opacity-100');
+                mobileBackdrop.classList.add('opacity-0');
+                
+                // Slide keluar sidebar
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                
+                // Sembunyikan backdrop setelah transisi selesai
+                setTimeout(() => {
+                    mobileBackdrop.classList.add('hidden');
+                }, 300); // Sesuaikan dengan duration-300
+                
+                // Buka kunci scroll halaman belakang
+                document.body.style.overflow = '';
+            }
+        }
+
+        // --- Data Modul (Untuk Halaman Detail) ---
+        const modulData = {
+            linux: {
+                title: "Linux System Administration",
+                desc: "Panduan komprehensif dari nol untuk menguasai sistem operasi Linux. Anda akan belajar cara mengelola server, mengonfigurasi jaringan, mengatur keamanan dasar, hingga penulisan bash script untuk otomatisasi tugas sehari-hari. Sangat cocok untuk calon SysAdmin atau DevOps Engineer.",
+                iconClass: "fa-brands fa-linux text-yellow-600 dark:text-yellow-500",
+                iconBgClass: "bg-yellow-100 dark:bg-yellow-900/30",
+                gformLink: "https://docs.google.com/forms/d/e/CONTOH_FORM_LINUX/viewform",
+                waGroupLink: "https://chat.whatsapp.com/CONTOH_GROUP_LINUX",
+                syllabus: [
+                    "Bab 1: Instalasi & Pemahaman Hierarki Direktori Linux",
+                    "Bab 2: Manajemen User, Group, dan Hak Akses (File Permission)",
+                    "Bab 3: Manajemen Paket & Repository (APT/YUM)",
+                    "Bab 4: Konfigurasi Jaringan & SSH Server",
+                    "Bab 5: Monitoring Sistem & Manajemen Proses",
+                    "Bab 6: Instalasi Web Server (Nginx/Apache) & Database",
+                    "Bab 7: Dasar-dasar Bash Scripting"
+                ]
+            },
+            cloud: {
+                title: "Cloud Modern Workspace",
+                desc: "Pelajari cara membangun lingkungan kerja digital yang aman dan terpusat. Modul ini berfokus pada implementasi Microsoft 365 dan Google Workspace (G-Suite). Anda akan mempelajari manajemen identitas, kebijakan keamanan data perusahaan, dan manajemen perangkat (MDM) dari jarak jauh.",
+                iconClass: "fa-solid fa-cloud text-blue-600 dark:text-blue-400",
+                iconBgClass: "bg-blue-100 dark:bg-blue-900/30",
+                gformLink: "https://docs.google.com/forms/d/e/CONTOH_FORM_CLOUD/viewform",
+                waGroupLink: "https://chat.whatsapp.com/CONTOH_GROUP_CLOUD",
+                syllabus: [
+                    "Bab 1: Pengenalan Konsep Modern Workspace",
+                    "Bab 2: Setup Tenant & Verifikasi Domain Perusahaan",
+                    "Bab 3: Manajemen User & Lisensi Berbasis Cloud",
+                    "Bab 4: Konfigurasi Exchange Online & Keamanan Email",
+                    "Bab 5: Implementasi SharePoint & OneDrive for Business",
+                    "Bab 6: Endpoint Management (Microsoft Intune Dasar)",
+                    "Bab 7: Penerapan Multi-Factor Authentication (MFA) & Conditional Access"
+                ]
+            }
+        };
+
+        // --- Navigation Logic (Single Page Application Switcher) ---
+        function showPage(pageId) {
+            const homeView = document.getElementById('page-home');
+            const detailView = document.getElementById('page-detail');
+
+            if (pageId === 'home') {
+                detailView.classList.add('hidden');
+                homeView.classList.remove('hidden');
+                window.scrollTo(0, 0);
+                
+                // Refresh AOS saat pindah halaman agar animasi jalan lagi
+                setTimeout(() => { AOS.refresh(); }, 100); 
+            }
+        }
+
+        function showDetail(modulKey) {
+            const data = modulData[modulKey];
+            if (!data) return;
+
+            // Populate Data
+            document.getElementById('detail-title').textContent = data.title;
+            document.getElementById('detail-desc').textContent = data.desc;
+            
+            const iconEl = document.getElementById('detail-icon');
+            iconEl.className = data.iconClass; 
+            
+            const iconContainer = document.getElementById('detail-icon-container');
+            iconContainer.className = `w-16 h-16 rounded-lg flex items-center justify-center ${data.iconBgClass}`;
+
+            document.getElementById('btn-enroll-gform').href = data.gformLink;
+            document.getElementById('btn-diskusi-wa').href = data.waGroupLink;
+
+            // Populate Syllabus
+            const syllabusContainer = document.getElementById('detail-syllabus');
+            syllabusContainer.innerHTML = ''; 
+            data.syllabus.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "flex items-start p-4 bg-gray-50 dark:bg-darkBg rounded-lg border border-gray-100 dark:border-gray-800";
+                div.innerHTML = `
+                    <div class="flex-shrink-0 mt-1">
+                        <i class="fa-solid fa-play text-primary text-sm"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-base font-medium text-gray-800 dark:text-gray-200">${item}</p>
+                    </div>
+                `;
+                syllabusContainer.appendChild(div);
+            });
+
+            // Switch Views
+            document.getElementById('page-home').classList.add('hidden');
+            document.getElementById('page-detail').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
