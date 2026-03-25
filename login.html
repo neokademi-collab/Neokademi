@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Member | Neokademi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <a href="index.html" class="flex items-center cursor-pointer">
+                    <i class="fa-solid fa-terminal text-primary text-2xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight">Neokademi</span>
+                </a>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="index.html" class="hover:text-primary transition-colors font-medium">Beranda</a>
+                    <a href="index.html#modul-section" class="hover:text-primary transition-colors font-medium">Modul</a>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+                <div class="md:hidden flex items-center space-x-4">
+                    <button id="theme-toggle-mobile" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon-mobile" class="fa-solid fa-moon"></i>
+                    </button>
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="mobile-menu" class="fixed top-0 right-0 z-[60] w-64 h-full bg-white dark:bg-darkCard shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col">
+        <div class="px-4 h-16 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
+            <span class="font-bold text-lg text-primary">Menu Navigasi</span>
+            <button onclick="toggleMobileMenu()" class="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors focus:outline-none p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <div class="flex-grow px-4 py-6 space-y-3 overflow-y-auto">
+            <a href="index.html" class="block px-4 py-3 rounded-xl font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all shadow-sm">
+                <i class="fa-solid fa-house w-6 text-center mr-2"></i> Beranda
+            </a>
+            <a href="index.html#modul-section" class="block px-4 py-3 rounded-xl font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all shadow-sm">
+                <i class="fa-solid fa-book w-6 text-center mr-2"></i> Modul E-Course
+            </a>
+        </div>
+    </div>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 dark:opacity-10 pointer-events-none"></div>
+        
+        <div class="max-w-md w-full space-y-8 bg-white dark:bg-darkCard p-8 md:p-10 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 relative z-10 animate-fade-in-up">
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 bg-primary/10 flex items-center justify-center rounded-full mb-4">
+                    <i class="fa-solid fa-user-lock text-primary text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Akses Kelas</h2>
+                <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    Masukkan email dan passkey yang Anda terima setelah melakukan pembayaran.
+                </p>
+            </div>
+            
+            <form id="login-form" class="mt-8 space-y-6">
+                <div id="alert-box" class="hidden p-4 rounded-lg text-sm font-medium" role="alert">
+                    <span id="alert-message"></span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-envelope text-gray-400"></i>
+                            </div>
+                            <input id="email" name="email" type="email" required class="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-darkBg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors" placeholder="contoh@email.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="passkey" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Passkey / Serial Code</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-key text-gray-400"></i>
+                            </div>
+                            <input id="passkey" name="passkey" type="text" required class="appearance-none rounded-lg relative block w-full px-3 py-3 pl-10 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-darkBg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors uppercase" placeholder="NEO-XXXXXX">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" id="btn-submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-lg text-white bg-primary hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-lg shadow-blue-500/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed">
+                        <span id="btn-text">Masuk Kelas</span>
+                        <i id="btn-spinner" class="fa-solid fa-circle-notch fa-spin hidden ml-2 mt-0.5"></i>
+                    </button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-4">
+                <p class="text-xs text-gray-500 dark:text-gray-400">Belum punya akses? <a href="index.html#modul-section" class="font-medium text-primary hover:text-blue-500">Beli modul di sini</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-darkCard border-t border-gray-200 dark:border-gray-800 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-500 dark:text-gray-400 text-sm">
+                &copy; <span id="year"></span> Neokademi E-Course. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Set Year in Footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Dark Mode Logic ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+        const themeIconMobile = document.getElementById('theme-icon-mobile');
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            updateIcons('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateIcons('light');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                updateIcons('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                updateIcons('dark');
+            }
+        }
+
+        function updateIcons(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                themeIconMobile.classList.remove('fa-moon');
+                themeIconMobile.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                themeIconMobile.classList.remove('fa-sun');
+                themeIconMobile.classList.add('fa-moon');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        themeToggleBtnMobile.addEventListener('click', toggleTheme);
+
+        // --- Mobile Menu Logic ---
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+        let isMobileMenuOpen = false;
+
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            if (isMobileMenuOpen) {
+                mobileBackdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileBackdrop.classList.remove('opacity-0');
+                    mobileBackdrop.classList.add('opacity-100');
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileBackdrop.classList.remove('opacity-100');
+                mobileBackdrop.classList.add('opacity-0');
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                setTimeout(() => { mobileBackdrop.classList.add('hidden'); }, 300);
+                document.body.style.overflow = '';
+            }
+        }
+
+        // --- Login Form Logic ---
+        const loginForm = document.getElementById('login-form');
+        const btnSubmit = document.getElementById('btn-submit');
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+        const alertBox = document.getElementById('alert-box');
+        const alertMessage = document.getElementById('alert-message');
+
+        // URL GOOGLE APPS SCRIPT ANDA (Ganti dengan URL hasil Deploy Apps Script nanti)
+        const GAS_URL = 'MASUKKAN_URL_WEB_APP_APPS_SCRIPT_DI_SINI'; 
+
+        function showAlert(message, type) {
+            alertBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'border-red-400', 'bg-green-100', 'text-green-700', 'border-green-400');
+            alertBox.classList.add('border');
+            
+            if(type === 'error') {
+                alertBox.classList.add('bg-red-100', 'text-red-700', 'border-red-400', 'dark:bg-red-900/30', 'dark:text-red-400', 'dark:border-red-800');
+                alertMessage.innerHTML = `<i class="fa-solid fa-circle-exclamation mr-2"></i> ${message}`;
+            } else {
+                alertBox.classList.add('bg-green-100', 'text-green-700', 'border-green-400', 'dark:bg-green-900/30', 'dark:text-green-400', 'dark:border-green-800');
+                alertMessage.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> ${message}`;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const passkey = document.getElementById('passkey').value.trim().toUpperCase();
+
+            // Set loading state
+            btnSubmit.disabled = true;
+            btnText.textContent = 'Memverifikasi...';
+            btnSpinner.classList.remove('hidden');
+            alertBox.classList.add('hidden');
+
+            try {
+                // LOGIKA SEMENTARA SEBELUM ADA APPS SCRIPT
+                // Hapus blok if ini jika Apps Script sudah dipasang
+                if (GAS_URL === 'MASUKKAN_URL_WEB_APP_APPS_SCRIPT_DI_SINI') {
+                    setTimeout(() => {
+                        showAlert('Ini masih simulasi. Harap masukkan URL Google Apps Script Anda ke dalam kodingan.', 'error');
+                        btnSubmit.disabled = false;
+                        btnText.textContent = 'Masuk Kelas';
+                        btnSpinner.classList.add('hidden');
+                    }, 1500);
+                    return;
+                }
+
+                // FETCH KE GOOGLE APPS SCRIPT
+                const response = await fetch(`${GAS_URL}?action=login&email=${encodeURIComponent(email)}&passkey=${encodeURIComponent(passkey)}`, {
+                    method: 'GET',
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showAlert('Login berhasil! Mengalihkan...', 'success');
+                    
+                    // Simpan sesi login di Local Storage
+                    localStorage.setItem('neokademi_user', JSON.stringify({
+                        email: email,
+                        modul: result.modul,
+                        isLoggedIn: true
+                    }));
+
+                    // Alihkan ke halaman materi
+                    setTimeout(() => {
+                        window.location.href = 'materi.html';
+                    }, 1500);
+
+                } else {
+                    showAlert('Email atau Passkey salah / tidak ditemukan.', 'error');
+                    btnSubmit.disabled = false;
+                    btnText.textContent = 'Masuk Kelas';
+                    btnSpinner.classList.add('hidden');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan koneksi. Coba lagi nanti.', 'error');
+                btnSubmit.disabled = false;
+                btnText.textContent = 'Masuk Kelas';
+                btnSpinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

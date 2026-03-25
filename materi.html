@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi E-Course | Neokademi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkSidebar: '#111827'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { transition: background-color 0.3s, color 0.3s; }
+        /* Custom Scrollbar untuk Sidebar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        
+        .active-chapter { border-left-width: 4px; border-color: #0ea5e9; background-color: #f0f9ff; }
+        .dark .active-chapter { background-color: #0c4a6e; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 font-sans antialiased h-screen flex flex-col overflow-hidden">
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('neokademi_user'));
+        // Jika tidak ada data sesi login, lempar kembali ke halaman login
+        if (!userData || !userData.isLoggedIn) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-gray-800 transition-colors h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center">
+            <button id="sidebar-toggle" onclick="toggleSidebar()" class="md:hidden mr-4 text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <a href="index.html" class="flex items-center cursor-pointer">
+                <i class="fa-solid fa-terminal text-primary text-xl mr-2"></i>
+                <span class="font-bold text-lg hidden sm:block">Neokademi Workspace</span>
+            </a>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-600 dark:text-gray-400 font-medium hidden sm:block" id="user-greeting">Halo, Siswa!</span>
+            
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-gray-300"></i>
+            </button>
+
+            <button onclick="logout()" class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-semibold rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
+                <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> Keluar
+            </button>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity opacity-0"></div>
+
+        <aside id="sidebar" class="absolute inset-y-0 left-0 z-30 w-72 bg-white dark:bg-darkSidebar border-r border-gray-200 dark:border-gray-800 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+                <h2 class="font-bold text-gray-800 dark:text-white uppercase tracking-wider text-sm" id="course-title">Modul Pembelajaran</h2>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-2" id="chapter-list">
+                </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-darkBg p-4 sm:p-6 lg:p-8 w-full">
+            <div class="max-w-4xl mx-auto">
+                
+                <div class="bg-black rounded-xl overflow-hidden shadow-lg aspect-video relative mb-6 border border-gray-200 dark:border-gray-800">
+                    <iframe id="video-player" class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/jBzwzrDvZ18" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <div class="bg-white dark:bg-darkCard rounded-xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-800 mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Video Materi</span>
+                        <button onclick="markAsDone()" class="text-sm font-medium text-gray-500 hover:text-green-500 dark:hover:text-green-400 transition-colors">
+                            <i class="fa-regular fa-circle-check mr-1"></i> Tandai Selesai
+                        </button>
+                    </div>
+                    <h1 id="chapter-title" class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">Pilih materi di sidebar untuk mulai belajar</h1>
+                    <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <p>Selamat datang di Neokademi Workspace. Silakan gunakan navigasi di sebelah kiri (atau klik menu hamburger di pojok kiri atas untuk pengguna HP) untuk memilih bab materi yang ingin Anda tonton.</p>
+                        <p class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400 rounded-lg border border-yellow-200 dark:border-yellow-800/50 text-sm">
+                            <i class="fa-solid fa-lightbulb mr-2"></i> <strong>Tips:</strong> Pastikan Anda menyiapkan catatan dan mempraktikkan langsung materi yang diajarkan pada perangkat Anda.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Data Dummy Materi (Ganti link YouTube dengan materi asli Anda) ---
+        const courseData = {
+            "linux": {
+                courseName: "Linux System Administration",
+                chapters: [
+                    { id: 1, title: "Bab 1: Pengenalan & Hierarki Linux", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: "Membahas konsep dasar sistem operasi open-source, sejarah Linux, dan struktur direktori utama (Root, Home, Var, dll)." },
+                    { id: 2, title: "Bab 2: Manajemen User & Hak Akses", video: "https://www.youtube.com/embed/v_1zbOUXYzI", desc: "Mempelajari perintah dasar pembuatan user, group, dan manipulasi file permission (chmod, chown) untuk keamanan data." },
+                    { id: 3, title: "Bab 3: Manajemen Paket (APT/YUM)", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: "Cara menginstal, mengupdate, dan menghapus software di dalam sistem operasi Linux menggunakan package manager." }
+                ]
+            },
+            "cloud": {
+                courseName: "Cloud Modern Workspace",
+                chapters: [
+                    { id: 1, title: "Bab 1: Konsep Modern Workspace", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: "Pemahaman dasar mengenai cloud computing dan bagaimana perusahaan modern menggunakan ekosistem digital untuk bekerja." },
+                    { id: 2, title: "Bab 2: Setup Tenant & Domain", video: "https://www.youtube.com/embed/v_1zbOUXYzI", desc: "Langkah-langkah mendaftarkan tenant Microsoft 365 / Google Workspace dan memverifikasi domain perusahaan Anda." },
+                    { id: 3, title: "Bab 3: Keamanan & MFA", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: "Menerapkan Multi-Factor Authentication untuk mengamankan identitas user dari serangan peretas." }
+                ]
+            }
+        };
+
+        // --- Render Data Berdasarkan User Login ---
+        let currentCourse = "linux"; // Default fallback
+        if (userData && userData.modul) {
+            currentCourse = userData.modul.toLowerCase(); // Ambil dari sesi (misal 'linux' atau 'cloud')
+            document.getElementById('user-greeting').textContent = `Email: ${userData.email}`;
+        }
+
+        // Pastikan modul yang diload ada datanya
+        const activeData = courseData[currentCourse] || courseData["linux"];
+        document.getElementById('course-title').textContent = activeData.courseName;
+
+        const chapterListEl = document.getElementById('chapter-list');
+        
+        // Render List Bab ke Sidebar
+        activeData.chapters.forEach((chap, index) => {
+            const btn = document.createElement('button');
+            btn.className = `w-full text-left px-4 py-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center group chapter-item`;
+            btn.onclick = () => loadChapter(chap, btn);
+            
+            btn.innerHTML = `
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 flex items-center justify-center text-sm font-bold mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
+                    ${index + 1}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-200 truncate">${chap.title}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-500 truncate">Video Materi</p>
+                </div>
+            `;
+            chapterListEl.appendChild(btn);
+        });
+
+        // --- Fungsi Load Video saat list di-klik ---
+        function loadChapter(chapter, buttonElement) {
+            // Update UI Video & Teks
+            document.getElementById('video-player').src = chapter.video;
+            document.getElementById('chapter-title').textContent = chapter.title;
+            document.getElementById('chapter-desc').innerHTML = `<p>${chapter.desc}</p>`;
+
+            // Update Class Active di Sidebar
+            document.querySelectorAll('.chapter-item').forEach(el => el.classList.remove('active-chapter', 'bg-blue-50', 'dark:bg-blue-900/20'));
+            buttonElement.classList.add('active-chapter', 'bg-blue-50', 'dark:bg-blue-900/20');
+            
+            // Tutup sidebar di versi mobile setelah klik
+            if (window.innerWidth < 768 && isSidebarOpen) {
+                toggleSidebar();
+            }
+        }
+
+        // Load materi pertama secara otomatis saat halaman dibuka
+        if(chapterListEl.firstChild) {
+            chapterListEl.firstChild.click();
+        }
+
+        // --- Fitur Tombol Selesai (Dummy) ---
+        function markAsDone() {
+            alert("Materi ini telah ditandai sebagai selesai!");
+        }
+
+        // --- Fungsi Logout ---
+        function logout() {
+            if(confirm("Apakah Anda yakin ingin keluar?")) {
+                localStorage.removeItem('neokademi_user');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // --- Dark Mode Logic ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                localStorage.theme = 'light';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // --- Sidebar Mobile Logic ---
+        const sidebar = document.getElementById('sidebar');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        let isSidebarOpen = false;
+
+        function toggleSidebar() {
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarBackdrop.classList.remove('hidden', 'opacity-0');
+                setTimeout(() => sidebarBackdrop.classList.add('opacity-100'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebarBackdrop.classList.remove('opacity-100');
+                sidebarBackdrop.classList.add('opacity-0');
+                setTimeout(() => sidebarBackdrop.classList.add('hidden'), 300);
+            }
+        }
+    </script>
+</body>
+</html>
