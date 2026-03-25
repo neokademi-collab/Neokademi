@@ -111,11 +111,11 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 border-t border-gray-200 dark:border-gray-700 pt-8">
-                    <a id="btn-enroll-gform" href="#" target="_blank" class="flex-1 text-center py-3.5 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center shadow-lg shadow-blue-500/30">
-                        <i class="fa-solid fa-user-plus mr-2"></i> Enroll Sekarang (G-Form)
+                    <a id="btn-enroll-checkout" href="#" target="_blank" class="flex-1 text-center py-3.5 px-6 bg-primary text-white font-semibold rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <i class="fa-solid fa-cart-shopping mr-2"></i> Beli Kelas Sekarang
                     </a>
-                    <a id="btn-diskusi-wa" href="#" target="_blank" class="flex-1 text-center py-3.5 px-6 bg-[#25D366] text-white font-semibold rounded-lg hover:bg-[#1ebe57] transition-colors flex items-center justify-center shadow-lg shadow-green-500/20">
-                        <i class="fa-brands fa-whatsapp text-xl mr-2"></i> Grup Diskusi WA
+                    <a id="btn-diskusi-wa" href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20tanya%20detail%20mengenai%20kelas%20ini" target="_blank" class="flex-1 text-center py-3.5 px-6 bg-[#25D366] text-white font-semibold rounded-lg hover:bg-[#1ebe57] transition-colors flex items-center justify-center shadow-lg shadow-green-500/20">
+                        <i class="fa-brands fa-whatsapp text-xl mr-2"></i> Tanya Admin via WA
                     </a>
                 </div>
             </div>
@@ -221,8 +221,8 @@
                 desc: "Panduan komprehensif dari nol untuk menguasai sistem operasi Linux. Anda akan belajar cara mengelola server, mengonfigurasi jaringan, mengatur keamanan dasar, hingga penulisan bash script untuk otomatisasi tugas sehari-hari.",
                 iconClass: "fa-brands fa-linux text-yellow-600 dark:text-yellow-500",
                 iconBgClass: "bg-yellow-100 dark:bg-yellow-900/30",
-                gformLink: "https://docs.google.com/forms/d/e/CONTOH_FORM_LINUX/viewform",
-                waGroupLink: "https://chat.whatsapp.com/CONTOH_GROUP_LINUX",
+                checkoutLink: "MASUKKAN_LINK_MAYAR_LINUX_DI_SINI", // GANTI DENGAN LINK MAYAR.ID UNTUK LINUX
+                waAdminLink: "https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20tanya%20detail%20mengenai%20kelas%20Linux",
                 syllabus: [
                     "Bab 1: Instalasi & Pemahaman Hierarki Direktori Linux",
                     "Bab 2: Manajemen User, Group, dan Hak Akses (File Permission)",
@@ -238,8 +238,8 @@
                 desc: "Pelajari cara membangun lingkungan kerja digital yang aman dan terpusat. Modul ini berfokus pada implementasi Microsoft 365 dan Google Workspace (G-Suite).",
                 iconClass: "fa-solid fa-cloud text-blue-600 dark:text-blue-400",
                 iconBgClass: "bg-blue-100 dark:bg-blue-900/30",
-                gformLink: "https://docs.google.com/forms/d/e/CONTOH_FORM_CLOUD/viewform",
-                waGroupLink: "https://chat.whatsapp.com/CONTOH_GROUP_CLOUD",
+                checkoutLink: "MASUKKAN_LINK_MAYAR_CLOUD_DI_SINI", // GANTI DENGAN LINK MAYAR.ID UNTUK CLOUD
+                waAdminLink: "https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20tanya%20detail%20mengenai%20kelas%20Cloud",
                 syllabus: [
                     "Bab 1: Pengenalan Konsep Modern Workspace",
                     "Bab 2: Setup Tenant & Verifikasi Domain Perusahaan",
@@ -267,8 +267,10 @@
             document.getElementById('detail-desc').textContent = data.desc;
             document.getElementById('detail-icon').className = data.iconClass; 
             document.getElementById('detail-icon-container').className = `w-16 h-16 rounded-lg flex items-center justify-center ${data.iconBgClass}`;
-            document.getElementById('btn-enroll-gform').href = data.gformLink;
-            document.getElementById('btn-diskusi-wa').href = data.waGroupLink;
+            
+            // Set link ke Mayar
+            document.getElementById('btn-enroll-checkout').href = data.checkoutLink;
+            document.getElementById('btn-diskusi-wa').href = data.waAdminLink;
 
             const syllabusContainer = document.getElementById('detail-syllabus');
             data.syllabus.forEach(item => {
