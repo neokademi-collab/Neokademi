@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi E-Course | Neokademi</title>
+    
+    <script>
+        (function() {
+            const rawData = localStorage.getItem('neokademi_user');
+            
+            if (!rawData) {
+                window.location.replace('login.html'); 
+            } else {
+                const session = JSON.parse(rawData);
+                const now = new Date().getTime();
+
+                if (!session.isLoggedIn || !session.expiry || now > session.expiry) {
+                    localStorage.removeItem('neokademi_user');
+                    alert("Sesi Anda telah berakhir (3 jam). Silakan login kembali untuk melanjutkan.");
+                    window.location.replace('login.html');
+                }
+            }
+        })();
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b',
+                        darkSidebar: '#111827'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { transition: background-color 0.3s, color 0.3s; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        
+        .active-chapter { 
+            border-left-width: 4px; 
+            border-color: #0ea5e9; 
+            background-color: #f0f9ff; 
+        }
+        .dark .active-chapter { background-color: #0c4a6e; }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-content {
+            animation: fade-in-up 0.5s ease-out forwards;
+        }
+
+        .sidebar-transition {
+            transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 font-sans antialiased h-screen flex flex-col overflow-hidden hidden" id="main-body">
+
+    <script>document.getElementById('main-body').classList.remove('hidden');</script>
+
+    <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-gray-800 transition-colors h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <button onclick="toggleDesktopSidebar()" class="hidden md:block text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none transition-transform" id="desktop-toggle-icon">
+                <i class="fa-solid fa-bars-staggered text-xl"></i>
+            </button>
+            
+            <a href="index.html" class="flex items-center cursor-pointer ml-2 md:ml-0">
+                <i class="fa-solid fa-terminal text-primary text-xl mr-2"></i>
+                <span class="font-bold text-lg hidden sm:block text-gray-900 dark:text-white">Neokademi Workspace</span>
+            </a>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-600 dark:text-gray-400 font-medium hidden sm:block" id="user-greeting">Memuat...</span>
+            
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
+                <i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-gray-300"></i>
+            </button>
+
+            <button onclick="logout()" class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-semibold rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
+                <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> Keluar
+            </button>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        
+        <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity opacity-0"></div>
+
+        <aside id="sidebar" class="sidebar-transition absolute inset-y-0 left-0 z-30 w-72 bg-white dark:bg-darkSidebar border-r border-gray-200 dark:border-gray-800 transform -translate-x-full md:relative md:translate-x-0 flex flex-col shadow-xl md:shadow-none">
+            
+            <div class="p-5 border-b border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-darkSidebar/50">
+                <h2 class="font-bold text-gray-800 dark:text-white uppercase tracking-wider text-sm mb-3" id="course-title">Modul Pembelajaran</h2>
+                
+                <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Progres Belajar</span>
+                    <span class="text-xs font-bold text-primary" id="progress-text">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-2" id="chapter-list">
+                </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-darkBg p-4 sm:p-6 lg:p-8 w-full transition-all duration-300">
+            <div class="max-w-4xl mx-auto">
+                
+                <div id="content-container" class="animate-content">
+                    <div class="bg-black rounded-xl overflow-hidden shadow-lg aspect-video relative mb-6 border border-gray-200 dark:border-gray-800 group">
+                        <iframe id="video-player" class="absolute top-0 left-0 w-full h-full" src="" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="bg-white dark:bg-darkCard rounded-xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-800 mb-12">
+                        <div class="flex flex-wrap items-center justify-between mb-4 gap-4">
+                            <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide border border-primary/20">
+                                Video Materi
+                            </span>
+                            <button id="btn-mark-done" onclick="markCurrentAsDone()" class="text-sm font-bold text-gray-500 bg-gray-100 hover:bg-green-100 hover:text-green-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-green-900/30 dark:hover:text-green-400 py-2 px-4 rounded-lg transition-all border border-transparent hover:border-green-200 dark:hover:border-green-800 flex items-center">
+                                <i class="fa-regular fa-circle-check text-lg mr-2"></i> Tandai Selesai
+                            </button>
+                        </div>
+                        
+                        <h1 id="chapter-title" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">Memuat Materi...</h1>
+                        
+                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-4">
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Data Materi Terstruktur ---
+        const courseData = {
+            "linux": {
+                courseName: "Linux System Administration",
+                chapters: [
+                    { 
+                        id: 1, 
+                        title: "Bab 1: Instalasi & Pemahaman Hierarki Direktori Linux", 
+                        video: "https://www.youtube.com/embed/wBp0Rb-ZJak", 
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Selamat datang di modul pertama! Di sini kita akan meletakkan fondasi kuat tentang apa itu Linux dan bagaimana ia bekerja di belakang layar server-server raksasa dunia.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Instalasi Dasar</h3>
+                            <p>Instalasi Linux Server biasanya dilakukan tanpa Graphic User Interface (GUI) untuk menghemat RAM dan CPU. Anda hanya akan berhadapan dengan layar hitam dan teks (Terminal/CLI).</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">2. Struktur Direktori Utama (Root)</h3>
+                            <p>Di Linux, semuanya berawal dari satu titik tertinggi yang disebut <strong>Root</strong> (disimbolkan dengan <code>/</code>). Berikut direktori penting yang wajib dipahami:</p>
+                            <ul class="list-disc pl-5 mt-3 space-y-2">
+                                <li><code>/bin</code> : Berisi perintah dasar sistem (misal: ls, cp, mv).</li>
+                                <li><code>/etc</code> : Pusat kendali konfigurasi sistem dan aplikasi server.</li>
+                                <li><code>/home</code> : Direktori tempat tinggal user biasa.</li>
+                                <li><code>/var</code> : Menyimpan data yang terus berubah (log sistem, database MySQL).</li>
+                            </ul>
+                            <div class="mt-8 p-5 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-lg border border-blue-200 dark:border-blue-800/50 text-sm">
+                                <div class="font-bold mb-1"><i class="fa-solid fa-laptop-code mr-2"></i> Tugas Praktik:</div>
+                                Buka terminal Linux Anda dan ketikkan <code class="bg-blue-100 dark:bg-blue-900 px-1 py-0.5 rounded text-blue-900 dark:text-blue-100">ls -la /</code> untuk melihat isi root direktori.
+                            </div>
+                        ` 
+                    },
+                    { 
+                        id: 2, 
+                        title: "Bab 2: Manajemen User, Group, dan Hak Akses (File Permission)", 
+                        video: "https://www.youtube.com/embed/rrB13utjYV4", 
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Keamanan adalah prioritas absolut di server Linux. Kita harus mengontrol siapa saja yang boleh masuk dan apa yang boleh mereka modifikasi.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Manajemen User & Group</h3>
+                            <ul class="list-disc pl-5 mt-3 space-y-2 font-mono text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-inner">
+                                <li><span class="text-primary">sudo adduser &lt;nama&gt;</span> : Membuat user baru</li>
+                                <li><span class="text-primary">sudo usermod -aG sudo &lt;nama&gt;</span> : Menjadikan user sebagai admin</li>
+                                <li><span class="text-primary">sudo groupadd &lt;nama_grup&gt;</span> : Membuat grup baru</li>
+                            </ul>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">2. Logika File Permission (Chmod & Chown)</h3>
+                            <p>Setiap file memiliki 3 jenis izin (Read=4, Write=2, Execute=1). Contohnya:</p>
+                            <p class="mt-2 font-mono bg-gray-900 text-gray-100 p-3 rounded text-sm">chmod 755 script.sh</p>
+                            <p class="mt-2">Artinya Pemilik memiliki hak penuh (7), sementara Grup (5) dan Orang Lain (5) hanya bisa membaca dan mengeksekusi.</p>
+                        ` 
+                    },
+                    { 
+                        id: 3, 
+                        title: "Bab 3: Manajemen Paket & Repository (APT/YUM)", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Di Linux, instalasi aplikasi tidak dilakukan dengan mendownload file .exe dari browser, melainkan menggunakan Package Manager via Terminal.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">Perbedaan APT dan YUM/DNF</h3>
+                            <ul class="list-disc pl-5 mt-3 space-y-2">
+                                <li><strong>APT:</strong> Digunakan oleh keluarga Debian (Ubuntu, Linux Mint, Kali Linux).</li>
+                                <li><strong>YUM / DNF:</strong> Digunakan oleh keluarga Red Hat (RHEL, CentOS, Fedora).</li>
+                            </ul>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">Perintah Dasar (Contoh APT)</h3>
+                            <div class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm mt-3 space-y-3 shadow-inner">
+                                <div><span class="text-green-400"># Update daftar repositori:</span><br>sudo apt update</div>
+                                <div><span class="text-green-400"># Instal aplikasi (contoh curl):</span><br>sudo apt install curl -y</div>
+                                <div><span class="text-green-400"># Hapus aplikasi:</span><br>sudo apt remove curl</div>
+                            </div>
+                        ` 
+                    },
+                    { 
+                        id: 4, 
+                        title: "Bab 4: Konfigurasi Jaringan & SSH Server", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Server Anda membutuhkan koneksi ke internet, dan Anda membutuhkan cara untuk me-remote server tersebut dari laptop Anda.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Cek & Konfigurasi IP (Netplan / Interfaces)</h3>
+                            <p>Gunakan perintah <code>ip a</code> untuk melihat alamat IP aktif Anda. Di Ubuntu modern, konfigurasi IP Statik dilakukan dengan mengedit file YAML di direktori <code>/etc/netplan/</code>.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">2. Mengamankan Remote Server (SSH)</h3>
+                            <p>SSH menggunakan port default <strong>22</strong>. Untuk terhubung, buka terminal di laptop Anda dan ketik:</p>
+                            <div class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm mt-3 shadow-inner text-center">
+                                ssh nama_user@IP_Address_Server
+                            </div>
+                            <p class="mt-4"><strong>Keamanan Lanjutan:</strong> Pada file <code>/etc/ssh/sshd_config</code>, sangat disarankan untuk menonaktifkan <em>Root Login</em> dan mengganti port default untuk menghindari serangan *brute force*.</p>
+                        ` 
+                    },
+                    { 
+                        id: 5, 
+                        title: "Bab 5: Monitoring Sistem & Manajemen Proses", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", // Ganti dengan link video bab 5
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Sebagai SysAdmin, Anda adalah dokter bagi server Anda. Anda harus tahu cara mendiagnosis saat server berjalan lambat atau penuh.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Membaca Status RAM & Storage</h3>
+                            <ul class="list-disc pl-5 mt-3 space-y-2">
+                                <li><code>free -m</code> : Melihat sisa RAM dalam hitungan Megabyte.</li>
+                                <li><code>df -h</code> : Melihat sisa kapasitas Hardisk / SSD yang dapat dibaca manusia (Human readable).</li>
+                            </ul>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">2. Mengatur Proses (Task Manager Linux)</h3>
+                            <p>Jika di Windows ada Task Manager, di Linux kita menggunakan <code>top</code> atau <code>htop</code>. Alat ini memonitor proses mana yang memakan CPU paling tinggi.</p>
+                            <p class="mt-3">Jika ada aplikasi yang "hang", cari nomor PID-nya, lalu gunakan perintah <code class="bg-gray-200 dark:bg-gray-700 px-2 rounded">kill -9 &lt;PID&gt;</code> untuk mematikan paksa aplikasi tersebut.</p>
+                        ` 
+                    },
+                    { 
+                        id: 6, 
+                        title: "Bab 6: Instalasi Web Server (Nginx/Apache) & Database", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", // Ganti dengan link video bab 6
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Bab ini adalah inti dari pembuatan infrastruktur web. Kita akan membangun tumpukan server (Stack) untuk menjalankan website.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Apache vs Nginx</h3>
+                            <p>Keduanya adalah software Web Server paling populer. Nginx (dibaca: Engine-X) sangat diandalkan saat ini karena kemampuannya menangani trafik tinggi (Concurrent connections) dengan RAM yang sangat kecil.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">2. Systemctl (Manajemen Service)</h3>
+                            <p>Setelah menginstal web server atau database (seperti MySQL/MariaDB), Anda harus memastikan mereka otomatis berjalan saat server di-restart (boot).</p>
+                            <div class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm mt-3 space-y-3 shadow-inner">
+                                <div><span class="text-green-400"># Menjalankan Nginx:</span><br>sudo systemctl start nginx</div>
+                                <div><span class="text-green-400"># Agar otomatis hidup saat restart:</span><br>sudo systemctl enable nginx</div>
+                                <div><span class="text-green-400"># Mengecek status error:</span><br>sudo systemctl status nginx</div>
+                            </div>
+                        ` 
+                    },
+                    { 
+                        id: 7, 
+                        title: "Bab 7: Dasar-dasar Bash Scripting", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", // Ganti dengan link video bab 7
+                        desc: `
+                            <p class="text-lg font-medium text-gray-800 dark:text-gray-200">Seorang SysAdmin yang hebat tidak mengetik perintah yang sama berulang kali. Mereka mengotomatiskannya dengan Bash Script.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Apa itu Bash Script?</h3>
+                            <p>Bash Scripting adalah kumpulan baris perintah Linux yang disimpan dalam satu file berekstensi <code>.sh</code> dan dieksekusi secara berurutan. Ini sangat berguna untuk tugas harian, seperti membuat *auto-backup* database jam 2 pagi.</p>
+                            <h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">2. Anatomi Bash Script</h3>
+                            <p>Setiap file bash script harus selalu diawali dengan <em>Shebang</em> untuk memberi tahu OS program pembacanya.</p>
+                            <div class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm mt-3 shadow-inner">
+                                <span class="text-yellow-400">#!/bin/bash</span><br>
+                                <span class="text-blue-300">NAMA</span>="Admin"<br>
+                                <span class="text-blue-400">echo</span> "Halo $NAMA, backup dimulai!"<br>
+                                <span class="text-green-400"># Taruh perintah tar/cp di sini</span>
+                            </div>
+                            <p class="mt-4"><strong>Catatan Penting:</strong> Sebelum file <code>.sh</code> bisa dijalankan, Anda wajib memberikannya hak akses eksekusi menggunakan perintah <code>chmod +x nama_script.sh</code>.</p>
+                        ` 
+                    }
+                ]
+            }
+        };
+
+        // --- Inisialisasi Data & State ---
+        let currentCourse = "linux";
+        let currentChapterId = null;
+        
+        const rawUserData = localStorage.getItem('neokademi_user');
+        let userData = null;
+        if (rawUserData) {
+            userData = JSON.parse(rawUserData);
+        }
+
+        let completedChapters = JSON.parse(localStorage.getItem('neokademi_progress')) || [];
+
+        if (userData && userData.email) {
+            document.getElementById('user-greeting').textContent = `Siswa: ${userData.email.split('@')[0]}`;
+        }
+
+        const activeData = courseData[currentCourse];
+        document.getElementById('course-title').textContent = activeData.courseName;
+
+        // --- Render Sidebar & Progress ---
+        function renderSidebar() {
+            const chapterListEl = document.getElementById('chapter-list');
+            chapterListEl.innerHTML = ''; 
+            
+            activeData.chapters.forEach((chap, index) => {
+                const isCompleted = completedChapters.includes(chap.id);
+                const isActive = currentChapterId === chap.id;
+                
+                const iconHtml = isCompleted 
+                    ? `<i class="fa-solid fa-circle-check text-green-500 text-xl"></i>`
+                    : `<i class="fa-regular fa-circle text-gray-400 dark:text-gray-500 text-xl group-hover:text-primary transition-colors"></i>`;
+
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-5 py-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex items-center group ${isActive ? 'active-chapter' : ''}`;
+                btn.onclick = () => loadChapter(chap.id);
+                
+                btn.innerHTML = `
+                    <div class="flex-shrink-0 w-6 flex justify-center mr-3">
+                        ${iconHtml}
+                    </div>
+                    <div class="flex-1 min-w-0 pr-2">
+                        <p class="text-sm font-semibold ${isActive ? 'text-primary' : 'text-gray-700 dark:text-gray-300'} group-hover:text-primary transition-colors leading-snug">${chap.title}</p>
+                    </div>
+                    <div class="flex-shrink-0 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fa-solid fa-play text-xs"></i>
+                    </div>
+                `;
+                chapterListEl.appendChild(btn);
+            });
+
+            updateProgressBar();
+        }
+
+        // --- Update Progress Bar ---
+        function updateProgressBar() {
+            const total = activeData.chapters.length;
+            const completedCount = completedChapters.filter(id => activeData.chapters.some(c => c.id === id)).length;
+            const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+
+            document.getElementById('progress-bar-fill').style.width = percent + '%';
+            document.getElementById('progress-text').textContent = percent + '%';
+        }
+
+        // --- Load Konten Bab Secara Dinamis ---
+        function loadChapter(chapterId) {
+            currentChapterId = chapterId;
+            const chapter = activeData.chapters.find(c => c.id === chapterId);
+            if(!chapter) return;
+
+            const contentContainer = document.getElementById('content-container');
+            contentContainer.classList.remove('animate-content');
+            void contentContainer.offsetWidth; 
+            contentContainer.classList.add('animate-content');
+
+            document.getElementById('video-player').src = chapter.video;
+            document.getElementById('chapter-title').textContent = chapter.title;
+            document.getElementById('chapter-desc').innerHTML = chapter.desc;
+
+            const btnDone = document.getElementById('btn-mark-done');
+            if(completedChapters.includes(chapterId)) {
+                btnDone.innerHTML = `<i class="fa-solid fa-check-double text-lg mr-2"></i> Selesai Dipelajari`;
+                btnDone.classList.add('bg-green-100', 'text-green-700', 'dark:bg-green-900/40', 'dark:text-green-400');
+                btnDone.classList.remove('text-gray-500');
+                btnDone.disabled = true; 
+            } else {
+                btnDone.innerHTML = `<i class="fa-regular fa-circle-check text-lg mr-2"></i> Tandai Selesai`;
+                btnDone.classList.remove('bg-green-100', 'text-green-700', 'dark:bg-green-900/40', 'dark:text-green-400');
+                btnDone.classList.add('text-gray-500');
+                btnDone.disabled = false;
+            }
+
+            renderSidebar();
+
+            if (window.innerWidth < 768 && isMobileSidebarOpen) {
+                toggleMobileSidebar();
+            }
+        }
+
+        // --- Fungsi Tandai Selesai ---
+        function markCurrentAsDone() {
+            if (currentChapterId && !completedChapters.includes(currentChapterId)) {
+                completedChapters.push(currentChapterId);
+                localStorage.setItem('neokademi_progress', JSON.stringify(completedChapters));
+                loadChapter(currentChapterId); 
+            }
+        }
+
+        // Render Bab 1 otomatis
+        if(activeData.chapters.length > 0) {
+            loadChapter(activeData.chapters[0].id);
+        }
+
+        // --- Logic Logout ---
+        function logout() {
+            if(confirm("Keluar dari Workspace? Tenang, progres belajar Anda akan tetap tersimpan.")) {
+                localStorage.removeItem('neokademi_user');
+                window.location.replace('login.html');
+            }
+        }
+
+        // --- Logic Dark Mode ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // --- Logic Buka/Tutup Sidebar ---
+        const sidebar = document.getElementById('sidebar');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        const desktopToggleIcon = document.getElementById('desktop-toggle-icon');
+        
+        let isMobileSidebarOpen = false;
+        let isDesktopSidebarOpen = true;
+
+        function toggleMobileSidebar() {
+            isMobileSidebarOpen = !isMobileSidebarOpen;
+            if (isMobileSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebarBackdrop.classList.remove('hidden', 'opacity-0');
+                setTimeout(() => sidebarBackdrop.classList.add('opacity-100'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                sidebarBackdrop.classList.remove('opacity-100');
+                sidebarBackdrop.classList.add('opacity-0');
+                setTimeout(() => sidebarBackdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        function toggleDesktopSidebar() {
+            isDesktopSidebarOpen = !isDesktopSidebarOpen;
+            if (isDesktopSidebarOpen) {
+                sidebar.classList.remove('md:-ml-72'); 
+                desktopToggleIcon.classList.remove('rotate-180');
+            } else {
+                sidebar.classList.add('md:-ml-72'); 
+                desktopToggleIcon.classList.add('rotate-180'); 
+            }
+        }
+    </script>
+</body>
+</html>

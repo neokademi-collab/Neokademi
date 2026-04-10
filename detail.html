@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Kelas | Neokademi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5', /* Indigo ala BWA */
+                        primaryHover: '#4338CA',
+                        secondary: '#F3F4F6',
+                        darkBg: '#0f172a',
+                        darkCard: '#1e293b'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+        body { transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
+        
+        /* Custom Dropdown Hover */
+        .group:hover .group-hover\:block { display: block; }
+
+        /* Animasi Ikon Dark Mode */
+        .icon-spin-transition {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+        }
+
+        .wa-float { animation: float 3s infinite ease-in-out; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-[#FAFAFA] text-gray-800 dark:bg-darkBg dark:text-gray-100 antialiased min-h-screen flex flex-col">
+
+    <nav class="sticky top-0 z-50 bg-white/90 dark:bg-darkBg/90 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="#" class="flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="C:\Users\drawh\OneDrive\Documents\My File\Neokademi - Sourceweb\assets\img\Neokademi.png" alt="Logo Neokademi" class="w-10 h-10 object-contain mr-3">
+                    <span class="font-extrabold text-2xl tracking-tight text-gray-900 dark:text-white">Neokademi</span>
+                </a>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <div class="flex space-x-8 items-center">
+                        <a href="index.html" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary font-medium transition-colors">Beranda</a>
+                        
+                        <div class="relative group py-8">
+                            <button class="flex items-center text-primary dark:text-primary font-medium transition-colors focus:outline-none">
+                                Kelas <i class="fa-solid fa-chevron-down ml-1.5 text-[10px] transition-transform group-hover:rotate-180 mt-0.5"></i>
+                            </button>
+                            <div class="absolute right-0 md:left-0 mt-2 w-64 bg-white dark:bg-darkCard rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-left z-50 overflow-hidden">
+                                <div class="py-2">
+                                    <a href="detail.html?modul=linux" class="block px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                        <div class="font-semibold text-gray-900 dark:text-white">Linux Administration</div>
+                                        <p class="text-xs text-gray-500 mt-0.5">Kuasai server open-source</p>
+                                    </a>
+                                    <a href="detail.html?modul=cloud" class="block px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                        <div class="font-semibold text-gray-900 dark:text-white">Cloud Modern Workspace</div>
+                                        <p class="text-xs text-gray-500 mt-0.5">Office 365 & Google Workspace</p>
+                                    </a>
+                                    <a href="detail.html?modul=digitalmarketing" class="block px-5 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                        <div class="font-semibold text-gray-900 dark:text-white">Digital Marketing</div>
+                                        <p class="text-xs text-gray-500 mt-0.5">Strategi iklan & optimasi konversi</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="index.html#contact-section" class="text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary font-medium transition-colors">Hubungi Kami</a>
+                    </div>
+
+                    <div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+
+                    <div class="flex items-center space-x-5">
+                        <button id="theme-toggle" class="text-gray-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400 focus:outline-none flex items-center justify-center transition-colors">
+                            <i id="theme-icon" class="fa-solid fa-moon text-[1.3rem] icon-spin-transition"></i>
+                        </button>
+                        <a href="login.html" class="px-6 py-2.5 rounded-full text-primary font-semibold border border-primary hover:bg-primary hover:text-white transition-all">
+                            Masuk Kelas
+                        </a>
+                    </div>
+                </div>
+
+                <div class="md:hidden flex items-center space-x-4">
+                    <button id="theme-toggle-mobile" class="text-gray-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400 focus:outline-none transition-colors">
+                        <i id="theme-icon-mobile" class="fa-solid fa-moon text-xl icon-spin-transition"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/60 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="mobile-menu" class="fixed top-0 right-0 z-[60] w-72 h-full bg-white dark:bg-darkCard shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col">
+        <div class="px-6 h-20 flex justify-between items-center border-b border-gray-100 dark:border-gray-800">
+            <span class="font-bold text-xl text-gray-900 dark:text-white">Menu</span>
+            <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-red-500 transition-colors p-2">
+                <i class="fa-solid fa-xmark text-2xl"></i>
+            </button>
+        </div>
+        <div class="flex-grow px-6 py-8 space-y-6 overflow-y-auto">
+            <a href="index.html" class="block text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">Beranda</a>
+            
+            <div>
+                <p class="text-lg font-medium text-gray-700 dark:text-gray-200 mb-3">Kelas Premium</p>
+                <div class="space-y-3 pl-4 border-l-2 border-gray-100 dark:border-gray-800">
+                    <a href="detail.html?modul=linux" class="block text-gray-600 dark:text-gray-400 hover:text-primary">Linux Administration</a>
+                    <a href="detail.html?modul=cloud" class="block text-gray-600 dark:text-gray-400 hover:text-primary">Cloud Workspace</a>
+                    <a href="detail.html?modul=digitalmarketing" class="block text-gray-600 dark:text-gray-400 hover:text-primary">Digital Marketing</a>
+                </div>
+            </div>
+
+            <a href="index.html#contact-section" class="block text-lg font-medium text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">Hubungi Kami</a>
+            
+            <div class="pt-6 border-t border-gray-100 dark:border-gray-800 mt-auto">
+                <a href="login.html" class="block w-full text-center py-3.5 rounded-full text-white bg-primary font-semibold hover:bg-primaryHover transition-colors">
+                    Masuk Kelas
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <main class="flex-grow py-12 md:py-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <a href="kelas-list.html" class="group inline-flex items-center gap-2.5 px-5 py-2.5 mb-8 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-full hover:bg-primary/5 hover:text-primary hover:border-primary/20 dark:bg-darkCard dark:text-gray-300 dark:border-gray-700 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 dark:hover:border-blue-800/50 transition-all shadow-sm hover:shadow-md">
+                <i class="fa-solid fa-arrow-left text-xs group-hover:-translate-x-1 transition-transform"></i> Kembali ke Katalog Kelas
+            </a>
+
+            <div data-aos="fade-up" class="bg-white dark:bg-darkCard rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden mb-12">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 dark:bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="flex flex-col md:flex-row gap-8 items-start">
+                        <div id="detail-icon-container" class="w-24 h-24 shrink-0 rounded-2xl flex items-center justify-center shadow-inner relative z-10">
+                            </div>
+                        
+                        <div class="flex-grow">
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-blue-100 dark:border-blue-800">Premium Course</span>
+                                <span class="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide border border-green-100 dark:border-green-800" id="detail-level">Pemula - Menengah</span>
+                            </div>
+                            <h1 id="detail-title" class="text-3xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">Memuat Judul...</h1>
+                            <p id="detail-desc" class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed max-w-3xl">
+                                Mohon tunggu sebentar, sedang menyiapkan data kelas...
+                            </p>
+
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <a id="btn-enroll-checkout" href="#" target="_blank" class="px-8 py-3.5 bg-primary text-white font-semibold rounded-full hover:bg-primaryHover transition-all flex items-center justify-center shadow-lg shadow-primary/30 text-center">
+                                    <i class="fa-solid fa-cart-shopping mr-2"></i> Daftar Kelas Sekarang
+                                </a>
+                                <a id="btn-login-kelas" href="login.html" class="px-8 py-3.5 bg-white dark:bg-darkBg text-gray-700 dark:text-gray-200 font-semibold rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border border-gray-200 dark:border-gray-700 flex items-center justify-center text-center shadow-sm">
+                                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Sudah Punya Akses?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div data-aos="fade-up" data-aos-delay="100" class="bg-white dark:bg-darkCard rounded-3xl p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-sm">
+                <div class="mb-8 border-b border-gray-100 dark:border-gray-800 pb-6">
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Kurikulum & Materi</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2">Daftar bab yang akan Anda pelajari dan praktikkan secara langsung.</p>
+                </div>
+                
+                <div class="space-y-4" id="detail-syllabus">
+                    </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-darkCard pt-16 pb-8 border-t border-gray-100 dark:border-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center mr-2">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <span class="font-extrabold text-xl text-gray-900 dark:text-white">Neokademi</span>
+                    </div>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm mb-6">
+                        Platform edukasi teknologi yang berfokus pada kurikulum industri nyata untuk mempersiapkan talenta digital terbaik.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white transition-colors"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Kelas Kami</h4>
+                    <ul class="space-y-3 text-sm text-gray-500 dark:text-gray-400">
+                        <li><a href="detail.html?modul=linux" class="hover:text-primary transition-colors">Linux Administration</a></li>
+                        <li><a href="detail.html?modul=cloud" class="hover:text-primary transition-colors">Cloud Workspace</a></li>
+                        <li><a href="detail.html?modul=digitalmarketing" class="hover:text-primary transition-colors">Digital Marketing</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">Perusahaan</h4>
+                    <ul class="space-y-3 text-sm text-gray-500 dark:text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">Tentang Kami</a></li>
+                        <li><a href="index.html#contact-section" class="hover:text-primary transition-colors">Hubungi Kami</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Syarat & Ketentuan</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-100 dark:border-gray-800 pt-8 text-center md:flex md:justify-between md:items-center">
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
+                    &copy; <span id="year"></span> Neokademi. All rights reserved.
+                </p>
+                <p class="text-gray-400 text-xs mt-2 md:mt-0">
+                    Made with <i class="fa-solid fa-heart text-red-500 mx-1"></i> in Indonesia
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20konsultasi%20mengenai%20kelas" target="_blank" class="wa-float fixed bottom-6 right-6 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:bg-[#1ebe57] hover:scale-110 transition-all group">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Init Animasi Scroll
+        AOS.init({ once: true, offset: 50, duration: 800 });
+
+        // Set Tahun Footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Dark Mode Logic ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeToggleBtnMobile = document.getElementById('theme-toggle-mobile');
+        const themeIconMobile = document.getElementById('theme-icon-mobile');
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            updateIcons('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            updateIcons('light');
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                updateIcons('light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                updateIcons('dark');
+            }
+        }
+
+        function updateIcons(theme) {
+            const iconClassNew = theme === 'dark' ? 'fa-sun' : 'fa-moon';
+            const iconClassOld = theme === 'dark' ? 'fa-moon' : 'fa-sun';
+            
+            themeIcon.classList.add('rotate-180');
+            themeIconMobile.classList.add('rotate-180');
+            
+            setTimeout(() => {
+                themeIcon.classList.replace(iconClassOld, iconClassNew);
+                themeIconMobile.classList.replace(iconClassOld, iconClassNew);
+                themeIcon.classList.remove('rotate-180');
+                themeIconMobile.classList.remove('rotate-180');
+            }, 150);
+        }
+
+        themeToggleBtn.addEventListener('click', toggleTheme);
+        themeToggleBtnMobile.addEventListener('click', toggleTheme);
+
+        // --- Mobile Menu Logic ---
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBackdrop = document.getElementById('mobile-menu-backdrop');
+        let isMobileMenuOpen = false;
+
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            if (isMobileMenuOpen) {
+                mobileBackdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileBackdrop.classList.remove('opacity-0');
+                    mobileBackdrop.classList.add('opacity-100');
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileBackdrop.classList.remove('opacity-100');
+                mobileBackdrop.classList.add('opacity-0');
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                setTimeout(() => { mobileBackdrop.classList.add('hidden'); }, 300);
+                document.body.style.overflow = '';
+            }
+        }
+
+        // --- Data Modul Terlengkap (Format Diperbarui) ---
+        const modulData = {
+            linux: {
+                title: "Linux System Administration",
+                level: "Pemula - Menengah",
+                desc: "Kuasai fondasi sistem operasi open-source, manajemen server, security, dan bash scripting dari dasar hingga mahir. Sangat cocok untuk Anda yang ingin berkarir sebagai System Administrator atau Cloud Engineer.",
+                iconHtml: `<img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" alt="Linux Penguin" class="h-16 animate-float z-10">`,
+                iconBgClass: "bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800",
+                checkoutLink: "https://lynk.id/drawhen02/6k3o6e37q11q",
+                syllabus: [
+                    "Bab 1: Instalasi & Pemahaman Hierarki Direktori Linux",
+                    "Bab 2: Manajemen User, Group, dan Hak Akses (File Permission)",
+                    "Bab 3: Manajemen Paket & Repository (APT/YUM)",
+                    "Bab 4: Konfigurasi Jaringan & SSH Server",
+                    "Bab 5: Monitoring Sistem & Manajemen Proses",
+                    "Bab 6: Instalasi Web Server (Nginx/Apache) & Database",
+                    "Bab 7: Dasar-dasar Bash Scripting"
+                ]
+            },
+            cloud: {
+                title: "Cloud Modern Workspace",
+                level: "Menengah",
+                desc: "Pelajari cara mengimplementasi dan mengelola ekosistem digital perusahaan modern secara aman dan efisien menggunakan layanan cloud ternama seperti Microsoft 365 dan Google Workspace (G-Suite).",
+                iconHtml: `<i class="fa-solid fa-cloud text-5xl text-blue-500 animate-float z-10"></i>`,
+                iconBgClass: "bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800",
+                checkoutLink: "MASUKKAN_LINK_CHECKOUT_CLOUD", 
+                syllabus: [
+                    "Bab 1: Konsep Dasar Modern Workspace & Cloud Computing",
+                    "Bab 2: Setup Tenant & Verifikasi Domain Perusahaan",
+                    "Bab 3: Pembuatan & Manajemen User, Grup, serta Lisensi",
+                    "Bab 4: Konfigurasi Exchange Online, Keamanan Email & Anti-Spam",
+                    "Bab 5: Kolaborasi Tim Menggunakan SharePoint & OneDrive",
+                    "Bab 6: Dasar-dasar Manajemen Perangkat (MDM/Intune)",
+                    "Bab 7: Keamanan Identitas (MFA & Conditional Access)"
+                ]
+            },
+            digitalmarketing: {
+                title: "Digital Marketing Mastery",
+                level: "Pemula",
+                desc: "Melejitkan omset bisnis dan jenjang karir Anda dengan mempelajari strategi komprehensif mulai dari Social Media Ads, Search Engine Optimization (SEO), hingga analitik dan optimasi tingkat konversi.",
+                iconHtml: `<i class="fa-solid fa-bullhorn text-5xl text-rose-500 animate-float z-10"></i>`,
+                iconBgClass: "bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800",
+                checkoutLink: "MASUKKAN_LINK_CHECKOUT_DM",
+                syllabus: [
+                    "Bab 1: Fundamental Digital Marketing & Customer Journey",
+                    "Bab 2: Riset Audiens & Pembuatan Buyer Persona",
+                    "Bab 3: Social Media Management & Content Strategy",
+                    "Bab 4: Eksekusi Facebook & Instagram Ads Dasar",
+                    "Bab 5: Pengantar Google Ads & Search Engine Marketing (SEM)",
+                    "Bab 6: Dasar-dasar SEO (On-page & Off-page Optimization)",
+                    "Bab 7: Web Analytics, Pelacakan Data & Evaluasi Kampanye"
+                ]
+            }
+        };
+
+       // Ambil parameter modul dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const modulKey = urlParams.get('modul');
+        const data = modulData[modulKey];
+
+        // Redirect jika modul tidak valid/kosong
+        if (!data) {
+            window.location.href = 'index.html#kelas-section';
+        } else {
+            // Render UI
+            document.title = data.title + " | Neokademi";
+            document.getElementById('detail-title').textContent = data.title;
+            document.getElementById('detail-desc').textContent = data.desc;
+            document.getElementById('detail-level').textContent = data.level;
+            
+            // Insert Icon or Image HTML
+            const iconContainer = document.getElementById('detail-icon-container');
+            iconContainer.className = `w-24 h-24 shrink-0 rounded-2xl flex items-center justify-center shadow-inner relative z-10 ${data.iconBgClass}`;
+            iconContainer.innerHTML = data.iconHtml;
+            
+            // Link Checkout (Beli Kelas)
+            document.getElementById('btn-enroll-checkout').href = data.checkoutLink;
+
+            // --- INI BARIS YANG HARUS DITAMBAHKAN ---
+            // Ini agar tombol "Sudah punya akses" membawa informasi modul ke halaman login
+            document.getElementById('btn-login-kelas').href = 'login.html?modul=' + modulKey;
+            // ----------------------------------------
+
+            const syllabusContainer = document.getElementById('detail-syllabus');
+            data.syllabus.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center p-5 bg-gray-50 dark:bg-darkBg rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-primary/30 dark:hover:border-primary/30 transition-colors group";
+                div.innerHTML = `
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white dark:bg-darkCard shadow-sm flex items-center justify-center font-bold text-gray-500 dark:text-gray-400 group-hover:text-primary group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 transition-colors">
+                        ${index + 1}
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <p class="text-base font-semibold text-gray-800 dark:text-gray-200">${item}</p>
+                    </div>
+                    <div class="flex-shrink-0 text-gray-300 dark:text-gray-600">
+                        <i class="fa-solid fa-play text-sm"></i>
+                    </div>
+                `;
+                syllabusContainer.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
