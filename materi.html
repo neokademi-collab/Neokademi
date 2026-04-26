@@ -50,17 +50,10 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
         
-        .active-chapter { 
-            border-left-width: 4px; 
-            border-color: #0ea5e9; 
-            background-color: #f0f9ff; 
-        }
+        .active-chapter { border-left-width: 4px; border-color: #0ea5e9; background-color: #f0f9ff; }
         .dark .active-chapter { background-color: #0c4a6e; }
 
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-content { animation: fade-in-up 0.5s ease-out forwards; }
         .sidebar-transition { transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
@@ -133,9 +126,7 @@
                                 Video Materi
                             </span>
                         </div>
-                        
                         <h1 id="chapter-title" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">Memuat Materi...</h1>
-                        
                         <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-4">
                         </div>
                     </div>
@@ -155,8 +146,7 @@
                                 <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/20" id="quiz-progress-badge">Soal 1/15</span>
                             </div>
                             <h3 id="question-text" class="text-xl font-bold text-gray-900 dark:text-white mb-6">Pertanyaan dimuat...</h3>
-                            <div id="options-container" class="space-y-3">
-                                </div>
+                            <div id="options-container" class="space-y-3"></div>
                             <div class="mt-8 flex justify-end">
                                 <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-6 py-3 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold rounded-xl transition-all cursor-not-allowed">Lanjut <i class="fa-solid fa-arrow-right ml-2"></i></button>
                             </div>
@@ -165,8 +155,9 @@
                         <div id="quiz-result" class="hidden text-center py-8">
                             <div id="result-icon" class="text-6xl mb-4"></div>
                             <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Quiz Selesai!</h2>
-                            <p class="text-gray-600 dark:text-gray-400 mb-6">Nilai Akhir Anda:</p>
-                            <div class="text-5xl font-black text-primary mb-8" id="result-score">100</div>
+                            <p class="text-gray-600 dark:text-gray-400 mb-2">Nilai Akhir Anda:</p>
+                            <div class="text-5xl font-black text-primary mb-2" id="result-score">100</div>
+                            <p class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-6 bg-gray-100 dark:bg-gray-800 inline-block px-4 py-1.5 rounded-lg" id="result-detail">Benar X dari Y soal</p>
                             <p class="text-sm text-gray-500 mb-8" id="result-msg"></p>
                             <button onclick="window.location.reload()" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Kembali ke Modul</button>
                         </div>
@@ -178,78 +169,52 @@
     </div>
 
     <script>
-        // --- KONFIGURASI BACKEND GAS ---
+        // --- PENTING! GANTI DENGAN URL DEPLOY TERBARU ANDA ---
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzdDAd3kQKSFPgDHInPkoWcde75lx-Uhd8Qa7ANsECp-dlIKL5qQ3ov4oMy2m-cuU9p/exec';
 
-        // --- Data Materi Terstruktur ---
         const courseData = {
             "linux": {
                 courseName: "Linux System Administration",
                 chapters: [
-                    { 
-                        id: 1, title: "Bab 1: Instalasi & Pemahaman Hierarki Direktori Linux", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", 
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Selamat datang di modul pertama! Di sini kita akan meletakkan fondasi kuat tentang apa itu Linux dan bagaimana ia bekerja di belakang layar server-server raksasa dunia.</p><h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">1. Struktur Direktori Utama (Root)</h3><ul class="list-disc pl-5 mt-3 space-y-2"><li><code>/bin</code> : Berisi perintah dasar sistem.</li><li><code>/etc</code> : Pusat kendali konfigurasi.</li><li><code>/home</code> : Direktori tempat tinggal user biasa.</li><li><code>/var</code> : Menyimpan data log dan database.</li></ul>` 
-                    },
-                    { 
-                        id: 2, title: "Bab 2: Manajemen User, Group, dan Hak Akses (File Permission)", video: "https://www.youtube.com/embed/rrB13utjYV4", 
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Keamanan adalah prioritas absolut di server Linux. Kita harus mengontrol siapa saja yang boleh masuk dan apa yang boleh mereka modifikasi.</p><h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">Logika File Permission</h3><p>Setiap file memiliki 3 jenis izin (Read=4, Write=2, Execute=1).<br><code class="bg-gray-900 text-gray-100 p-1 rounded mt-2 inline-block">chmod 755 script.sh</code></p>` 
-                    },
-                    { 
-                        id: 3, title: "Bab 3: Manajemen Paket & Repository (APT/YUM)", video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Di Linux, instalasi aplikasi menggunakan Package Manager via Terminal.</p><h3 class="text-xl font-bold mt-8 mb-3 text-gray-900 dark:text-white border-b pb-2 dark:border-gray-700">Perintah Dasar</h3><div class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm mt-3 space-y-3"><div><span class="text-green-400"># Instal aplikasi:</span><br>sudo apt install curl -y</div></div>` 
-                    },
-                    { 
-                        id: 4, title: "Bab 4: Konfigurasi Jaringan & SSH Server", video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Server Anda membutuhkan koneksi ke internet, dan Anda membutuhkan cara untuk me-remote server tersebut.</p><p class="mt-4">SSH menggunakan port default <strong>22</strong>.</p>` 
-                    },
-                    { 
-                        id: 5, title: "Bab 5: Monitoring Sistem & Manajemen Proses", video: "https://www.youtube.com/embed/jBzwzrDvZ18",
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Gunakan perintah <code>top</code> atau <code>htop</code> untuk melihat proses mana yang memakan CPU tinggi.</p>` 
-                    },
-                    { 
-                        id: 6, title: "Bab 6: Instalasi Web Server (Nginx/Apache) & Database", video: "https://www.youtube.com/embed/jBzwzrDvZ18",
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Kita akan menggunakan Nginx dan mengelolanya dengan Systemctl.</p>` 
-                    },
-                    { 
-                        id: 7, title: "Bab 7: Dasar-dasar Bash Scripting", video: "https://www.youtube.com/embed/jBzwzrDvZ18",
-                        desc: `<p class="text-lg font-medium text-gray-800 dark:text-gray-200">Otomatiskan perintah dengan file berakhiran <code>.sh</code>.</p>` 
-                    }
+                    { id: 1, title: "Bab 1: Instalasi & Pemahaman Direktori Dasar", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", desc: `<p>Materi pondasi struktur Linux.</p>` },
+                    { id: 2, title: "Bab 2: Manajemen User, Group & Permission", video: "https://www.youtube.com/embed/rrB13utjYV4", desc: `<p>Keamanan server Linux dan Hak Akses.</p>` },
+                    { id: 3, title: "Bab 3: Manajemen Paket & Repository", video: "https://www.youtube.com/embed/v_1zbOUXYzI", desc: `<p>Instalasi via Terminal APT/YUM.</p>` },
+                    { id: 4, title: "Bab 4: Konfigurasi Jaringan & SSH Server", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Koneksi & Remote Server.</p>` },
+                    { id: 5, title: "Bab 5: Monitoring Sistem & Manajemen Proses", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Diagnosis server (top, htop, kill).</p>` },
+                    { id: 6, title: "Bab 6: Instalasi Web Server & Database", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Nginx & Systemctl.</p>` },
+                    { id: 7, title: "Bab 7: Dasar-dasar Bash Scripting", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Otomatisasi skrip Bash.</p>` }
                 ]
             }
         };
 
-        // --- Data Quiz (15 Soal) ---
         const quizData = [
             { q: "Apa direktori utama tertinggi pada struktur file Linux?", options: ["/home", "/root", "/", "/bin"], ans: 2 },
             { q: "Perintah apa yang digunakan untuk menampilkan daftar isi direktori?", options: ["cd", "ls", "pwd", "mkdir"], ans: 1 },
-            { q: "Angka berapa yang merepresentasikan hak akses penuh (Read, Write, Execute)?", options: ["5", "6", "7", "4"], ans: 2 },
-            { q: "Paket manager bawaan pada OS keluarga Debian (seperti Ubuntu) adalah?", options: ["yum", "dnf", "apt", "pacman"], ans: 2 },
-            { q: "Port default yang digunakan oleh layanan SSH adalah?", options: ["21", "22", "80", "443"], ans: 1 },
-            { q: "Bagaimana cara mengecek sisa ruang penyimpanan (storage) yang dapat dibaca manusia?", options: ["df -h", "free -m", "ls -la", "top"], ans: 0 },
-            { q: "Perintah untuk mematikan paksa (kill) sebuah proses dengan PID 1234 adalah?", options: ["stop 1234", "kill -9 1234", "end 1234", "systemctl kill 1234"], ans: 1 },
-            { q: "Manakah di bawah ini yang merupakan Web Server yang populer menangani koneksi tinggi dengan resource rendah?", options: ["MySQL", "Apache", "Nginx", "Postfix"], ans: 2 },
-            { q: "Perintah untuk menjalankan service Nginx agar otomatis aktif saat server restart adalah?", options: ["systemctl start nginx", "systemctl enable nginx", "systemctl status nginx", "service nginx restart"], ans: 1 },
-            { q: "Setiap file bash script wajib diawali dengan penanda yang disebut?", options: ["Header", "Shebang (#!/bin/bash)", "Compiler", "Root"], ans: 1 },
-            { q: "Apa direktori yang biasanya menyimpan file konfigurasi sistem dan aplikasi di Linux?", options: ["/var", "/home", "/etc", "/opt"], ans: 2 },
-            { q: "Untuk pindah ke direktori lain, perintah yang digunakan adalah?", options: ["move", "cd", "ls", "pwd"], ans: 1 },
-            { q: "Izin file (permission) 'Read' direpresentasikan dengan angka?", options: ["1", "2", "3", "4"], ans: 3 },
-            { q: "Perintah untuk melihat direktori kita berada saat ini adalah?", options: ["ls", "where", "pwd", "cd"], ans: 2 },
-            { q: "Untuk memberikan hak eksekusi pada sebuah bash script (contoh: script.sh), digunakan perintah?", options: ["chmod +x script.sh", "chown script.sh", "execute script.sh", "run script.sh"], ans: 0 }
+            { q: "Angka berapa yang merepresentasikan hak akses penuh?", options: ["5", "6", "7", "4"], ans: 2 },
+            { q: "Paket manager bawaan pada keluarga Debian adalah?", options: ["yum", "dnf", "apt", "pacman"], ans: 2 },
+            { q: "Port default yang digunakan oleh SSH adalah?", options: ["21", "22", "80", "443"], ans: 1 },
+            { q: "Bagaimana cara mengecek sisa storage yang dapat dibaca manusia?", options: ["df -h", "free -m", "ls -la", "top"], ans: 0 },
+            { q: "Perintah untuk mematikan paksa proses ber-PID 1234 adalah?", options: ["stop 1234", "kill -9 1234", "end 1234", "systemctl kill"], ans: 1 },
+            { q: "Web Server yang menangani koneksi tinggi dengan RAM rendah?", options: ["MySQL", "Apache", "Nginx", "Postfix"], ans: 2 },
+            { q: "Agar service Nginx otomatis aktif saat server restart?", options: ["systemctl start", "systemctl enable nginx", "systemctl status", "service restart"], ans: 1 },
+            { q: "Setiap file bash script wajib diawali dengan penanda?", options: ["Header", "Shebang (#!/bin/bash)", "Compiler", "Root"], ans: 1 },
+            { q: "Direktori penyimpanan file konfigurasi Linux?", options: ["/var", "/home", "/etc", "/opt"], ans: 2 },
+            { q: "Perintah pindah direktori?", options: ["move", "cd", "ls", "pwd"], ans: 1 },
+            { q: "Izin 'Read' direpresentasikan angka?", options: ["1", "2", "3", "4"], ans: 3 },
+            { q: "Melihat lokasi direktori aktif saat ini?", options: ["ls", "where", "pwd", "cd"], ans: 2 },
+            { q: "Memberikan hak eksekusi script.sh?", options: ["chmod +x script.sh", "chown script", "execute script", "run script"], ans: 0 }
         ];
 
-        // --- Variabel Global ---
         let currentCourse = "linux";
         let activeData = courseData[currentCourse];
         let currentChapterId = null;
         let completedChapters = [];
         let userEmail = "";
         
-        // State Kuis
         let currentQuizIndex = 0;
         let quizScore = 0;
         let selectedOption = null;
 
-        // --- Inisialisasi dari Database GAS ---
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
             if(rawUserData) {
@@ -258,17 +223,28 @@
                 document.getElementById('user-greeting').textContent = `Halo, ${userEmail.split('@')[0]}`;
                 
                 try {
-                    // Fetch progress terbaru dari Database Google Sheets berdasarkan Email
-                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`);
+                    // Penambahan Parameter Request yang Strict agar browser tidak menge-cache
+                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`, {
+                        method: 'GET',
+                        redirect: 'follow', 
+                        cache: 'no-cache'
+                    });
                     const result = await response.json();
                     
-                    if(result.status === 'success') {
-                        if(result.progress) {
-                            completedChapters = result.progress.split(',').map(Number);
+                    if(result.status === 'success' && result.progress) {
+                        completedChapters = result.progress.split(',').map(Number);
+                        localStorage.setItem('neokademi_progress', JSON.stringify(completedChapters));
+                    } else {
+                        // Fitur Auto-Healing: Jika DB kosong tapi browser punya memori, timpa database dengan memori browser
+                        let localProgress = JSON.parse(localStorage.getItem('neokademi_progress')) || [];
+                        if (localProgress.length > 0) {
+                            completedChapters = localProgress;
+                            fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(localProgress.join(','))}`, { method: 'GET', redirect: 'follow', cache: 'no-cache' });
                         }
                     }
                 } catch(err) {
-                    console.error("Gagal sinkron data, menggunakan cache lokal.");
+                    console.error("Gagal sinkron, fallback ke local storage.");
+                    completedChapters = JSON.parse(localStorage.getItem('neokademi_progress')) || [];
                 }
             }
 
@@ -278,22 +254,19 @@
 
             renderSidebar();
             
-            // Auto load chapter pertama yg blm selesai atau chapter pertama jika nol
             const lastCompletedIndex = completedChapters.length;
             if(lastCompletedIndex < activeData.chapters.length) {
-                loadChapter(activeData.chapters[lastCompletedIndex].id);
+                loadChapter(activeData.chapters[lastCompletedIndex] ? activeData.chapters[lastCompletedIndex].id : activeData.chapters[0].id);
             } else {
                 loadChapter(activeData.chapters[activeData.chapters.length - 1].id);
             }
         }
 
-        // --- Render Sidebar & Navigasi Kuis ---
         function renderSidebar() {
             const chapterListEl = document.getElementById('chapter-list');
             chapterListEl.innerHTML = ''; 
             
-            // List Bab
-            activeData.chapters.forEach((chap, index) => {
+            activeData.chapters.forEach((chap) => {
                 const isCompleted = completedChapters.includes(chap.id);
                 const isActive = currentChapterId === chap.id;
                 const iconHtml = isCompleted 
@@ -313,7 +286,6 @@
                 chapterListEl.appendChild(btn);
             });
 
-            // Menu Quiz (di Bawah)
             const allCompleted = completedChapters.length >= activeData.chapters.length;
             const quizBtn = document.createElement('button');
             
@@ -335,21 +307,17 @@
                 `;
             }
             chapterListEl.appendChild(quizBtn);
-
             updateProgressBar();
         }
 
-        // --- Update Progress Bar ---
         function updateProgressBar() {
             const total = activeData.chapters.length;
             const completedCount = completedChapters.length;
             const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
-
             document.getElementById('progress-bar-fill').style.width = percent + '%';
             document.getElementById('progress-text').textContent = percent + '%';
         }
 
-        // --- Load Konten Bab Secara Dinamis ---
         function loadChapter(chapterId) {
             currentChapterId = chapterId;
             document.getElementById('quiz-container').classList.add('hidden');
@@ -366,7 +334,6 @@
             document.getElementById('video-player').src = chapter.video;
             document.getElementById('chapter-title').textContent = chapter.title;
             
-            // Render HTML Deskripsi + Tombol Tandai Selesai di Kanan Bawah
             const isCompleted = completedChapters.includes(chapterId);
             let btnHtml = isCompleted ?
                 `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed">
@@ -382,17 +349,11 @@
                 </div>`;
 
             renderSidebar();
-
-            if (window.innerWidth < 768 && isMobileSidebarOpen) {
-                toggleMobileSidebar();
-            }
+            if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
         }
 
-        // --- Fungsi Tandai Selesai (Update GAS) ---
         async function markCurrentAsDone() {
             if (currentChapterId && !completedChapters.includes(currentChapterId)) {
-                
-                // Ubah UI tombol jadi loading
                 const btnDone = document.getElementById('btn-mark-done');
                 btnDone.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-xl mr-2"></i> Menyimpan...`;
                 btnDone.disabled = true;
@@ -400,17 +361,23 @@
                 
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
+                
+                // Backup ke Local Storage agar progress tidak hilang jika server lambat
+                localStorage.setItem('neokademi_progress', JSON.stringify(completedChapters));
 
                 try {
-                    // Update ke Google Sheets
-                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`);
+                    // Update ke Google Sheets menggunakan pengamanan Caching
+                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`, {
+                        method: 'GET',
+                        redirect: 'follow',
+                        cache: 'no-cache'
+                    });
                 } catch(e) {
-                    console.error("Gagal simpan ke server, tapi UI tetap dilanjutkan");
+                    console.error("Sinkronisasi latar belakang tertunda.");
                 }
 
                 loadChapter(currentChapterId); 
                 
-                // Jika materi habis, trigger notifikasi kuis
                 if(completedChapters.length >= activeData.chapters.length) {
                     setTimeout(() => {
                         if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) {
@@ -421,10 +388,9 @@
             }
         }
 
-        // --- SISTEM QUIZ ---
         function openQuizPage() {
-            currentChapterId = null; // Unselect chapter
-            document.getElementById('video-player').src = ""; // Stop video
+            currentChapterId = null; 
+            document.getElementById('video-player').src = ""; 
             document.getElementById('content-container').classList.add('hidden');
             
             const quizContainer = document.getElementById('quiz-container');
@@ -497,7 +463,6 @@
         }
 
         async function nextQuestion() {
-            // Hitung skor
             if(selectedOption === quizData[currentQuizIndex].ans) {
                 quizScore++;
             }
@@ -506,7 +471,6 @@
                 currentQuizIndex++;
                 renderQuestion();
             } else {
-                // Kalkulasi nilai 0-100
                 const finalScore = Math.round((quizScore / quizData.length) * 100);
                 
                 document.getElementById('quiz-area').classList.add('hidden');
@@ -515,9 +479,13 @@
                 loader.classList.remove('hidden', 'opacity-0');
 
                 try {
-                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`);
+                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`, {
+                        method: 'GET',
+                        redirect: 'follow',
+                        cache: 'no-cache'
+                    });
                 } catch(e) {
-                    console.error("Gagal save skor kuis.");
+                    console.error("Gagal koneksi ke server saat save skor kuis.");
                 }
 
                 loader.classList.add('hidden');
@@ -528,25 +496,28 @@
         function showQuizResult(score) {
             document.getElementById('quiz-result').classList.remove('hidden');
             document.getElementById('result-score').textContent = score;
+            
+            // Bar metrik jawaban (Benar X dari Y)
+            document.getElementById('result-detail').textContent = `Benar ${quizScore} dari ${quizData.length} soal`;
+
             const iconEl = document.getElementById('result-icon');
             const msgEl = document.getElementById('result-msg');
 
             if(score >= 80) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
                 msgEl.textContent = "Luar Biasa! Anda telah menguasai fundamental dengan sangat baik.";
-                document.getElementById('result-score').className = "text-5xl font-black text-green-500 mb-8";
+                document.getElementById('result-score').className = "text-5xl font-black text-green-500 mb-2";
             } else if (score >= 60) {
                 iconEl.innerHTML = `<i class="fa-solid fa-thumbs-up text-blue-500"></i>`;
                 msgEl.textContent = "Cukup bagus. Anda bisa mengulang materi jika ingin memperbaiki nilai.";
-                document.getElementById('result-score').className = "text-5xl font-black text-blue-500 mb-8";
+                document.getElementById('result-score').className = "text-5xl font-black text-blue-500 mb-2";
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i>`;
                 msgEl.textContent = "Jangan menyerah! Silakan pelajari ulang materi video dengan lebih teliti.";
-                document.getElementById('result-score').className = "text-5xl font-black text-red-500 mb-8";
+                document.getElementById('result-score').className = "text-5xl font-black text-red-500 mb-2";
             }
         }
 
-        // --- Logic Logout ---
         function logout() {
             if(confirm("Keluar dari Workspace? Progres dan nilai akan tetap tersimpan di server.")) {
                 localStorage.removeItem('neokademi_user');
@@ -554,7 +525,6 @@
             }
         }
 
-        // --- Logic Dark Mode ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
         const htmlElement = document.documentElement;
@@ -577,7 +547,6 @@
             }
         });
 
-        // --- Logic Buka/Tutup Sidebar ---
         const sidebar = document.getElementById('sidebar');
         const sidebarBackdrop = document.getElementById('sidebar-backdrop');
         const desktopToggleIcon = document.getElementById('desktop-toggle-icon');
@@ -610,7 +579,6 @@
             }
         }
 
-        // --- INIT SAAT HALAMAN DIMUAT ---
         window.addEventListener('DOMContentLoaded', initializeData);
 
     </script>
