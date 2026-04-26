@@ -6,7 +6,6 @@
     <title>Materi E-Course | Neokademi</title>
     
     <script>
-        // Proteksi Sesi
         (function() {
             const rawData = localStorage.getItem('neokademi_user');
             if (!rawData) {
@@ -16,7 +15,7 @@
                 const now = new Date().getTime();
                 if (!session.isLoggedIn || !session.expiry || now > session.expiry) {
                     localStorage.removeItem('neokademi_user');
-                    alert("Sesi Anda telah berakhir (3 jam). Silakan login kembali untuk melanjutkan.");
+                    alert("Sesi Anda telah berakhir. Silakan login kembali.");
                     window.location.replace('login.html');
                 }
             }
@@ -30,30 +29,19 @@
         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: {
-                    colors: {
-                        primary: '#0ea5e9',
-                        primaryHover: '#0284c7',
-                        darkBg: '#0f172a',
-                        darkCard: '#1e293b',
-                        darkSidebar: '#111827'
-                    }
-                }
+                extend: { colors: { primary: '#0ea5e9', primaryHover: '#0284c7', darkBg: '#0f172a', darkCard: '#1e293b', darkSidebar: '#111827' } }
             }
         }
     </script>
     <style>
         html { scroll-behavior: smooth; }
         body { transition: background-color 0.3s, color 0.3s; }
-        
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
-        
         .active-chapter { border-left-width: 4px; border-color: #0ea5e9; background-color: #f0f9ff; }
         .dark .active-chapter { background-color: #0c4a6e; }
-
         @keyframes fade-in-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-content { animation: fade-in-up 0.5s ease-out forwards; }
         .sidebar-transition { transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; }
@@ -108,9 +96,7 @@
                     <div id="progress-bar-fill" class="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
                 </div>
             </div>
-            
-            <div class="flex-1 overflow-y-auto py-2 flex flex-col" id="chapter-list">
-                </div>
+            <div class="flex-1 overflow-y-auto py-2 flex flex-col" id="chapter-list"></div>
         </aside>
 
         <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-darkBg p-4 sm:p-6 lg:p-8 w-full transition-all duration-300">
@@ -123,13 +109,10 @@
 
                     <div class="bg-white dark:bg-darkCard rounded-xl p-6 md:p-8 shadow-sm border border-gray-200 dark:border-gray-800 mb-12">
                         <div class="mb-4">
-                            <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide border border-primary/20">
-                                Video Materi
-                            </span>
+                            <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide border border-primary/20">Video Materi</span>
                         </div>
                         <h1 id="chapter-title" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">Memuat Materi...</h1>
-                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-4">
-                        </div>
+                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-4"></div>
                     </div>
                 </div>
 
@@ -158,9 +141,7 @@
                             <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Quiz Selesai!</h2>
                             <p class="text-gray-600 dark:text-gray-400 mb-2">Nilai Akhir Anda:</p>
                             <div class="text-6xl font-black text-primary mb-6" id="result-score">100</div>
-                            
                             <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-8"></div>
-                            
                             <p class="text-sm text-gray-500 mb-8" id="result-msg"></p>
                             <button onclick="window.location.reload()" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Kembali ke Modul</button>
                         </div>
@@ -215,7 +196,7 @@
         let currentChapterId = null;
         let completedChapters = [];
         let userEmail = "";
-        let progressKey = ""; // Key spesifik per email
+        let progressKey = ""; 
         
         let currentQuizIndex = 0;
         let quizScore = 0;
@@ -226,26 +207,24 @@
             if(rawUserData) {
                 const session = JSON.parse(rawUserData);
                 userEmail = session.email;
-                progressKey = 'neokademi_progress_' + userEmail; // Kunci unik per user!
+                progressKey = 'neokademi_progress_' + userEmail; 
                 document.getElementById('user-greeting').textContent = `Halo, ${userEmail.split('@')[0]}`;
                 
                 try {
-                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`);
+                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`, { cache: 'no-cache' });
                     const result = await response.json();
                     
                     if(result.status === 'success' && result.progress) {
                         completedChapters = result.progress.split(',').map(Number);
                         localStorage.setItem(progressKey, JSON.stringify(completedChapters));
                     } else {
-                        // Jika DB kosong, ambil dari local key akun ini
+                        // Ambil cache lokal user ini
                         completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
                         if (completedChapters.length > 0) {
-                            // Kirim ulang ke server (Auto Heal)
-                            fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(completedChapters.join(','))}`);
+                            fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(completedChapters.join(','))}`, { mode: 'no-cors' });
                         }
                     }
                 } catch(err) {
-                    console.error("Gagal sinkron, menggunakan data lokal untuk " + userEmail);
                     completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
                 }
             }
@@ -364,13 +343,17 @@
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
                 
-                // Simpan KE KUNCI SPESIFIK EMAIL (Anti-bocor)
+                // BACKUP LOKAL (Tidak akan terhapus saat logout)
                 localStorage.setItem(progressKey, JSON.stringify(completedChapters));
 
                 try {
-                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`);
+                    // PAKSA KIRIM KE GOOGLE (no-cors mengabaikan blokir keamanan browser)
+                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`, {
+                        method: 'GET',
+                        mode: 'no-cors'
+                    });
                 } catch(e) {
-                    console.error("Gagal koneksi ke Excel. Data tersimpan di perangkat lokal.");
+                    console.error("Gagal terkirim, tapi sudah tersimpan di lokal.");
                 }
 
                 loadChapter(currentChapterId); 
@@ -476,10 +459,12 @@
                 loader.classList.remove('hidden', 'opacity-0');
 
                 try {
-                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`);
-                } catch(e) {
-                    console.error("Gagal save skor kuis ke server Excel.");
-                }
+                    // PAKSA KIRIM KE GOOGLE
+                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`, {
+                        method: 'GET',
+                        mode: 'no-cors'
+                    });
+                } catch(e) {}
 
                 loader.classList.add('hidden');
                 showQuizResult(finalScore);
@@ -522,11 +507,12 @@
             }
         }
 
+        // FUNGSI LOGOUT YANG SUDAH DIPERBAIKI
         function logout() {
-            if(confirm("Keluar dari Workspace? Progres dan nilai akan tetap tersimpan di server.")) {
+            if(confirm("Keluar dari Workspace? Progres dan nilai Anda aman!")) {
+                // HANYA HAPUS SESI LOGIN SAJA
                 localStorage.removeItem('neokademi_user');
-                // Hapus cache spesifik user saat logout agar bersih total
-                if(userEmail) localStorage.removeItem('neokademi_progress_' + userEmail);
+                // KITA SENGAJA TIDAK MENGHAPUS LOCALSTORAGE PROGRESS AGAR TIDAK HILANG SAAT KONEKSI BURUK
                 window.location.replace('login.html');
             }
         }
