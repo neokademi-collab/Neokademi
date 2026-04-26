@@ -6,6 +6,7 @@
     <title>Materi E-Course | Neokademi</title>
     
     <script>
+        // Proteksi Sesi
         (function() {
             const rawData = localStorage.getItem('neokademi_user');
             if (!rawData) {
@@ -62,7 +63,7 @@
 
     <div id="global-loader" class="fixed inset-0 bg-white/90 dark:bg-darkBg/90 z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
-        <p class="font-semibold text-gray-700 dark:text-gray-300" id="loader-text">Menyinkronkan Data Akun...</p>
+        <p class="font-semibold text-gray-700 dark:text-gray-300" id="loader-text">Menyinkronkan Data Server...</p>
     </div>
 
     <script>document.getElementById('main-body').classList.remove('hidden');</script>
@@ -156,8 +157,10 @@
                             <div id="result-icon" class="text-6xl mb-4"></div>
                             <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Quiz Selesai!</h2>
                             <p class="text-gray-600 dark:text-gray-400 mb-2">Nilai Akhir Anda:</p>
-                            <div class="text-5xl font-black text-primary mb-2" id="result-score">100</div>
-                            <p class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-6 bg-gray-100 dark:bg-gray-800 inline-block px-4 py-1.5 rounded-lg" id="result-detail">Benar X dari Y soal</p>
+                            <div class="text-6xl font-black text-primary mb-6" id="result-score">100</div>
+                            
+                            <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-8"></div>
+                            
                             <p class="text-sm text-gray-500 mb-8" id="result-msg"></p>
                             <button onclick="window.location.reload()" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Kembali ke Modul</button>
                         </div>
@@ -169,7 +172,9 @@
     </div>
 
     <script>
-        // --- PENTING! GANTI DENGAN URL DEPLOY TERBARU ANDA ---
+        // ==============================================================
+        // 1. GANTI DENGAN URL DEPLOY TERBARU ANDA DI SINI
+        // ==============================================================
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzdDAd3kQKSFPgDHInPkoWcde75lx-Uhd8Qa7ANsECp-dlIKL5qQ3ov4oMy2m-cuU9p/exec';
 
         const courseData = {
@@ -210,6 +215,7 @@
         let currentChapterId = null;
         let completedChapters = [];
         let userEmail = "";
+        let progressKey = ""; // Key spesifik per email
         
         let currentQuizIndex = 0;
         let quizScore = 0;
@@ -220,31 +226,27 @@
             if(rawUserData) {
                 const session = JSON.parse(rawUserData);
                 userEmail = session.email;
+                progressKey = 'neokademi_progress_' + userEmail; // Kunci unik per user!
                 document.getElementById('user-greeting').textContent = `Halo, ${userEmail.split('@')[0]}`;
                 
                 try {
-                    // Penambahan Parameter Request yang Strict agar browser tidak menge-cache
-                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`, {
-                        method: 'GET',
-                        redirect: 'follow', 
-                        cache: 'no-cache'
-                    });
+                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`);
                     const result = await response.json();
                     
                     if(result.status === 'success' && result.progress) {
                         completedChapters = result.progress.split(',').map(Number);
-                        localStorage.setItem('neokademi_progress', JSON.stringify(completedChapters));
+                        localStorage.setItem(progressKey, JSON.stringify(completedChapters));
                     } else {
-                        // Fitur Auto-Healing: Jika DB kosong tapi browser punya memori, timpa database dengan memori browser
-                        let localProgress = JSON.parse(localStorage.getItem('neokademi_progress')) || [];
-                        if (localProgress.length > 0) {
-                            completedChapters = localProgress;
-                            fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(localProgress.join(','))}`, { method: 'GET', redirect: 'follow', cache: 'no-cache' });
+                        // Jika DB kosong, ambil dari local key akun ini
+                        completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
+                        if (completedChapters.length > 0) {
+                            // Kirim ulang ke server (Auto Heal)
+                            fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(completedChapters.join(','))}`);
                         }
                     }
                 } catch(err) {
-                    console.error("Gagal sinkron, fallback ke local storage.");
-                    completedChapters = JSON.parse(localStorage.getItem('neokademi_progress')) || [];
+                    console.error("Gagal sinkron, menggunakan data lokal untuk " + userEmail);
+                    completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
                 }
             }
 
@@ -362,18 +364,13 @@
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
                 
-                // Backup ke Local Storage agar progress tidak hilang jika server lambat
-                localStorage.setItem('neokademi_progress', JSON.stringify(completedChapters));
+                // Simpan KE KUNCI SPESIFIK EMAIL (Anti-bocor)
+                localStorage.setItem(progressKey, JSON.stringify(completedChapters));
 
                 try {
-                    // Update ke Google Sheets menggunakan pengamanan Caching
-                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`, {
-                        method: 'GET',
-                        redirect: 'follow',
-                        cache: 'no-cache'
-                    });
+                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`);
                 } catch(e) {
-                    console.error("Sinkronisasi latar belakang tertunda.");
+                    console.error("Gagal koneksi ke Excel. Data tersimpan di perangkat lokal.");
                 }
 
                 loadChapter(currentChapterId); 
@@ -479,13 +476,9 @@
                 loader.classList.remove('hidden', 'opacity-0');
 
                 try {
-                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`, {
-                        method: 'GET',
-                        redirect: 'follow',
-                        cache: 'no-cache'
-                    });
+                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`);
                 } catch(e) {
-                    console.error("Gagal koneksi ke server saat save skor kuis.");
+                    console.error("Gagal save skor kuis ke server Excel.");
                 }
 
                 loader.classList.add('hidden');
@@ -497,8 +490,19 @@
             document.getElementById('quiz-result').classList.remove('hidden');
             document.getElementById('result-score').textContent = score;
             
-            // Bar metrik jawaban (Benar X dari Y)
-            document.getElementById('result-detail').textContent = `Benar ${quizScore} dari ${quizData.length} soal`;
+            // Render Bar "Benar X dari Y"
+            const percentCorrect = Math.round((quizScore / quizData.length) * 100);
+            const detailContainer = document.getElementById('result-detail-container');
+            detailContainer.innerHTML = `
+                <div class="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 px-2">
+                    <span>${quizScore} Benar</span>
+                    <span>${quizData.length - quizScore} Salah</span>
+                </div>
+                <div class="w-full h-3 bg-red-100 dark:bg-red-900/30 rounded-full overflow-hidden flex">
+                    <div class="bg-green-500 h-full transition-all duration-1000 ease-out" style="width: ${percentCorrect}%"></div>
+                </div>
+                <p class="mt-4 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 inline-block px-4 py-1.5 rounded-lg">Total Benar: ${quizScore} / ${quizData.length} Soal</p>
+            `;
 
             const iconEl = document.getElementById('result-icon');
             const msgEl = document.getElementById('result-msg');
@@ -506,21 +510,23 @@
             if(score >= 80) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
                 msgEl.textContent = "Luar Biasa! Anda telah menguasai fundamental dengan sangat baik.";
-                document.getElementById('result-score').className = "text-5xl font-black text-green-500 mb-2";
+                document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
             } else if (score >= 60) {
                 iconEl.innerHTML = `<i class="fa-solid fa-thumbs-up text-blue-500"></i>`;
                 msgEl.textContent = "Cukup bagus. Anda bisa mengulang materi jika ingin memperbaiki nilai.";
-                document.getElementById('result-score').className = "text-5xl font-black text-blue-500 mb-2";
+                document.getElementById('result-score').className = "text-6xl font-black text-blue-500 mb-6";
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i>`;
                 msgEl.textContent = "Jangan menyerah! Silakan pelajari ulang materi video dengan lebih teliti.";
-                document.getElementById('result-score').className = "text-5xl font-black text-red-500 mb-2";
+                document.getElementById('result-score').className = "text-6xl font-black text-red-500 mb-6";
             }
         }
 
         function logout() {
             if(confirm("Keluar dari Workspace? Progres dan nilai akan tetap tersimpan di server.")) {
                 localStorage.removeItem('neokademi_user');
+                // Hapus cache spesifik user saat logout agar bersih total
+                if(userEmail) localStorage.removeItem('neokademi_progress_' + userEmail);
                 window.location.replace('login.html');
             }
         }
@@ -580,7 +586,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', initializeData);
-
     </script>
 </body>
 </html>
