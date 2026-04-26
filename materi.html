@@ -6,7 +6,6 @@
     <title>Materi E-Course | Neokademi</title>
     
     <script>
-        // Proteksi Sesi Login
         (function() {
             const rawData = localStorage.getItem('neokademi_user');
             if (!rawData) {
@@ -16,7 +15,7 @@
                 const now = new Date().getTime();
                 if (!session.isLoggedIn || !session.expiry || now > session.expiry) {
                     localStorage.removeItem('neokademi_user');
-                    alert("Sesi Anda telah berakhir. Silakan login kembali.");
+                    alert("Sesi Anda telah berakhir (3 jam). Silakan login kembali.");
                     window.location.replace('login.html');
                 }
             }
@@ -29,9 +28,7 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: { colors: { primary: '#0ea5e9', primaryHover: '#0284c7', darkBg: '#0f172a', darkCard: '#1e293b', darkSidebar: '#111827' } }
-            }
+            theme: { extend: { colors: { primary: '#0ea5e9', primaryHover: '#0284c7', darkBg: '#0f172a', darkCard: '#1e293b', darkSidebar: '#111827' } } }
         }
     </script>
     <style>
@@ -59,27 +56,17 @@
 
     <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-gray-800 transition-colors h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
         <div class="flex items-center gap-3">
-            <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-            <button onclick="toggleDesktopSidebar()" class="hidden md:block text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none transition-transform" id="desktop-toggle-icon">
-                <i class="fa-solid fa-bars-staggered text-xl"></i>
-            </button>
-            
+            <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none"><i class="fa-solid fa-bars text-xl"></i></button>
+            <button onclick="toggleDesktopSidebar()" class="hidden md:block text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none transition-transform" id="desktop-toggle-icon"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
             <a href="index.html" class="flex items-center cursor-pointer ml-2 md:ml-0">
                 <img src="assets/img/Neokademi.png" alt="Logo Neokademi" class="w-8 h-8 object-contain mr-2">
                 <span class="font-bold text-lg hidden sm:block text-gray-900 dark:text-white">Neokademi Workspace</span>
             </a>
         </div>
-        
         <div class="flex items-center space-x-4">
             <span class="text-sm text-gray-600 dark:text-gray-400 font-medium hidden sm:block" id="user-greeting">Memuat...</span>
-            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
-                <i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-gray-300"></i>
-            </button>
-            <button onclick="logout()" class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-semibold rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors">
-                <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> Keluar
-            </button>
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none"><i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-gray-300"></i></button>
+            <button onclick="logout()" class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-semibold rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> Keluar</button>
         </div>
     </nav>
 
@@ -178,9 +165,8 @@
         // ==============================================================
         // 1. GANTI DENGAN URL DEPLOY TERBARU ANDA DI SINI
         // ==============================================================
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxMOJbzJtDzKYu6fq_3mMXnDnAQeFLkYDeRaLB-i1adC8n9ww9rHB84fLG8oOo_HYxe/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxAOEo_uHk7lfkJR-9HzQQ8Obra_3R7Bdeiqn5CzRA-3hdL-Bq-JN45yW3TaBjmfxia/exec';
 
-        // KKM / STANDAR KELULUSAN
         const MIN_SCORE_PASS = 80;
 
         const courseData = {
@@ -229,7 +215,7 @@
         let quizScoreVal = null; 
         let currentQuizIndex = 0;
         let selectedOption = null;
-        let userAnswers = []; // Array of answers
+        let userAnswers = [];
 
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
@@ -247,32 +233,31 @@
                     const response = await fetch(targetUrl);
                     const result = await response.json();
                     
-                    // Sync Progress
+                    // 1. Sync Progress (Kolom F)
                     if(result.status === 'success' && result.progress) {
                         completedChapters = result.progress.split(',').map(Number);
                         localStorage.setItem(progressKey, JSON.stringify(completedChapters));
                     } else {
                         completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
-                        if (completedChapters.length > 0) {
-                            sendDataBeacon('updateProgress', completedChapters.join(','));
-                        }
                     }
 
-                    // Sync Quiz
+                    // 2. Sync Nilai Kuis (Kolom G) & Jawaban (Kolom H)
                     if(result.status === 'success' && result.quiz !== "") {
                         quizScoreVal = parseInt(result.quiz);
                         localStorage.setItem(quizScoreKey, quizScoreVal);
+                        
+                        // Parse Detail Jawaban dari server
+                        if(result.answers && result.answers !== "") {
+                            userAnswers = JSON.parse(result.answers);
+                            localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
+                        }
                     } else {
                         const localScore = localStorage.getItem(quizScoreKey);
                         if(localScore !== null) {
                             quizScoreVal = parseInt(localScore);
-                            sendDataBeacon('saveQuiz', quizScoreVal);
+                            userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
                         }
                     }
-                    
-                    // Fetch local user answers for review functionality
-                    userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
-
                 } catch(err) {
                     completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
                     const localScore = localStorage.getItem(quizScoreKey);
@@ -291,7 +276,6 @@
             if(lastCompletedIndex < activeData.chapters.length) {
                 loadChapter(activeData.chapters[lastCompletedIndex] ? activeData.chapters[lastCompletedIndex].id : activeData.chapters[0].id);
             } else {
-                // If all done, open quiz directly if they haven't finished, or the last chapter
                 if(quizScoreVal === null) {
                     openQuizPage();
                 } else {
@@ -301,11 +285,17 @@
         }
 
         // ==============================================================
-        // FUNGSI FIRE-AND-FORGET MENGGUNAKAN IMAGE BEACON 
+        // MENGIRIM DATA SERVER (BEACON) + DATA JAWABAN
         // ==============================================================
-        function sendDataBeacon(action, dataValue) {
+        function sendDataBeacon(action, dataValue, extraData = "") {
             const paramName = action === 'saveQuiz' ? 'score' : 'progress';
-            const url = `${GAS_URL}?action=${action}&email=${encodeURIComponent(userEmail)}&${paramName}=${encodeURIComponent(dataValue)}&t=${new Date().getTime()}`;
+            let url = `${GAS_URL}?action=${action}&email=${encodeURIComponent(userEmail)}&${paramName}=${encodeURIComponent(dataValue)}&t=${new Date().getTime()}`;
+            
+            // Tambah parameter &answers khusus saveQuiz
+            if(action === 'saveQuiz' && extraData !== "") {
+                url += `&answers=${encodeURIComponent(extraData)}`;
+            }
+            
             const beacon = new Image();
             beacon.src = url;
         }
@@ -342,9 +332,7 @@
                 quizBtn.className = `w-full text-left px-5 py-5 border-t border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all flex items-center group mt-auto ${isQuizActive ? 'active-chapter' : ''}`;
                 quizBtn.onclick = () => openQuizPage();
                 
-                // Ganti teks jika sudah pernah kuis
                 const quizText = quizScoreVal !== null ? `Hasil Quiz (${quizScoreVal})` : `Final Quiz Akhir`;
-                
                 quizBtn.innerHTML = `
                     <div class="flex-shrink-0 w-6 flex justify-center mr-3"><i class="fa-solid fa-medal text-primary text-xl"></i></div>
                     <div class="flex-1 min-w-0 pr-2"><p class="text-sm font-bold text-primary">${quizText}</p></div>
@@ -389,36 +377,23 @@
             
             const isCompleted = completedChapters.includes(chapterId);
             let btnHtml = isCompleted ?
-                `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed">
-                    <i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari
-                </button>` :
-                `<button id="btn-mark-done" onclick="markCurrentAsDone()" class="ml-auto flex items-center px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1">
-                    <i class="fa-regular fa-circle-check text-xl mr-2"></i> Tandai Selesai
-                </button>`;
+                `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari</button>` :
+                `<button id="btn-mark-done" onclick="markCurrentAsDone()" class="ml-auto flex items-center px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1"><i class="fa-regular fa-circle-check text-xl mr-2"></i> Tandai Selesai</button>`;
 
-            document.getElementById('chapter-desc').innerHTML = chapter.desc + `
-                <div class="flex justify-end w-full border-t border-gray-100 dark:border-gray-800 pt-6 mt-10">
-                    ${btnHtml}
-                </div>`;
+            document.getElementById('chapter-desc').innerHTML = chapter.desc + `<div class="flex justify-end w-full border-t border-gray-100 dark:border-gray-800 pt-6 mt-10">${btnHtml}</div>`;
 
             renderSidebar();
             if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
         }
 
-        // ==============================================================
-        // OPTIMISTIC UI: PROGRESS LANGSUNG BERUBAH TANPA DELAY
-        // ==============================================================
         function markCurrentAsDone() {
             if (currentChapterId && !completedChapters.includes(currentChapterId)) {
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
                 
-                // Simpan secara lokal
                 localStorage.setItem(progressKey, JSON.stringify(completedChapters));
-                // Kirim Background ke Excel
                 sendDataBeacon('updateProgress', progressString);
 
-                // UI INSTAN UPDATE (Langsung Disable Button)
                 document.getElementById('chapter-desc').innerHTML = document.getElementById('chapter-desc').innerHTML.replace(
                     /<button id="btn-mark-done"[\s\S]*?<\/button>/,
                     `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari</button>`
@@ -426,20 +401,14 @@
                 
                 renderSidebar();
                 
-                // Peringatan menuju Kuis jika materi habis
                 if(completedChapters.length >= activeData.chapters.length) {
                     setTimeout(() => {
-                        if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) {
-                            openQuizPage();
-                        }
+                        if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) openQuizPage();
                     }, 300);
                 }
             }
         }
 
-        // ==============================================================
-        // SISTEM KUIS: BUKA - JALANKAN - HITUNG - REVIEW
-        // ==============================================================
         function openQuizPage() {
             currentChapterId = null; 
             document.getElementById('video-player').src = ""; 
@@ -451,7 +420,6 @@
             void quizContainer.offsetWidth;
             quizContainer.classList.add('animate-content');
 
-            // Cek apakah sudah pernah kuis
             if (quizScoreVal !== null) {
                 document.getElementById('quiz-intro').classList.add('hidden');
                 document.getElementById('quiz-area').classList.add('hidden');
@@ -499,12 +467,7 @@
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = true;
             nextBtn.className = 'px-6 py-3 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold rounded-xl transition-all cursor-not-allowed';
-
-            if(currentQuizIndex === quizData.length - 1) {
-                nextBtn.innerHTML = `Selesai & Lihat Nilai <i class="fa-solid fa-flag-checkered ml-2"></i>`;
-            } else {
-                nextBtn.innerHTML = `Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>`;
-            }
+            nextBtn.innerHTML = currentQuizIndex === quizData.length - 1 ? `Selesai & Lihat Nilai <i class="fa-solid fa-flag-checkered ml-2"></i>` : `Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>`;
         }
 
         function selectOption(index, btnEl) {
@@ -521,24 +484,23 @@
         }
 
         function nextQuestion() {
-            // Rekam jawaban user
             userAnswers[currentQuizIndex] = selectedOption;
 
             if(currentQuizIndex < quizData.length - 1) {
                 currentQuizIndex++;
                 renderQuestion();
             } else {
-                // Selesai Kuis, Kalkulasi
                 let correctCount = 0;
                 userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correctCount++; });
                 
                 const finalScore = Math.round((correctCount / quizData.length) * 100);
                 
-                // Simpan State
                 quizScoreVal = finalScore;
                 localStorage.setItem(quizScoreKey, finalScore);
                 localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
-                sendDataBeacon('saveQuiz', finalScore);
+                
+                // Mengirim Nilai dan Detail Jawaban sekaligus ke Server
+                sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
 
                 document.getElementById('quiz-area').classList.add('hidden');
                 showQuizResult(finalScore);
@@ -550,22 +512,17 @@
             document.getElementById('quiz-result').classList.remove('hidden');
             document.getElementById('result-score').textContent = score;
             
-            // Hitung benar salah dari saved answers
             let correctCount = 0;
             if(userAnswers.length > 0) {
                 userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correctCount++; });
             } else {
-                // Estimasi jika tidak ada array answer (kasus data lama)
                 correctCount = Math.round((score / 100) * quizData.length);
             }
 
             const percentCorrect = Math.round((correctCount / quizData.length) * 100);
             const detailContainer = document.getElementById('result-detail-container');
             detailContainer.innerHTML = `
-                <div class="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 px-2">
-                    <span>${correctCount} Benar</span>
-                    <span>${quizData.length - correctCount} Salah</span>
-                </div>
+                <div class="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 px-2"><span>${correctCount} Benar</span><span>${quizData.length - correctCount} Salah</span></div>
                 <div class="w-full h-3 bg-red-100 dark:bg-red-900/30 rounded-full overflow-hidden flex">
                     <div class="bg-green-500 h-full transition-all duration-1000 ease-out" style="width: ${percentCorrect}%"></div>
                 </div>
@@ -575,23 +532,20 @@
             const msgEl = document.getElementById('result-msg');
             const retakeBtn = document.getElementById('btn-retake');
 
-            // Logika KKM (Batas Lulus)
             if(score >= MIN_SCORE_PASS) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
                 msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
-                retakeBtn.classList.add('hidden'); // Sembunyikan Retake jika sudah Lulus
+                retakeBtn.classList.add('hidden'); 
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i>`;
                 msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar KKM adalah ${MIN_SCORE_PASS}. Jangan menyerah, pelajari kembali dan ulangi kuis!`;
                 document.getElementById('result-score').className = "text-6xl font-black text-red-500 mb-6";
-                retakeBtn.classList.remove('hidden'); // Munculkan Retake jika Gagal
+                retakeBtn.classList.remove('hidden'); 
             }
-            
-            renderSidebar(); // Update sidebar menu title
+            renderSidebar();
         }
 
-        // --- RETAKE KUIS ---
         function retakeQuiz() {
             if(confirm("Apakah Anda yakin ingin mengulang kuis dari awal? Nilai lama akan ditimpa.")) {
                 quizScoreVal = null;
@@ -602,7 +556,6 @@
             }
         }
 
-        // --- LIHAT PEMBAHASAN / REVIEW ---
         function showReview() {
             document.getElementById('quiz-result').classList.add('hidden');
             const reviewEl = document.getElementById('quiz-review');
@@ -612,7 +565,7 @@
             reviewContent.innerHTML = '';
 
             if (userAnswers.length === 0) {
-                reviewContent.innerHTML = '<p class="text-gray-500 text-center py-4">Data jawaban tidak tersedia di perangkat ini.</p>';
+                reviewContent.innerHTML = '<p class="text-gray-500 text-center py-4">Data jawaban tidak tersedia di perangkat ini. Silakan ulangi kuis untuk melihat pembahasan.</p>';
                 return;
             }
 
@@ -625,40 +578,29 @@
                     let icon = "";
                     
                     if (optIdx === q.ans) {
-                        // Opsi Benar (Kunci Jawaban)
                         optClass = "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold border-2";
                         icon = `<i class="fa-solid fa-check text-green-500 float-right mt-1"></i>`;
                     } else if (optIdx === userAnswer && !isCorrect) {
-                        // Opsi yang disalahkan user
                         optClass = "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-bold border-2";
                         icon = `<i class="fa-solid fa-xmark text-red-500 float-right mt-1"></i>`;
                     }
                     
-                    return `<div class="p-3 border rounded-lg mb-2 text-sm ${optClass}">
-                        ${String.fromCharCode(65+optIdx)}. ${opt} ${icon}
-                    </div>`;
+                    return `<div class="p-3 border rounded-lg mb-2 text-sm ${optClass}">${String.fromCharCode(65+optIdx)}. ${opt} ${icon}</div>`;
                 }).join('');
 
                 reviewContent.innerHTML += `
                     <div class="p-5 border rounded-xl bg-gray-50 dark:bg-darkSidebar ${isCorrect ? 'border-green-200 dark:border-green-900/50' : 'border-red-200 dark:border-red-900/50'}">
                         <div class="flex items-start">
                             <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs mr-3 ${isCorrect ? 'bg-green-500' : 'bg-red-500'}">${i+1}</span>
-                            <div class="flex-1">
-                                <p class="font-bold text-gray-900 dark:text-white mb-4">${q.q}</p>
-                                ${optionsHtml}
-                            </div>
+                            <div class="flex-1"><p class="font-bold text-gray-900 dark:text-white mb-4">${q.q}</p>${optionsHtml}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        // ==============================================================
-        // UTILITIES
-        // ==============================================================
         function logout() {
-            if(confirm("Keluar dari Workspace? Progres dan nilai Anda akan tetap aman tersimpan.")) {
-                localStorage.removeItem('neokademi_user'); // Hanya sesi login dihapus
+            if(confirm("Keluar dari Workspace? Progres materi dan nilai akan tetap aman tersimpan.")) {
+                localStorage.removeItem('neokademi_user');
                 window.location.replace('login.html');
             }
         }
@@ -688,9 +630,7 @@
         const sidebar = document.getElementById('sidebar');
         const sidebarBackdrop = document.getElementById('sidebar-backdrop');
         const desktopToggleIcon = document.getElementById('desktop-toggle-icon');
-        
-        let isMobileSidebarOpen = false;
-        let isDesktopSidebarOpen = true;
+        let isMobileSidebarOpen = false; let isDesktopSidebarOpen = true;
 
         function toggleMobileSidebar() {
             isMobileSidebarOpen = !isMobileSidebarOpen;
@@ -709,11 +649,9 @@
         function toggleDesktopSidebar() {
             isDesktopSidebarOpen = !isDesktopSidebarOpen;
             if (isDesktopSidebarOpen) {
-                sidebar.classList.remove('md:-ml-72'); 
-                desktopToggleIcon.classList.remove('rotate-180');
+                sidebar.classList.remove('md:-ml-72'); desktopToggleIcon.classList.remove('rotate-180');
             } else {
-                sidebar.classList.add('md:-ml-72'); 
-                desktopToggleIcon.classList.add('rotate-180'); 
+                sidebar.classList.add('md:-ml-72'); desktopToggleIcon.classList.add('rotate-180'); 
             }
         }
 
