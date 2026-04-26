@@ -6,6 +6,7 @@
     <title>Materi E-Course | Neokademi</title>
     
     <script>
+        // Proteksi Sesi Login
         (function() {
             const rawData = localStorage.getItem('neokademi_user');
             if (!rawData) {
@@ -43,7 +44,7 @@
         .active-chapter { border-left-width: 4px; border-color: #0ea5e9; background-color: #f0f9ff; }
         .dark .active-chapter { background-color: #0c4a6e; }
         @keyframes fade-in-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-content { animation: fade-in-up 0.5s ease-out forwards; }
+        .animate-content { animation: fade-in-up 0.4s ease-out forwards; }
         .sidebar-transition { transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
@@ -51,7 +52,7 @@
 
     <div id="global-loader" class="fixed inset-0 bg-white/90 dark:bg-darkBg/90 z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
-        <p class="font-semibold text-gray-700 dark:text-gray-300" id="loader-text">Menyinkronkan Data Server...</p>
+        <p class="font-semibold text-gray-700 dark:text-gray-300 mt-2">Menyinkronkan Workspace...</p>
     </div>
 
     <script>document.getElementById('main-body').classList.remove('hidden');</script>
@@ -93,7 +94,7 @@
                     <span class="text-xs font-bold text-primary" id="progress-text">0%</span>
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                    <div id="progress-bar-fill" class="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                    <div id="progress-bar-fill" class="bg-primary h-2.5 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto py-2 flex flex-col" id="chapter-list"></div>
@@ -118,10 +119,11 @@
 
                 <div id="quiz-container" class="hidden animate-content">
                     <div class="bg-white dark:bg-darkCard rounded-xl p-6 md:p-10 shadow-sm border border-gray-200 dark:border-gray-800 mb-12">
-                        <div id="quiz-intro" class="text-center pb-8 border-b border-gray-100 dark:border-gray-800 mb-8">
+                        
+                        <div id="quiz-intro" class="text-center pb-8 border-b border-gray-100 dark:border-gray-800 mb-8 hidden">
                             <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-primary flex items-center justify-center rounded-2xl mx-auto mb-4 text-3xl shadow-inner"><i class="fa-solid fa-list-check"></i></div>
                             <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Final Quiz Modul</h2>
-                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto">Uji pemahaman Anda dengan menjawab 15 pertanyaan seputar materi yang telah dipelajari.</p>
+                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto">Uji pemahaman Anda dengan menjawab pertanyaan seputar materi yang telah dipelajari.</p>
                             <button id="btn-start-quiz" onclick="startQuizEngine()" class="mt-8 px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1">Mulai Quiz Sekarang</button>
                         </div>
 
@@ -141,10 +143,30 @@
                             <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Quiz Selesai!</h2>
                             <p class="text-gray-600 dark:text-gray-400 mb-2">Nilai Akhir Anda:</p>
                             <div class="text-6xl font-black text-primary mb-6" id="result-score">100</div>
-                            <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-8"></div>
+                            <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-6"></div>
                             <p class="text-sm text-gray-500 mb-8" id="result-msg"></p>
-                            <button onclick="window.location.reload()" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Kembali ke Modul</button>
+                            
+                            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8" id="quiz-action-buttons">
+                                <button onclick="showReview()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-xl transition-all">
+                                    <i class="fa-regular fa-eye mr-2"></i> Lihat Pembahasan
+                                </button>
+                                <button id="btn-retake" onclick="retakeQuiz()" class="hidden px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-all">
+                                    <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
+                                </button>
+                            </div>
                         </div>
+
+                        <div id="quiz-review" class="hidden">
+                            <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 dark:border-gray-800">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Pembahasan Kuis</h2>
+                                <button onclick="showQuizResult(quizScoreVal)" class="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Skor</button>
+                            </div>
+                            <div id="review-content" class="space-y-6"></div>
+                            <div class="mt-8 text-center">
+                                <button onclick="showQuizResult(quizScoreVal)" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Selesai Review</button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -157,6 +179,9 @@
         // 1. GANTI DENGAN URL DEPLOY TERBARU ANDA DI SINI
         // ==============================================================
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbxMOJbzJtDzKYu6fq_3mMXnDnAQeFLkYDeRaLB-i1adC8n9ww9rHB84fLG8oOo_HYxe/exec';
+
+        // KKM / STANDAR KELULUSAN
+        const MIN_SCORE_PASS = 80;
 
         const courseData = {
             "linux": {
@@ -194,38 +219,65 @@
         let currentCourse = "linux";
         let activeData = courseData[currentCourse];
         let currentChapterId = null;
+        
         let completedChapters = [];
         let userEmail = "";
         let progressKey = ""; 
+        let quizScoreKey = "";
+        let quizAnswersKey = "";
         
+        let quizScoreVal = null; 
         let currentQuizIndex = 0;
-        let quizScore = 0;
         let selectedOption = null;
+        let userAnswers = []; // Array of answers
 
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
             if(rawUserData) {
                 const session = JSON.parse(rawUserData);
                 userEmail = session.email;
-                progressKey = 'neokademi_progress_' + userEmail; 
+                progressKey = 'neokademi_progress_' + userEmail.trim().toLowerCase(); 
+                quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
+                quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
+                
                 document.getElementById('user-greeting').textContent = `Halo, ${userEmail.split('@')[0]}`;
                 
                 try {
-                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}`, { cache: 'no-cache' });
+                    const targetUrl = `${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`;
+                    const response = await fetch(targetUrl);
                     const result = await response.json();
                     
+                    // Sync Progress
                     if(result.status === 'success' && result.progress) {
                         completedChapters = result.progress.split(',').map(Number);
                         localStorage.setItem(progressKey, JSON.stringify(completedChapters));
                     } else {
-                        // Ambil cache lokal user ini
                         completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
                         if (completedChapters.length > 0) {
-                            fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(completedChapters.join(','))}`, { mode: 'no-cors' });
+                            sendDataBeacon('updateProgress', completedChapters.join(','));
                         }
                     }
+
+                    // Sync Quiz
+                    if(result.status === 'success' && result.quiz !== "") {
+                        quizScoreVal = parseInt(result.quiz);
+                        localStorage.setItem(quizScoreKey, quizScoreVal);
+                    } else {
+                        const localScore = localStorage.getItem(quizScoreKey);
+                        if(localScore !== null) {
+                            quizScoreVal = parseInt(localScore);
+                            sendDataBeacon('saveQuiz', quizScoreVal);
+                        }
+                    }
+                    
+                    // Fetch local user answers for review functionality
+                    userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
+
                 } catch(err) {
                     completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
+                    const localScore = localStorage.getItem(quizScoreKey);
+                    if(localScore !== null) quizScoreVal = parseInt(localScore);
+                    userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
                 }
             }
 
@@ -239,8 +291,23 @@
             if(lastCompletedIndex < activeData.chapters.length) {
                 loadChapter(activeData.chapters[lastCompletedIndex] ? activeData.chapters[lastCompletedIndex].id : activeData.chapters[0].id);
             } else {
-                loadChapter(activeData.chapters[activeData.chapters.length - 1].id);
+                // If all done, open quiz directly if they haven't finished, or the last chapter
+                if(quizScoreVal === null) {
+                    openQuizPage();
+                } else {
+                    loadChapter(activeData.chapters[activeData.chapters.length - 1].id);
+                }
             }
+        }
+
+        // ==============================================================
+        // FUNGSI FIRE-AND-FORGET MENGGUNAKAN IMAGE BEACON 
+        // ==============================================================
+        function sendDataBeacon(action, dataValue) {
+            const paramName = action === 'saveQuiz' ? 'score' : 'progress';
+            const url = `${GAS_URL}?action=${action}&email=${encodeURIComponent(userEmail)}&${paramName}=${encodeURIComponent(dataValue)}&t=${new Date().getTime()}`;
+            const beacon = new Image();
+            beacon.src = url;
         }
 
         function renderSidebar() {
@@ -269,13 +336,18 @@
 
             const allCompleted = completedChapters.length >= activeData.chapters.length;
             const quizBtn = document.createElement('button');
+            const isQuizActive = currentChapterId === null && !document.getElementById('quiz-container').classList.contains('hidden');
             
             if(allCompleted) {
-                quizBtn.className = `w-full text-left px-5 py-5 border-t border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all flex items-center group mt-auto`;
+                quizBtn.className = `w-full text-left px-5 py-5 border-t border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all flex items-center group mt-auto ${isQuizActive ? 'active-chapter' : ''}`;
                 quizBtn.onclick = () => openQuizPage();
+                
+                // Ganti teks jika sudah pernah kuis
+                const quizText = quizScoreVal !== null ? `Hasil Quiz (${quizScoreVal})` : `Final Quiz Akhir`;
+                
                 quizBtn.innerHTML = `
                     <div class="flex-shrink-0 w-6 flex justify-center mr-3"><i class="fa-solid fa-medal text-primary text-xl"></i></div>
-                    <div class="flex-1 min-w-0 pr-2"><p class="text-sm font-bold text-primary">Final Quiz Akhir</p></div>
+                    <div class="flex-1 min-w-0 pr-2"><p class="text-sm font-bold text-primary">${quizText}</p></div>
                 `;
             } else {
                 quizBtn.className = `w-full text-left px-5 py-5 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-darkSidebar transition-all flex items-center mt-auto opacity-50 cursor-not-allowed`;
@@ -333,41 +405,41 @@
             if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
         }
 
-        async function markCurrentAsDone() {
+        // ==============================================================
+        // OPTIMISTIC UI: PROGRESS LANGSUNG BERUBAH TANPA DELAY
+        // ==============================================================
+        function markCurrentAsDone() {
             if (currentChapterId && !completedChapters.includes(currentChapterId)) {
-                const btnDone = document.getElementById('btn-mark-done');
-                btnDone.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-xl mr-2"></i> Menyimpan...`;
-                btnDone.disabled = true;
-                btnDone.classList.replace('bg-primary', 'bg-gray-400');
-                
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
                 
-                // BACKUP LOKAL (Tidak akan terhapus saat logout)
+                // Simpan secara lokal
                 localStorage.setItem(progressKey, JSON.stringify(completedChapters));
+                // Kirim Background ke Excel
+                sendDataBeacon('updateProgress', progressString);
 
-                try {
-                    // PAKSA KIRIM KE GOOGLE (no-cors mengabaikan blokir keamanan browser)
-                    await fetch(`${GAS_URL}?action=updateProgress&email=${encodeURIComponent(userEmail)}&progress=${encodeURIComponent(progressString)}`, {
-                        method: 'GET',
-                        mode: 'no-cors'
-                    });
-                } catch(e) {
-                    console.error("Gagal terkirim, tapi sudah tersimpan di lokal.");
-                }
-
-                loadChapter(currentChapterId); 
+                // UI INSTAN UPDATE (Langsung Disable Button)
+                document.getElementById('chapter-desc').innerHTML = document.getElementById('chapter-desc').innerHTML.replace(
+                    /<button id="btn-mark-done"[\s\S]*?<\/button>/,
+                    `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari</button>`
+                );
                 
+                renderSidebar();
+                
+                // Peringatan menuju Kuis jika materi habis
                 if(completedChapters.length >= activeData.chapters.length) {
                     setTimeout(() => {
                         if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) {
                             openQuizPage();
                         }
-                    }, 500);
+                    }, 300);
                 }
             }
         }
 
+        // ==============================================================
+        // SISTEM KUIS: BUKA - JALANKAN - HITUNG - REVIEW
+        // ==============================================================
         function openQuizPage() {
             currentChapterId = null; 
             document.getElementById('video-player').src = ""; 
@@ -379,9 +451,18 @@
             void quizContainer.offsetWidth;
             quizContainer.classList.add('animate-content');
 
-            document.getElementById('quiz-intro').classList.remove('hidden');
-            document.getElementById('quiz-area').classList.add('hidden');
-            document.getElementById('quiz-result').classList.add('hidden');
+            // Cek apakah sudah pernah kuis
+            if (quizScoreVal !== null) {
+                document.getElementById('quiz-intro').classList.add('hidden');
+                document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('quiz-review').classList.add('hidden');
+                showQuizResult(quizScoreVal);
+            } else {
+                document.getElementById('quiz-intro').classList.remove('hidden');
+                document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('quiz-result').classList.add('hidden');
+                document.getElementById('quiz-review').classList.add('hidden');
+            }
             
             renderSidebar();
             if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
@@ -389,9 +470,12 @@
 
         function startQuizEngine() {
             document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-review').classList.add('hidden');
             document.getElementById('quiz-area').classList.remove('hidden');
+            
             currentQuizIndex = 0;
-            quizScore = 0;
+            userAnswers = [];
             renderQuestion();
         }
 
@@ -414,10 +498,7 @@
 
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = true;
-            nextBtn.classList.replace('bg-primary', 'bg-gray-300');
-            nextBtn.classList.replace('text-white', 'text-gray-500');
-            nextBtn.classList.replace('dark:bg-primaryHover', 'dark:bg-gray-700');
-            nextBtn.classList.add('cursor-not-allowed');
+            nextBtn.className = 'px-6 py-3 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold rounded-xl transition-all cursor-not-allowed';
 
             if(currentQuizIndex === quizData.length - 1) {
                 nextBtn.innerHTML = `Selesai & Lihat Nilai <i class="fa-solid fa-flag-checkered ml-2"></i>`;
@@ -436,83 +517,148 @@
 
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = false;
-            nextBtn.classList.replace('bg-gray-300', 'bg-primary');
-            nextBtn.classList.replace('text-gray-500', 'text-white');
-            nextBtn.classList.replace('dark:bg-gray-700', 'dark:bg-primaryHover');
-            nextBtn.classList.remove('cursor-not-allowed');
+            nextBtn.className = 'px-6 py-3 bg-primary text-white dark:bg-primaryHover font-bold rounded-xl transition-all shadow-md';
         }
 
-        async function nextQuestion() {
-            if(selectedOption === quizData[currentQuizIndex].ans) {
-                quizScore++;
-            }
+        function nextQuestion() {
+            // Rekam jawaban user
+            userAnswers[currentQuizIndex] = selectedOption;
 
             if(currentQuizIndex < quizData.length - 1) {
                 currentQuizIndex++;
                 renderQuestion();
             } else {
-                const finalScore = Math.round((quizScore / quizData.length) * 100);
+                // Selesai Kuis, Kalkulasi
+                let correctCount = 0;
+                userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correctCount++; });
                 
+                const finalScore = Math.round((correctCount / quizData.length) * 100);
+                
+                // Simpan State
+                quizScoreVal = finalScore;
+                localStorage.setItem(quizScoreKey, finalScore);
+                localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
+                sendDataBeacon('saveQuiz', finalScore);
+
                 document.getElementById('quiz-area').classList.add('hidden');
-                const loader = document.getElementById('global-loader');
-                document.getElementById('loader-text').textContent = "Menghitung Nilai & Menyimpan...";
-                loader.classList.remove('hidden', 'opacity-0');
-
-                try {
-                    // PAKSA KIRIM KE GOOGLE
-                    await fetch(`${GAS_URL}?action=saveQuiz&email=${encodeURIComponent(userEmail)}&score=${finalScore}`, {
-                        method: 'GET',
-                        mode: 'no-cors'
-                    });
-                } catch(e) {}
-
-                loader.classList.add('hidden');
                 showQuizResult(finalScore);
             }
         }
 
         function showQuizResult(score) {
+            document.getElementById('quiz-review').classList.add('hidden');
             document.getElementById('quiz-result').classList.remove('hidden');
             document.getElementById('result-score').textContent = score;
             
-            // Render Bar "Benar X dari Y"
-            const percentCorrect = Math.round((quizScore / quizData.length) * 100);
+            // Hitung benar salah dari saved answers
+            let correctCount = 0;
+            if(userAnswers.length > 0) {
+                userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correctCount++; });
+            } else {
+                // Estimasi jika tidak ada array answer (kasus data lama)
+                correctCount = Math.round((score / 100) * quizData.length);
+            }
+
+            const percentCorrect = Math.round((correctCount / quizData.length) * 100);
             const detailContainer = document.getElementById('result-detail-container');
             detailContainer.innerHTML = `
                 <div class="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 px-2">
-                    <span>${quizScore} Benar</span>
-                    <span>${quizData.length - quizScore} Salah</span>
+                    <span>${correctCount} Benar</span>
+                    <span>${quizData.length - correctCount} Salah</span>
                 </div>
                 <div class="w-full h-3 bg-red-100 dark:bg-red-900/30 rounded-full overflow-hidden flex">
                     <div class="bg-green-500 h-full transition-all duration-1000 ease-out" style="width: ${percentCorrect}%"></div>
                 </div>
-                <p class="mt-4 text-sm font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 inline-block px-4 py-1.5 rounded-lg">Total Benar: ${quizScore} / ${quizData.length} Soal</p>
             `;
 
             const iconEl = document.getElementById('result-icon');
             const msgEl = document.getElementById('result-msg');
+            const retakeBtn = document.getElementById('btn-retake');
 
-            if(score >= 80) {
+            // Logika KKM (Batas Lulus)
+            if(score >= MIN_SCORE_PASS) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
-                msgEl.textContent = "Luar Biasa! Anda telah menguasai fundamental dengan sangat baik.";
+                msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
-            } else if (score >= 60) {
-                iconEl.innerHTML = `<i class="fa-solid fa-thumbs-up text-blue-500"></i>`;
-                msgEl.textContent = "Cukup bagus. Anda bisa mengulang materi jika ingin memperbaiki nilai.";
-                document.getElementById('result-score').className = "text-6xl font-black text-blue-500 mb-6";
+                retakeBtn.classList.add('hidden'); // Sembunyikan Retake jika sudah Lulus
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i>`;
-                msgEl.textContent = "Jangan menyerah! Silakan pelajari ulang materi video dengan lebih teliti.";
+                msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar KKM adalah ${MIN_SCORE_PASS}. Jangan menyerah, pelajari kembali dan ulangi kuis!`;
                 document.getElementById('result-score').className = "text-6xl font-black text-red-500 mb-6";
+                retakeBtn.classList.remove('hidden'); // Munculkan Retake jika Gagal
+            }
+            
+            renderSidebar(); // Update sidebar menu title
+        }
+
+        // --- RETAKE KUIS ---
+        function retakeQuiz() {
+            if(confirm("Apakah Anda yakin ingin mengulang kuis dari awal? Nilai lama akan ditimpa.")) {
+                quizScoreVal = null;
+                userAnswers = [];
+                localStorage.removeItem(quizScoreKey);
+                localStorage.removeItem(quizAnswersKey);
+                startQuizEngine();
             }
         }
 
-        // FUNGSI LOGOUT YANG SUDAH DIPERBAIKI
+        // --- LIHAT PEMBAHASAN / REVIEW ---
+        function showReview() {
+            document.getElementById('quiz-result').classList.add('hidden');
+            const reviewEl = document.getElementById('quiz-review');
+            const reviewContent = document.getElementById('review-content');
+            
+            reviewEl.classList.remove('hidden');
+            reviewContent.innerHTML = '';
+
+            if (userAnswers.length === 0) {
+                reviewContent.innerHTML = '<p class="text-gray-500 text-center py-4">Data jawaban tidak tersedia di perangkat ini.</p>';
+                return;
+            }
+
+            quizData.forEach((q, i) => {
+                const userAnswer = userAnswers[i];
+                const isCorrect = userAnswer === q.ans;
+
+                let optionsHtml = q.options.map((opt, optIdx) => {
+                    let optClass = "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400";
+                    let icon = "";
+                    
+                    if (optIdx === q.ans) {
+                        // Opsi Benar (Kunci Jawaban)
+                        optClass = "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold border-2";
+                        icon = `<i class="fa-solid fa-check text-green-500 float-right mt-1"></i>`;
+                    } else if (optIdx === userAnswer && !isCorrect) {
+                        // Opsi yang disalahkan user
+                        optClass = "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-bold border-2";
+                        icon = `<i class="fa-solid fa-xmark text-red-500 float-right mt-1"></i>`;
+                    }
+                    
+                    return `<div class="p-3 border rounded-lg mb-2 text-sm ${optClass}">
+                        ${String.fromCharCode(65+optIdx)}. ${opt} ${icon}
+                    </div>`;
+                }).join('');
+
+                reviewContent.innerHTML += `
+                    <div class="p-5 border rounded-xl bg-gray-50 dark:bg-darkSidebar ${isCorrect ? 'border-green-200 dark:border-green-900/50' : 'border-red-200 dark:border-red-900/50'}">
+                        <div class="flex items-start">
+                            <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs mr-3 ${isCorrect ? 'bg-green-500' : 'bg-red-500'}">${i+1}</span>
+                            <div class="flex-1">
+                                <p class="font-bold text-gray-900 dark:text-white mb-4">${q.q}</p>
+                                ${optionsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ==============================================================
+        // UTILITIES
+        // ==============================================================
         function logout() {
-            if(confirm("Keluar dari Workspace? Progres dan nilai Anda aman!")) {
-                // HANYA HAPUS SESI LOGIN SAJA
-                localStorage.removeItem('neokademi_user');
-                // KITA SENGAJA TIDAK MENGHAPUS LOCALSTORAGE PROGRESS AGAR TIDAK HILANG SAAT KONEKSI BURUK
+            if(confirm("Keluar dari Workspace? Progres dan nilai Anda akan tetap aman tersimpan.")) {
+                localStorage.removeItem('neokademi_user'); // Hanya sesi login dihapus
                 window.location.replace('login.html');
             }
         }
