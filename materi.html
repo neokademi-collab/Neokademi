@@ -6,6 +6,7 @@
     <title>Materi E-Course | Neokademi</title>
     
     <script>
+        // Proteksi Sesi Login
         (function() {
             const rawData = localStorage.getItem('neokademi_user');
             if (!rawData) {
@@ -110,7 +111,7 @@
                         <div id="quiz-intro" class="text-center pb-8 border-b border-gray-100 dark:border-gray-800 mb-8 hidden">
                             <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-primary flex items-center justify-center rounded-2xl mx-auto mb-4 text-3xl shadow-inner"><i class="fa-solid fa-list-check"></i></div>
                             <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Final Quiz Modul</h2>
-                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto">Uji pemahaman Anda dengan menjawab pertanyaan seputar materi yang telah dipelajari.</p>
+                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto">Uji pemahaman Anda dengan menjawab 15 pertanyaan seputar materi yang telah dipelajari.</p>
                             <button id="btn-start-quiz" onclick="startQuizEngine()" class="mt-8 px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1">Mulai Quiz Sekarang</button>
                         </div>
 
@@ -134,12 +135,6 @@
                             <p class="text-sm text-gray-500 mb-8" id="result-msg"></p>
                             
                             <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8" id="quiz-action-buttons">
-                                <button onclick="showReview()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-xl transition-all">
-                                    <i class="fa-regular fa-eye mr-2"></i> Lihat Pembahasan
-                                </button>
-                                <button id="btn-retake" onclick="retakeQuiz()" class="hidden px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-all">
-                                    <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
-                                </button>
                             </div>
                         </div>
 
@@ -163,9 +158,9 @@
 
     <script>
         // ==============================================================
-        // 1. GANTI DENGAN URL DEPLOY TERBARU ANDA DI SINI
+        // 1. URL DEPLOY TERBARU ANDA
         // ==============================================================
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbxAOEo_uHk7lfkJR-9HzQQ8Obra_3R7Bdeiqn5CzRA-3hdL-Bq-JN45yW3TaBjmfxia/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbz9ie_yd3AJudxzUBrUzxm6H82XaQpJmRacLDDdRQ-Z8Lg7iSjQEZVohscGqaM7fFQ4/exec';
 
         const MIN_SCORE_PASS = 80;
 
@@ -222,6 +217,7 @@
             if(rawUserData) {
                 const session = JSON.parse(rawUserData);
                 userEmail = session.email;
+                // KUNCI LOKAL SPESIFIK PER EMAIL AGAR TIDAK TERTUKAR
                 progressKey = 'neokademi_progress_' + userEmail.trim().toLowerCase(); 
                 quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
                 quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
@@ -239,6 +235,9 @@
                         localStorage.setItem(progressKey, JSON.stringify(completedChapters));
                     } else {
                         completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
+                        if (completedChapters.length > 0) {
+                            sendDataBeacon('updateProgress', completedChapters.join(','));
+                        }
                     }
 
                     // 2. Sync Nilai Kuis (Kolom G) & Jawaban (Kolom H)
@@ -246,7 +245,6 @@
                         quizScoreVal = parseInt(result.quiz);
                         localStorage.setItem(quizScoreKey, quizScoreVal);
                         
-                        // Parse Detail Jawaban dari server
                         if(result.answers && result.answers !== "") {
                             userAnswers = JSON.parse(result.answers);
                             localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
@@ -256,9 +254,11 @@
                         if(localScore !== null) {
                             quizScoreVal = parseInt(localScore);
                             userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
+                            sendDataBeacon('saveQuiz', quizScoreVal, JSON.stringify(userAnswers));
                         }
                     }
                 } catch(err) {
+                    console.error("Gagal sinkron, fallback ke data lokal.");
                     completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
                     const localScore = localStorage.getItem(quizScoreKey);
                     if(localScore !== null) quizScoreVal = parseInt(localScore);
@@ -285,13 +285,13 @@
         }
 
         // ==============================================================
-        // MENGIRIM DATA SERVER (BEACON) + DATA JAWABAN
+        // FUNGSI BEACON: ANTI-GAGAL CORS (FIRE AND FORGET)
         // ==============================================================
         function sendDataBeacon(action, dataValue, extraData = "") {
             const paramName = action === 'saveQuiz' ? 'score' : 'progress';
             let url = `${GAS_URL}?action=${action}&email=${encodeURIComponent(userEmail)}&${paramName}=${encodeURIComponent(dataValue)}&t=${new Date().getTime()}`;
             
-            // Tambah parameter &answers khusus saveQuiz
+            // Tambah parameter jawaban jika ada
             if(action === 'saveQuiz' && extraData !== "") {
                 url += `&answers=${encodeURIComponent(extraData)}`;
             }
@@ -391,9 +391,13 @@
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
                 
+                // Backup Lokal
                 localStorage.setItem(progressKey, JSON.stringify(completedChapters));
+                
+                // Kirim Background ke Excel menggunakan Beacon
                 sendDataBeacon('updateProgress', progressString);
 
+                // UI INSTAN UPDATE (Optimistic Update)
                 document.getElementById('chapter-desc').innerHTML = document.getElementById('chapter-desc').innerHTML.replace(
                     /<button id="btn-mark-done"[\s\S]*?<\/button>/,
                     `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari</button>`
@@ -403,8 +407,10 @@
                 
                 if(completedChapters.length >= activeData.chapters.length) {
                     setTimeout(() => {
-                        if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) openQuizPage();
-                    }, 300);
+                        if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) {
+                            openQuizPage();
+                        }
+                    }, 500);
                 }
             }
         }
@@ -499,7 +505,7 @@
                 localStorage.setItem(quizScoreKey, finalScore);
                 localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
                 
-                // Mengirim Nilai dan Detail Jawaban sekaligus ke Server
+                // Kirim Ke Excel (Skor Kolom G, Detail Kolom H)
                 sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
 
                 document.getElementById('quiz-area').classList.add('hidden');
@@ -530,20 +536,76 @@
 
             const iconEl = document.getElementById('result-icon');
             const msgEl = document.getElementById('result-msg');
-            const retakeBtn = document.getElementById('btn-retake');
+            
+            // Generate Action Buttons
+            let actionButtonsHtml = `
+                <button onclick="showReview()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-xl transition-all">
+                    <i class="fa-regular fa-eye mr-2"></i> Lihat Pembahasan
+                </button>
+            `;
 
             if(score >= MIN_SCORE_PASS) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
                 msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
-                retakeBtn.classList.add('hidden'); 
+                
+                // Tambah Tombol Download Sertifikat
+                actionButtonsHtml += `
+                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1">
+                        <i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat
+                    </button>
+                `;
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i>`;
                 msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar KKM adalah ${MIN_SCORE_PASS}. Jangan menyerah, pelajari kembali dan ulangi kuis!`;
                 document.getElementById('result-score').className = "text-6xl font-black text-red-500 mb-6";
-                retakeBtn.classList.remove('hidden'); 
+                
+                // Tambah Tombol Retake
+                actionButtonsHtml += `
+                    <button id="btn-retake" onclick="retakeQuiz()" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-all">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
+                    </button>
+                `;
             }
+            
+            document.getElementById('quiz-action-buttons').innerHTML = actionButtonsHtml;
             renderSidebar();
+        }
+
+        async function downloadCertificate() {
+            const btn = document.getElementById('btn-download-cert');
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Menyusun Sertifikat...`;
+            btn.disabled = true;
+            btn.classList.replace('bg-blue-600', 'bg-gray-500');
+
+            try {
+                // Fetch untuk menerima Data Link PDF (Kolom I)
+                const response = await fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
+                const result = await response.json();
+
+                if(result.status === 'success' && result.url) {
+                    btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Berhasil Dibuat!`;
+                    btn.classList.replace('bg-gray-500', 'bg-green-600');
+                    
+                    window.open(result.url, '_blank');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
+                        btn.classList.replace('bg-green-600', 'bg-blue-600');
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    alert("Gagal membuat sertifikat: " + (result.message || "Error Server"));
+                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
+                    btn.classList.replace('bg-gray-500', 'bg-blue-600');
+                    btn.disabled = false;
+                }
+            } catch(e) {
+                alert("Gangguan koneksi internet saat membuat sertifikat.");
+                btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
+                btn.classList.replace('bg-gray-500', 'bg-blue-600');
+                btn.disabled = false;
+            }
         }
 
         function retakeQuiz() {
@@ -598,9 +660,10 @@
             });
         }
 
+        // KELUAR TANPA MENGHAPUS PROGRESS LOKAL
         function logout() {
             if(confirm("Keluar dari Workspace? Progres materi dan nilai akan tetap aman tersimpan.")) {
-                localStorage.removeItem('neokademi_user');
+                localStorage.removeItem('neokademi_user'); 
                 window.location.replace('login.html');
             }
         }
