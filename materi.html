@@ -349,7 +349,6 @@
         let selectedOption = null;
         let userAnswers = [];
         
-        // Simpan URL sertifikat jika sudah terbuat dari backend
         let userCertUrl = "";
 
         async function initializeData() {
@@ -357,7 +356,6 @@
             if(rawUserData) {
                 const session = JSON.parse(rawUserData);
                 userEmail = session.email;
-                // KUNCI LOKAL SPESIFIK PER EMAIL AGAR TIDAK TERTUKAR
                 progressKey = 'neokademi_progress_' + userEmail.trim().toLowerCase(); 
                 quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
                 quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
@@ -369,12 +367,10 @@
                     const response = await fetch(targetUrl);
                     const result = await response.json();
                     
-                    // Cek Sertifikat Tersimpan
                     if(result.status === 'success' && result.certificate) {
                         userCertUrl = result.certificate;
                     }
 
-                    // 1. Sync Progress (Kolom F)
                     if(result.status === 'success' && result.progress) {
                         completedChapters = result.progress.split(',').map(Number);
                         localStorage.setItem(progressKey, JSON.stringify(completedChapters));
@@ -385,7 +381,6 @@
                         }
                     }
 
-                    // 2. Sync Nilai Kuis (Kolom G) & Jawaban (Kolom H)
                     if(result.status === 'success' && result.quiz !== "") {
                         quizScoreVal = parseInt(result.quiz);
                         localStorage.setItem(quizScoreKey, quizScoreVal);
@@ -429,14 +424,10 @@
             }
         }
 
-        // ==============================================================
-        // FUNGSI BEACON: ANTI-GAGAL CORS (FIRE AND FORGET)
-        // ==============================================================
         function sendDataBeacon(action, dataValue, extraData = "") {
             const paramName = action === 'saveQuiz' ? 'score' : 'progress';
             let url = `${GAS_URL}?action=${action}&email=${encodeURIComponent(userEmail)}&${paramName}=${encodeURIComponent(dataValue)}&t=${new Date().getTime()}`;
             
-            // Tambah parameter jawaban jika ada
             if(action === 'saveQuiz' && extraData !== "") {
                 url += `&answers=${encodeURIComponent(extraData)}`;
             }
@@ -520,7 +511,6 @@
             document.getElementById('video-player').src = chapter.video;
             document.getElementById('chapter-title').textContent = chapter.title;
             
-            // Logika Tombol Selesai
             const isCompleted = completedChapters.includes(chapterId);
             const isLastChapter = (chapterId === activeData.chapters[activeData.chapters.length - 1].id);
             
@@ -547,10 +537,7 @@
                 completedChapters.push(currentChapterId);
                 const progressString = completedChapters.join(',');
                 
-                // Backup Lokal
                 localStorage.setItem(progressKey, JSON.stringify(completedChapters));
-                
-                // Kirim Background ke Excel menggunakan Beacon
                 sendDataBeacon('updateProgress', progressString);
 
                 const isLastChapter = (currentChapterId === activeData.chapters[activeData.chapters.length - 1].id);
@@ -562,7 +549,6 @@
                     newBtnHtml = `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed animate-content"><i class="fa-solid fa-check text-xl mr-2"></i> Selesai Dipelajari</button>`;
                 }
 
-                // UI INSTAN UPDATE
                 document.getElementById('chapter-desc').innerHTML = document.getElementById('chapter-desc').innerHTML.replace(
                     /<button id="btn-mark-done"[\s\S]*?<\/button>/,
                     newBtnHtml
@@ -598,7 +584,6 @@
             renderSidebar();
             if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
             
-            // Scroll otomatis ke atas
             document.getElementById('main-content-area').scrollTo(0,0);
         }
 
@@ -665,13 +650,11 @@
                 localStorage.setItem(quizScoreKey, finalScore);
                 localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
                 
-                // Kirim Ke Excel (Skor Kolom G, Detail Kolom H)
                 sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
 
                 document.getElementById('quiz-area').classList.add('hidden');
                 showQuizResult(finalScore);
             }
-            // Auto scroll ke atas soal
             document.getElementById('main-content-area').scrollTo(0,0);
         }
 
@@ -699,7 +682,6 @@
             const iconEl = document.getElementById('result-icon');
             const msgEl = document.getElementById('result-msg');
             
-            // Generate Action Buttons
             let actionButtonsHtml = `
                 <button onclick="showReview()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-xl transition-all">
                     <i class="fa-regular fa-eye mr-2"></i> Lihat Pembahasan
@@ -711,18 +693,28 @@
                 msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
                 
-                // Tambah Tombol Download Sertifikat
                 actionButtonsHtml += `
                     <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1">
                         <i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat
                     </button>
                 `;
+
+                // LOGIKA PRE-GENERATE SERTIFIKAT
+                if (!userCertUrl || userCertUrl === "") {
+                    fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.status === 'success') {
+                            userCertUrl = data.url;
+                        }
+                    }).catch(e => console.log("Pre-gen proses berjalan..."));
+                }
+
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-red-500"></i>`;
                 msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar KKM adalah ${MIN_SCORE_PASS}. Jangan menyerah, pelajari kembali dan ulangi kuis!`;
                 document.getElementById('result-score').className = "text-6xl font-black text-red-500 mb-6";
                 
-                // Tambah Tombol Retake
                 actionButtonsHtml += `
                     <button id="btn-retake" onclick="retakeQuiz()" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-all">
                         <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
@@ -734,14 +726,12 @@
             renderSidebar();
         }
 
-        // FUNGSI CEK SERTIFIKAT DARI DROPDOWN
         function checkCertificate() {
             if (userCertUrl && userCertUrl !== "") {
                 window.open(userCertUrl, '_blank');
             } else {
                 alert("Anda belum memiliki sertifikat. Silakan selesaikan semua materi dan lulus Final Quiz terlebih dahulu.");
             }
-            // Tutup dropdown setelah klik
             document.getElementById('user-dropdown').classList.add('opacity-0', 'invisible', 'translate-y-2');
         }
 
@@ -751,8 +741,19 @@
             btn.disabled = true;
             btn.classList.replace('bg-blue-600', 'bg-gray-500');
 
+            if (userCertUrl && userCertUrl !== "") {
+                btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Berhasil Dibuat!`;
+                btn.classList.replace('bg-gray-500', 'bg-green-600');
+                window.open(userCertUrl, '_blank');
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
+                    btn.classList.replace('bg-green-600', 'bg-blue-600');
+                    btn.disabled = false;
+                }, 3000);
+                return;
+            }
+
             try {
-                // Fetch untuk menerima Data Link PDF (Kolom I)
                 const response = await fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
                 const result = await response.json();
 
@@ -760,7 +761,6 @@
                     btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Berhasil Dibuat!`;
                     btn.classList.replace('bg-gray-500', 'bg-green-600');
                     
-                    // Simpan URL secara lokal agar tombol di dropdown langsung berfungsi tanpa reload
                     userCertUrl = result.url; 
                     
                     window.open(result.url, '_blank');
@@ -836,7 +836,6 @@
             });
         }
 
-        // KELUAR TANPA MENGHAPUS PROGRESS LOKAL
         function logout() {
             if(confirm("Keluar dari Workspace? Progres materi dan nilai akan tetap aman tersimpan.")) {
                 localStorage.removeItem('neokademi_user'); 
@@ -844,7 +843,6 @@
             }
         }
 
-        // --- Logika Dark Mode & Dropdown User ---
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
         const themeIconDropdown = document.getElementById('theme-icon-dropdown');
         const themeTextDropdown = document.getElementById('theme-text-dropdown');
@@ -853,7 +851,6 @@
         const userMenuBtn = document.getElementById('user-menu-btn');
         const userDropdown = document.getElementById('user-dropdown');
 
-        // Toggle Dropdown Animasi
         userMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             userDropdown.classList.toggle('opacity-0');
@@ -861,7 +858,6 @@
             userDropdown.classList.toggle('translate-y-2');
         });
 
-        // Tutup dropdown jika klik di luar
         document.addEventListener('click', (e) => {
             if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
                 userDropdown.classList.add('opacity-0', 'invisible', 'translate-y-2');
@@ -878,7 +874,6 @@
             }
         }
 
-        // Inisialisasi Tema
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             htmlElement.classList.add('dark');
         } else {
@@ -886,9 +881,8 @@
         }
         updateThemeUI();
 
-        // Event Toggle Tema
         themeToggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Agar dropdown tidak langsung menutup
+            e.stopPropagation(); 
             htmlElement.classList.toggle('dark');
             if (htmlElement.classList.contains('dark')) {
                 localStorage.setItem('theme', 'dark');
@@ -898,7 +892,6 @@
             updateThemeUI();
         });
 
-        // --- Logika Sidebar Mobile/Desktop ---
         const sidebar = document.getElementById('sidebar');
         const sidebarBackdrop = document.getElementById('sidebar-backdrop');
         const desktopToggleIcon = document.getElementById('desktop-toggle-icon');
