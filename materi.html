@@ -84,7 +84,6 @@
 
                 <div id="user-dropdown" class="absolute top-[110%] right-0 w-60 bg-white dark:bg-darkCard rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 opacity-0 invisible transition-all duration-200 transform origin-top-right z-50 translate-y-2">
                     <div class="p-2 space-y-1">
-                        
                         <button id="theme-toggle-btn" class="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors text-sm font-semibold text-gray-700 dark:text-gray-300 sm:hidden">
                             <span class="flex items-center">
                                 <i id="theme-icon-dropdown" class="fa-solid fa-moon w-5 text-center mr-3"></i> 
@@ -366,6 +365,7 @@
         
         let userCertUrl = "";
         let isGeneratingCert = false;
+        let hasTriggeredPreGen = false; // Bendera agar generate hanya dipicu 1x
 
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
@@ -384,24 +384,20 @@
                     const result = await response.json();
                     
                     if(result.status === 'success') {
-                        // Cek Sertifikat
                         if(result.certificate && result.certificate !== "") {
                             userCertUrl = result.certificate;
                         } else {
                             userCertUrl = "";
                         }
 
-                        // Sync Progress
                         if(result.progress && result.progress !== "") {
                             completedChapters = result.progress.split(',').map(Number);
                             localStorage.setItem(progressKey, JSON.stringify(completedChapters));
                         } else {
-                            // Anti-Ghost Data
                             completedChapters = [];
                             localStorage.removeItem(progressKey);
                         }
 
-                        // Sync Kuis
                         if(result.quiz !== undefined && result.quiz !== "") {
                             quizScoreVal = parseInt(result.quiz);
                             localStorage.setItem(quizScoreKey, quizScoreVal);
@@ -411,7 +407,6 @@
                                 localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
                             }
                         } else {
-                            // Anti-Ghost Data
                             quizScoreVal = null;
                             userAnswers = [];
                             localStorage.removeItem(quizScoreKey);
@@ -466,7 +461,7 @@
                         userCertUrl = data.url;
                     }
                 })
-                .catch(e => console.log("Background generation sedang berjalan..."))
+                .catch(e => console.log("Background generation error"))
                 .finally(() => {
                     isGeneratingCert = false;
                 });
@@ -588,7 +583,6 @@
                     /<button id="btn-mark-done"[\s\S]*?<\/button>/,
                     newBtnHtml
                 );
-                
                 renderSidebar();
             }
         }
@@ -629,6 +623,7 @@
             
             currentQuizIndex = 0;
             userAnswers = [];
+            hasTriggeredPreGen = false; // Reset trigger kuis baru
             renderQuestion();
         }
 
@@ -671,24 +666,33 @@
         function nextQuestion() {
             userAnswers[currentQuizIndex] = selectedOption;
 
+            // --- EARLY TRIGGER LOGIC (Cek nilai disetiap klik lanjut) ---
+            let currentCorrect = 0;
+            userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) currentCorrect++; });
+            const requiredCorrect = Math.ceil((MIN_SCORE_PASS / 100) * quizData.length); 
+            
+            // Jika sudah mencapai syarat kelulusan (contoh 12 benar), eksekusi PDF sekarang juga!
+            if (currentCorrect >= requiredCorrect && !hasTriggeredPreGen && (!userCertUrl || userCertUrl === "")) {
+                hasTriggeredPreGen = true;
+                triggerBackgroundGeneration();
+            }
+
             if(currentQuizIndex < quizData.length - 1) {
                 currentQuizIndex++;
                 renderQuestion();
             } else {
-                let correctCount = 0;
-                userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correctCount++; });
-                
-                const finalScore = Math.round((correctCount / quizData.length) * 100);
+                // Akhir Quiz
+                const finalScore = Math.round((currentCorrect / quizData.length) * 100);
                 
                 quizScoreVal = finalScore;
                 localStorage.setItem(quizScoreKey, finalScore);
                 localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
                 
-                // Kirim Ke Excel
                 sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
 
-                // --- PEMICU SERTIFIKAT INSTAN (PRE-GENERATE) ---
-                if (finalScore >= MIN_SCORE_PASS) {
+                // Jaga-jaga jika early trigger terlewat (misal nilai pas di pertanyaan terakhir)
+                if (finalScore >= MIN_SCORE_PASS && !hasTriggeredPreGen) {
+                    hasTriggeredPreGen = true;
                     triggerBackgroundGeneration();
                 }
 
@@ -734,7 +738,7 @@
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
                 
                 actionButtonsHtml += `
-                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1">
+                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1 w-48">
                         <i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat
                     </button>
                 `;
@@ -754,12 +758,11 @@
             renderSidebar();
         }
 
-        // FUNGSI CEK SERTIFIKAT DARI DROPDOWN
         function checkCertificate() {
             if (userCertUrl && userCertUrl !== "") {
                 window.open(userCertUrl, '_blank');
             } else if (isGeneratingCert) {
-                alert("Sistem sedang menyiapkan sertifikat Anda di server. Mohon tunggu sekitar 5-10 detik lagi.");
+                alert("Sertifikat Anda sedang dimuat, mohon tunggu beberapa saat.");
             } else {
                 alert("Anda belum memiliki sertifikat. Silakan selesaikan semua materi dan lulus Final Quiz terlebih dahulu.");
             }
@@ -769,9 +772,9 @@
         async function downloadCertificate() {
             const btn = document.getElementById('btn-download-cert');
 
-            // --- CEK JIKA SUDAH SIAP (Dari Pre-Generate) ---
+            // 1. Jika URL sudah ada (Instan)
             if (userCertUrl && userCertUrl !== "") {
-                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Siap Diunduh!`;
+                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
                 btn.classList.replace('bg-blue-600', 'bg-green-600');
                 window.open(userCertUrl, '_blank');
                 setTimeout(() => {
@@ -782,18 +785,37 @@
                 return;
             }
 
-            // --- CEK JIKA MASIH PROSES ---
+            // 2. Jika masih memuat di latar belakang (Tampilkan loading putar)
             if (isGeneratingCert) {
-                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Hampir Selesai...`;
-                alert("Server sedang menyiapkan sertifikat PDF Anda. Biasanya butuh 5-10 detik. Silakan klik tombol ini lagi sebentar lagi.");
-                setTimeout(() => {
-                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Unduh Lagi`;
-                }, 3000);
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat Sertifikat...`;
+                btn.disabled = true;
+                btn.classList.replace('bg-blue-600', 'bg-gray-500');
+                
+                // Polling: cek setiap 1 detik apakah proses background selesai
+                const checkInterval = setInterval(() => {
+                    if (!isGeneratingCert) {
+                        clearInterval(checkInterval);
+                        if (userCertUrl && userCertUrl !== "") {
+                            btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
+                            btn.classList.replace('bg-gray-500', 'bg-green-600');
+                            window.open(userCertUrl, '_blank');
+                            setTimeout(() => {
+                                btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
+                                btn.classList.replace('bg-green-600', 'bg-blue-600');
+                                btn.disabled = false;
+                            }, 3000);
+                        } else {
+                            btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
+                            btn.classList.replace('bg-gray-500', 'bg-blue-600');
+                            btn.disabled = false;
+                        }
+                    }
+                }, 1000);
                 return;
             }
 
-            // --- JIKA PRE-GENERATE GAGAL, MANUAL ---
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Menyusun Sertifikat...`;
+            // 3. Jika belum di-generate sama sekali (Fallback manual)
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat Sertifikat...`;
             btn.disabled = true;
             btn.classList.replace('bg-blue-600', 'bg-gray-500');
             isGeneratingCert = true;
@@ -803,7 +825,7 @@
                 const result = await response.json();
 
                 if(result.status === 'success' && result.url) {
-                    btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Siap Diunduh!`;
+                    btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
                     btn.classList.replace('bg-gray-500', 'bg-green-600');
                     userCertUrl = result.url; 
                     window.open(result.url, '_blank');
@@ -813,13 +835,11 @@
                         btn.disabled = false;
                     }, 3000);
                 } else {
-                    alert("Server sedang padat. Silakan coba klik tombol unduh sekali lagi.");
                     btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
                     btn.classList.replace('bg-gray-500', 'bg-blue-600');
                     btn.disabled = false;
                 }
             } catch(e) {
-                alert("Gangguan koneksi internet saat membuat sertifikat. Silakan coba lagi.");
                 btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
                 btn.classList.replace('bg-gray-500', 'bg-blue-600');
                 btn.disabled = false;
@@ -832,6 +852,8 @@
             if(confirm("Apakah Anda yakin ingin mengulang kuis dari awal? Nilai lama akan ditimpa.")) {
                 quizScoreVal = null;
                 userAnswers = [];
+                hasTriggeredPreGen = false;
+                userCertUrl = "";
                 localStorage.removeItem(quizScoreKey);
                 localStorage.removeItem(quizAnswersKey);
                 startQuizEngine();
@@ -886,8 +908,8 @@
         }
 
         // --- Logika Dark Mode UI & Dropdown ---
-        const themeToggleBtnNav = document.getElementById('theme-toggle'); // Navbar Desktop
-        const themeToggleBtnDrop = document.getElementById('theme-toggle-btn'); // Dropdown Mobile
+        const themeToggleBtnNav = document.getElementById('theme-toggle'); 
+        const themeToggleBtnDrop = document.getElementById('theme-toggle-btn'); 
         const themeTextDropdown = document.getElementById('theme-text-dropdown');
         const themeIconDropdown = document.getElementById('theme-icon-dropdown');
         const htmlElement = document.documentElement;
@@ -910,7 +932,6 @@
 
         function updateThemeUI() {
             const isDark = htmlElement.classList.contains('dark');
-            // Update teks dan icon di Dropdown saja
             if (isDark) {
                 themeTextDropdown.textContent = 'Mode Terang';
                 themeIconDropdown.classList.replace('fa-moon', 'fa-sun');
@@ -928,7 +949,6 @@
             updateThemeUI();
         }
 
-        // Event listener untuk kedua tombol switch
         if(themeToggleBtnNav) themeToggleBtnNav.addEventListener('click', toggleTheme);
         if(themeToggleBtnDrop) themeToggleBtnDrop.addEventListener('click', toggleTheme);
 
