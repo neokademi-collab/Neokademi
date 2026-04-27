@@ -367,35 +367,42 @@
                     const response = await fetch(targetUrl);
                     const result = await response.json();
                     
-                    if(result.status === 'success' && result.certificate) {
-                        userCertUrl = result.certificate;
-                    }
+                    if(result.status === 'success') {
+                        // Cek Sertifikat
+                        if(result.certificate && result.certificate !== "") {
+                            userCertUrl = result.certificate;
+                        } else {
+                            userCertUrl = "";
+                        }
 
-                    if(result.status === 'success' && result.progress) {
-                        completedChapters = result.progress.split(',').map(Number);
-                        localStorage.setItem(progressKey, JSON.stringify(completedChapters));
-                    } else {
-                        completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
-                        if (completedChapters.length > 0) {
-                            sendDataBeacon('updateProgress', completedChapters.join(','));
+                        // 1. Sync Progress (Kolom F)
+                        if(result.progress && result.progress !== "") {
+                            completedChapters = result.progress.split(',').map(Number);
+                            localStorage.setItem(progressKey, JSON.stringify(completedChapters));
+                        } else {
+                            // JIKA SERVER KOSONG, BERARTI AKUN BARU/DIRESET. HAPUS DATA LOKAL.
+                            completedChapters = [];
+                            localStorage.removeItem(progressKey);
                         }
-                    }
 
-                    if(result.status === 'success' && result.quiz !== "") {
-                        quizScoreVal = parseInt(result.quiz);
-                        localStorage.setItem(quizScoreKey, quizScoreVal);
-                        
-                        if(result.answers && result.answers !== "") {
-                            userAnswers = JSON.parse(result.answers);
-                            localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
+                        // 2. Sync Nilai Kuis (Kolom G) & Jawaban (Kolom H)
+                        if(result.quiz !== undefined && result.quiz !== "") {
+                            quizScoreVal = parseInt(result.quiz);
+                            localStorage.setItem(quizScoreKey, quizScoreVal);
+                            
+                            if(result.answers && result.answers !== "") {
+                                userAnswers = JSON.parse(result.answers);
+                                localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
+                            }
+                        } else {
+                            // JIKA SERVER KOSONG, BERARTI KUIS BELUM DIKERJAKAN. HAPUS DATA LOKAL.
+                            quizScoreVal = null;
+                            userAnswers = [];
+                            localStorage.removeItem(quizScoreKey);
+                            localStorage.removeItem(quizAnswersKey);
                         }
                     } else {
-                        const localScore = localStorage.getItem(quizScoreKey);
-                        if(localScore !== null) {
-                            quizScoreVal = parseInt(localScore);
-                            userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
-                            sendDataBeacon('saveQuiz', quizScoreVal, JSON.stringify(userAnswers));
-                        }
+                        throw new Error("Gagal mengambil data dari server"); 
                     }
                 } catch(err) {
                     console.error("Gagal sinkron, fallback ke data lokal.");
@@ -699,7 +706,7 @@
                     </button>
                 `;
 
-                // LOGIKA PRE-GENERATE SERTIFIKAT
+                // LOGIKA PRE-GENERATE SERTIFIKAT DI LATAR BELAKANG
                 if (!userCertUrl || userCertUrl === "") {
                     fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`)
                     .then(res => res.json())
@@ -707,7 +714,7 @@
                         if(data.status === 'success') {
                             userCertUrl = data.url;
                         }
-                    }).catch(e => console.log("Pre-gen proses berjalan..."));
+                    }).catch(e => console.log("Pre-gen sertifikat berjalan..."));
                 }
 
             } else {
@@ -742,7 +749,7 @@
             btn.classList.replace('bg-blue-600', 'bg-gray-500');
 
             if (userCertUrl && userCertUrl !== "") {
-                btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Berhasil Dibuat!`;
+                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
                 btn.classList.replace('bg-gray-500', 'bg-green-600');
                 window.open(userCertUrl, '_blank');
                 setTimeout(() => {
@@ -758,13 +765,10 @@
                 const result = await response.json();
 
                 if(result.status === 'success' && result.url) {
-                    btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Berhasil Dibuat!`;
+                    btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
                     btn.classList.replace('bg-gray-500', 'bg-green-600');
-                    
                     userCertUrl = result.url; 
-                    
                     window.open(result.url, '_blank');
-                    
                     setTimeout(() => {
                         btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
                         btn.classList.replace('bg-green-600', 'bg-blue-600');
