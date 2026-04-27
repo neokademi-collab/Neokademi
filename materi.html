@@ -671,7 +671,7 @@
             userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) currentCorrect++; });
             const requiredCorrect = Math.ceil((MIN_SCORE_PASS / 100) * quizData.length); 
             
-            // Jika sudah mencapai syarat kelulusan (contoh 12 benar), eksekusi PDF sekarang juga!
+            // Jika sudah mencapai syarat kelulusan, eksekusi PDF sekarang juga!
             if (currentCorrect >= requiredCorrect && !hasTriggeredPreGen && (!userCertUrl || userCertUrl === "")) {
                 hasTriggeredPreGen = true;
                 triggerBackgroundGeneration();
@@ -690,7 +690,7 @@
                 
                 sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
 
-                // Jaga-jaga jika early trigger terlewat (misal nilai pas di pertanyaan terakhir)
+                // Jaga-jaga jika early trigger terlewat
                 if (finalScore >= MIN_SCORE_PASS && !hasTriggeredPreGen) {
                     hasTriggeredPreGen = true;
                     triggerBackgroundGeneration();
@@ -727,7 +727,7 @@
             const msgEl = document.getElementById('result-msg');
             
             let actionButtonsHtml = `
-                <button onclick="showReview()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-xl transition-all">
+                <button onclick="showReview()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-xl transition-all whitespace-nowrap">
                     <i class="fa-regular fa-eye mr-2"></i> Lihat Pembahasan
                 </button>
             `;
@@ -737,8 +737,9 @@
                 msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
                 
+                // Class whitespace-nowrap ditambahkan agar tidak turun baris
                 actionButtonsHtml += `
-                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1 w-48">
+                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1 whitespace-nowrap">
                         <i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat
                     </button>
                 `;
@@ -748,7 +749,7 @@
                 document.getElementById('result-score').className = "text-6xl font-black text-red-500 mb-6";
                 
                 actionButtonsHtml += `
-                    <button id="btn-retake" onclick="retakeQuiz()" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-all">
+                    <button id="btn-retake" onclick="retakeQuiz()" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl transition-all whitespace-nowrap">
                         <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
                     </button>
                 `;
@@ -758,6 +759,7 @@
             renderSidebar();
         }
 
+        // FUNGSI CEK SERTIFIKAT DARI DROPDOWN
         function checkCertificate() {
             if (userCertUrl && userCertUrl !== "") {
                 window.open(userCertUrl, '_blank');
@@ -787,7 +789,7 @@
 
             // 2. Jika masih memuat di latar belakang (Tampilkan loading putar)
             if (isGeneratingCert) {
-                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat Sertifikat...`;
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
                 btn.disabled = true;
                 btn.classList.replace('bg-blue-600', 'bg-gray-500');
                 
@@ -815,7 +817,7 @@
             }
 
             // 3. Jika belum di-generate sama sekali (Fallback manual)
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat Sertifikat...`;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
             btn.disabled = true;
             btn.classList.replace('bg-blue-600', 'bg-gray-500');
             isGeneratingCert = true;
