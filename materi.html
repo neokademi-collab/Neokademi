@@ -94,8 +94,8 @@
                             </div>
                         </button>
                         
-                        <button onclick="checkCertificate()" class="w-full text-left flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            <i class="fa-solid fa-award w-5 text-center mr-3 text-amber-500"></i> Lihat Sertifikat
+                        <button id="dropdown-cert-btn" onclick="checkCertificate()" class="w-full text-left flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-award w-5 text-center mr-3 text-amber-500" id="dropdown-cert-icon"></i> <span id="dropdown-cert-text">Lihat Sertifikat</span>
                         </button>
 
                         <div class="h-px bg-gray-100 dark:bg-gray-700 my-1 mx-2"></div>
@@ -365,7 +365,7 @@
         
         let userCertUrl = "";
         let isGeneratingCert = false;
-        let hasTriggeredPreGen = false; // Bendera agar generate hanya dipicu 1x
+        let hasTriggeredPreGen = false;
 
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
@@ -461,7 +461,7 @@
                         userCertUrl = data.url;
                     }
                 })
-                .catch(e => console.log("Background generation error"))
+                .catch(e => console.log("Background generation silent"))
                 .finally(() => {
                     isGeneratingCert = false;
                 });
@@ -623,7 +623,7 @@
             
             currentQuizIndex = 0;
             userAnswers = [];
-            hasTriggeredPreGen = false; // Reset trigger kuis baru
+            hasTriggeredPreGen = false; 
             renderQuestion();
         }
 
@@ -666,12 +666,10 @@
         function nextQuestion() {
             userAnswers[currentQuizIndex] = selectedOption;
 
-            // --- EARLY TRIGGER LOGIC (Cek nilai disetiap klik lanjut) ---
             let currentCorrect = 0;
             userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) currentCorrect++; });
             const requiredCorrect = Math.ceil((MIN_SCORE_PASS / 100) * quizData.length); 
             
-            // Jika sudah mencapai syarat kelulusan, eksekusi PDF sekarang juga!
             if (currentCorrect >= requiredCorrect && !hasTriggeredPreGen && (!userCertUrl || userCertUrl === "")) {
                 hasTriggeredPreGen = true;
                 triggerBackgroundGeneration();
@@ -681,7 +679,6 @@
                 currentQuizIndex++;
                 renderQuestion();
             } else {
-                // Akhir Quiz
                 const finalScore = Math.round((currentCorrect / quizData.length) * 100);
                 
                 quizScoreVal = finalScore;
@@ -690,7 +687,6 @@
                 
                 sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
 
-                // Jaga-jaga jika early trigger terlewat
                 if (finalScore >= MIN_SCORE_PASS && !hasTriggeredPreGen) {
                     hasTriggeredPreGen = true;
                     triggerBackgroundGeneration();
@@ -737,7 +733,6 @@
                 msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-green-500 mb-6";
                 
-                // Class whitespace-nowrap ditambahkan agar tidak turun baris
                 actionButtonsHtml += `
                     <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1 whitespace-nowrap">
                         <i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat
@@ -759,22 +754,37 @@
             renderSidebar();
         }
 
-        // FUNGSI CEK SERTIFIKAT DARI DROPDOWN
+        // Cek Sertifikat dari Dropdown (Tanpa Notif/Alert jika sedang memuat)
         function checkCertificate() {
             if (userCertUrl && userCertUrl !== "") {
                 window.open(userCertUrl, '_blank');
             } else if (isGeneratingCert) {
-                alert("Sertifikat Anda sedang dimuat, mohon tunggu beberapa saat.");
+                // Beri efek loading visual di tombol dropdown alih-alih pop-up alert
+                const dropBtn = document.getElementById('dropdown-cert-btn');
+                const dropIcon = document.getElementById('dropdown-cert-icon');
+                const dropText = document.getElementById('dropdown-cert-text');
+                
+                dropIcon.className = "fa-solid fa-circle-notch fa-spin w-5 text-center mr-3 text-amber-500";
+                dropText.textContent = "Sedang Memuat...";
+                
+                setTimeout(() => {
+                    dropIcon.className = "fa-solid fa-award w-5 text-center mr-3 text-amber-500";
+                    dropText.textContent = "Lihat Sertifikat";
+                }, 3000);
             } else {
-                alert("Anda belum memiliki sertifikat. Silakan selesaikan semua materi dan lulus Final Quiz terlebih dahulu.");
+                alert("Anda belum memiliki sertifikat. Silakan selesaikan materi dan kuis terlebih dahulu.");
             }
-            document.getElementById('user-dropdown').classList.add('opacity-0', 'invisible', 'translate-y-2');
+            
+            // Jaga dropdown tetap tertutup setelah diklik
+            if (!isGeneratingCert) {
+                document.getElementById('user-dropdown').classList.add('opacity-0', 'invisible', 'translate-y-2');
+            }
         }
 
-        async function downloadCertificate() {
+        // FUNGSI UTAMA UNDUH SERTIFIKAT (Tanpa "Coba Lagi" / Alert Teknis)
+        function downloadCertificate() {
             const btn = document.getElementById('btn-download-cert');
 
-            // 1. Jika URL sudah ada (Instan)
             if (userCertUrl && userCertUrl !== "") {
                 btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
                 btn.classList.replace('bg-blue-600', 'bg-green-600');
@@ -787,13 +797,12 @@
                 return;
             }
 
-            // 2. Jika masih memuat di latar belakang (Tampilkan loading putar)
+            // Ubah tampilan tombol menjadi loading
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
+            btn.disabled = true;
+            btn.classList.replace('bg-blue-600', 'bg-gray-500');
+
             if (isGeneratingCert) {
-                btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
-                btn.disabled = true;
-                btn.classList.replace('bg-blue-600', 'bg-gray-500');
-                
-                // Polling: cek setiap 1 detik apakah proses background selesai
                 const checkInterval = setInterval(() => {
                     if (!isGeneratingCert) {
                         clearInterval(checkInterval);
@@ -807,21 +816,19 @@
                                 btn.disabled = false;
                             }, 3000);
                         } else {
-                            btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
-                            btn.classList.replace('bg-gray-500', 'bg-blue-600');
-                            btn.disabled = false;
+                            executeManualGen(btn);
                         }
                     }
                 }, 1000);
                 return;
             }
 
-            // 3. Jika belum di-generate sama sekali (Fallback manual)
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
-            btn.disabled = true;
-            btn.classList.replace('bg-blue-600', 'bg-gray-500');
-            isGeneratingCert = true;
+            executeManualGen(btn);
+        }
 
+        // Eksekutor Manual (Jika pre-generate gagal secara diam-diam)
+        async function executeManualGen(btn) {
+            isGeneratingCert = true;
             try {
                 const response = await fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
                 const result = await response.json();
@@ -837,12 +844,14 @@
                         btn.disabled = false;
                     }, 3000);
                 } else {
-                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
+                    // Revert UI diam-diam tanpa alert error
+                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
                     btn.classList.replace('bg-gray-500', 'bg-blue-600');
                     btn.disabled = false;
                 }
             } catch(e) {
-                btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Coba Lagi`;
+                // Revert UI diam-diam tanpa alert error
+                btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
                 btn.classList.replace('bg-gray-500', 'bg-blue-600');
                 btn.disabled = false;
             } finally {
