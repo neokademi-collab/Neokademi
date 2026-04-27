@@ -169,13 +169,125 @@
             "linux": {
                 courseName: "Linux System Administration",
                 chapters: [
-                    { id: 1, title: "Bab 1: Instalasi & Pemahaman Direktori Dasar", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", desc: `<p>Materi pondasi struktur Linux.</p>` },
-                    { id: 2, title: "Bab 2: Manajemen User, Group & Permission", video: "https://www.youtube.com/embed/rrB13utjYV4", desc: `<p>Keamanan server Linux dan Hak Akses.</p>` },
-                    { id: 3, title: "Bab 3: Manajemen Paket & Repository", video: "https://www.youtube.com/embed/v_1zbOUXYzI", desc: `<p>Instalasi via Terminal APT/YUM.</p>` },
-                    { id: 4, title: "Bab 4: Konfigurasi Jaringan & SSH Server", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Koneksi & Remote Server.</p>` },
-                    { id: 5, title: "Bab 5: Monitoring Sistem & Manajemen Proses", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Diagnosis server (top, htop, kill).</p>` },
-                    { id: 6, title: "Bab 6: Instalasi Web Server & Database", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Nginx & Systemctl.</p>` },
-                    { id: 7, title: "Bab 7: Dasar-dasar Bash Scripting", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p>Otomatisasi skrip Bash.</p>` }
+                    { 
+                        id: 1, 
+                        title: "Bab 1: Instalasi & Pemahaman Direktori Dasar", 
+                        video: "https://www.youtube.com/embed/wBp0Rb-ZJak", 
+                        desc: `
+                            <p class="mb-3">Pada bab pertama ini, kita akan mempelajari fondasi utama dari sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Pemahaman direktori utama: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/</code> (Root), <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/home</code> (User), <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/etc</code> (Konfigurasi), dan <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/var</code> (Data dinamis).</li>
+                                <li>Navigasi via terminal CLI.</li>
+                                <li>Perintah dasar manajemen file dan folder.</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">pwd, ls -la, cd, mkdir, rm -rf, cp, mv</p>
+                            </div>` 
+                    },
+                    { 
+                        id: 2, 
+                        title: "Bab 2: Manajemen User, Group & Permission", 
+                        video: "https://www.youtube.com/embed/rrB13utjYV4", 
+                        desc: `
+                            <p class="mb-3">Keamanan adalah prioritas utama di Linux. Bab ini membahas cara mengelola pengguna dan membatasi hak akses file agar server tidak mudah diretas.</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Membuat dan menghapus User serta Group.</li>
+                                <li>Konsep otorisasi Superuser (Root) dan Sudo.</li>
+                                <li>Membaca hak akses file: Read (4), Write (2), Execute (1).</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">useradd, usermod, passwd, chmod 755, chown user:group</p>
+                            </div>` 
+                    },
+                    { 
+                        id: 3, 
+                        title: "Bab 3: Manajemen Paket & Repository", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `
+                            <p class="mb-3">Pelajari cara menginstal, memperbarui, dan menghapus aplikasi (software) di lingkungan Linux menggunakan sistem manajemen paket.</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Perbedaan Package Manager APT (Debian/Ubuntu) dan YUM/DNF (RHEL/CentOS).</li>
+                                <li>Cara kerja file sources.list dan Repository pihak ketiga.</li>
+                                <li>Update patch keamanan sistem secara rutin.</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">apt update, apt upgrade, apt install [paket], apt remove</p>
+                            </div>` 
+                    },
+                    { 
+                        id: 4, 
+                        title: "Bab 4: Konfigurasi Jaringan & SSH Server", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
+                        desc: `
+                            <p class="mb-3">Server Linux biasanya berada di Data Center tanpa layar. Bab ini memandu Anda mengonfigurasi IP dan mengakses server dari jarak jauh (Remote).</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Cek dan konfigurasi IP Address (Static & DHCP).</li>
+                                <li>Troubleshooting koneksi jaringan.</li>
+                                <li>Instalasi OpenSSH Server dan login aman menggunakan SSH Keys.</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">ip a, ping, netstat, ssh user@ip_address</p>
+                            </div>` 
+                    },
+                    { 
+                        id: 5, 
+                        title: "Bab 5: Monitoring Sistem & Manajemen Proses", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
+                        desc: `
+                            <p class="mb-3">Seorang System Administrator harus tahu cara menganalisis beban server (Resource) dan mematikan program yang bermasalah.</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Membaca statistik RAM, CPU, dan penggunaan Hardisk.</li>
+                                <li>Monitoring proses secara *Real-time*.</li>
+                                <li>Menghentikan paksa aplikasi yang hang (Not Responding).</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">top, htop, free -m, df -h, ps aux, kill -9 [PID]</p>
+                            </div>` 
+                    },
+                    { 
+                        id: 6, 
+                        title: "Bab 6: Instalasi Web Server & Database", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
+                        desc: `
+                            <p class="mb-3">Mulai praktik membangun infrastruktur web. Kita akan menyulap Linux kosong menjadi server *Production* yang siap menjalankan website.</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Instalasi dan Konfigurasi Nginx (LEMP Stack).</li>
+                                <li>Instalasi sistem Database MySQL / MariaDB.</li>
+                                <li>Manajemen Service (Menghidupkan dan merestart layanan di *background*).</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">systemctl start nginx, systemctl enable, systemctl status</p>
+                            </div>` 
+                    },
+                    { 
+                        id: 7, 
+                        title: "Bab 7: Dasar-dasar Bash Scripting", 
+                        video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
+                        desc: `
+                            <p class="mb-3">Bab terakhir! Pelajari cara mengotomatisasi pekerjaan yang berulang-ulang dengan menulis skrip pemrograman sederhana di terminal Linux.</p>
+                            <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li>Struktur dasar skrip (penggunaan Shebang <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">#!/bin/bash</code>).</li>
+                                <li>Variabel, argumen, dan perulangan (Loops).</li>
+                                <li>Menjadikan file skrip bisa dieksekusi secara mandiri.</li>
+                            </ul>
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                                <p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                                <p class="text-sm font-mono text-gray-600 dark:text-gray-400">nano script.sh, chmod +x script.sh, ./script.sh</p>
+                            </div>` 
+                    }
                 ]
             }
         };
