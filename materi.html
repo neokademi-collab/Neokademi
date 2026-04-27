@@ -46,7 +46,7 @@
         .sidebar-transition { transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 font-sans antialiased h-screen flex flex-col overflow-hidden hidden" id="main-body">
+<body class="bg-gray-50 text-gray-800 dark:bg-darkBg dark:text-gray-100 font-sans antialiased h-[100dvh] flex flex-col overflow-hidden hidden" id="main-body">
 
     <div id="global-loader" class="fixed inset-0 bg-white/90 dark:bg-darkBg/90 z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
@@ -85,7 +85,7 @@
                     <div id="progress-bar-fill" class="bg-primary h-2.5 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
                 </div>
             </div>
-            <div class="flex-1 overflow-y-auto py-2 flex flex-col" id="chapter-list"></div>
+            <div class="flex-1 overflow-y-auto py-2 pb-24 flex flex-col" id="chapter-list"></div>
         </aside>
 
         <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-darkBg p-4 sm:p-6 lg:p-8 w-full transition-all duration-300">
@@ -101,7 +101,8 @@
                             <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide border border-primary/20">Video Materi</span>
                         </div>
                         <h1 id="chapter-title" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">Memuat Materi...</h1>
-                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-4"></div>
+                        
+                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed space-y-4 text-base md:text-lg"></div>
                     </div>
                 </div>
 
@@ -375,10 +376,23 @@
             document.getElementById('video-player').src = chapter.video;
             document.getElementById('chapter-title').textContent = chapter.title;
             
+            // Logika Tombol Selesai
             const isCompleted = completedChapters.includes(chapterId);
-            let btnHtml = isCompleted ?
-                `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari</button>` :
-                `<button id="btn-mark-done" onclick="markCurrentAsDone()" class="ml-auto flex items-center px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1"><i class="fa-regular fa-circle-check text-xl mr-2"></i> Tandai Selesai</button>`;
+            const isLastChapter = (chapterId === activeData.chapters[activeData.chapters.length - 1].id);
+            
+            let btnHtml = '';
+            
+            if (isCompleted) {
+                if (isLastChapter) {
+                    // Jika bab terakhir dan sudah dipelajari, tombol jadi Final Quiz
+                    btnHtml = `<button onclick="openQuizPage()" class="ml-auto flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1"><i class="fa-solid fa-medal text-xl mr-2"></i> Final Quiz</button>`;
+                } else {
+                    // Jika bab biasa, tombol jadi Tanda Ceklis (1 saja)
+                    btnHtml = `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check text-xl mr-2"></i> Selesai Dipelajari</button>`;
+                }
+            } else {
+                btnHtml = `<button id="btn-mark-done" onclick="markCurrentAsDone()" class="ml-auto flex items-center px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1"><i class="fa-regular fa-circle-check text-xl mr-2"></i> Tandai Selesai</button>`;
+            }
 
             document.getElementById('chapter-desc').innerHTML = chapter.desc + `<div class="flex justify-end w-full border-t border-gray-100 dark:border-gray-800 pt-6 mt-10">${btnHtml}</div>`;
 
@@ -397,21 +411,24 @@
                 // Kirim Background ke Excel menggunakan Beacon
                 sendDataBeacon('updateProgress', progressString);
 
+                const isLastChapter = (currentChapterId === activeData.chapters[activeData.chapters.length - 1].id);
+                let newBtnHtml = '';
+
+                if (isLastChapter) {
+                    // Jika ini bab terakhir, tombol langsung berubah jadi Final Quiz
+                    newBtnHtml = `<button onclick="openQuizPage()" class="ml-auto flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1 animate-content"><i class="fa-solid fa-medal text-xl mr-2"></i> Final Quiz</button>`;
+                } else {
+                    // Tombol berubah jadi 1 Ceklis
+                    newBtnHtml = `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed animate-content"><i class="fa-solid fa-check text-xl mr-2"></i> Selesai Dipelajari</button>`;
+                }
+
                 // UI INSTAN UPDATE (Optimistic Update)
                 document.getElementById('chapter-desc').innerHTML = document.getElementById('chapter-desc').innerHTML.replace(
                     /<button id="btn-mark-done"[\s\S]*?<\/button>/,
-                    `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check-double text-xl mr-2"></i> Selesai Dipelajari</button>`
+                    newBtnHtml
                 );
                 
                 renderSidebar();
-                
-                if(completedChapters.length >= activeData.chapters.length) {
-                    setTimeout(() => {
-                        if(confirm("Selamat! Anda telah menyelesaikan seluruh materi. Apakah Anda siap mengikuti Final Quiz?")) {
-                            openQuizPage();
-                        }
-                    }, 500);
-                }
             }
         }
 
