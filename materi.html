@@ -55,7 +55,7 @@
 
     <script>document.getElementById('main-body').classList.remove('hidden');</script>
 
-    <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-gray-800 transition-colors h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-gray-800 transition-colors h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 relative">
         <div class="flex items-center gap-3">
             <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none"><i class="fa-solid fa-bars text-xl"></i></button>
             <button onclick="toggleDesktopSidebar()" class="hidden md:block text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none transition-transform" id="desktop-toggle-icon"><i class="fa-solid fa-bars-staggered text-xl"></i></button>
@@ -64,10 +64,34 @@
                 <span class="font-bold text-lg hidden sm:block text-gray-900 dark:text-white">Neokademi Workspace</span>
             </a>
         </div>
-        <div class="flex items-center space-x-4">
-            <span class="text-sm text-gray-600 dark:text-gray-400 font-medium hidden sm:block" id="user-greeting">Memuat...</span>
-            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none"><i id="theme-icon" class="fa-solid fa-moon text-gray-600 dark:text-gray-300"></i></button>
-            <button onclick="logout()" class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-semibold rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"><i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> Keluar</button>
+        
+        <div class="flex items-center relative">
+            <button id="user-menu-btn" class="flex items-center gap-3 p-1.5 pr-2 rounded-full border border-transparent hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none">
+                <span class="text-sm text-gray-700 dark:text-gray-300 font-bold hidden sm:block pl-2" id="user-greeting">Siswa</span>
+                <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                    <i class="fa-solid fa-user text-sm"></i>
+                </div>
+                <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 ml-1"></i>
+            </button>
+
+            <div id="user-dropdown" class="absolute top-[110%] right-0 w-56 bg-white dark:bg-darkCard rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 opacity-0 invisible transition-all duration-200 transform origin-top-right z-50 translate-y-2">
+                <div class="p-2 space-y-1">
+                    <button id="theme-toggle-btn" class="w-full text-left flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <i id="theme-icon-dropdown" class="fa-solid w-5 text-center mr-3"></i> 
+                        <span id="theme-text-dropdown">Mode Gelap</span>
+                    </button>
+                    
+                    <button onclick="checkCertificate()" class="w-full text-left flex items-center px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <i class="fa-solid fa-award w-5 text-center mr-3 text-amber-500"></i> Lihat Sertifikat
+                    </button>
+
+                    <div class="h-px bg-gray-100 dark:bg-gray-700 my-1 mx-2"></div>
+
+                    <button onclick="logout()" class="w-full text-left flex items-center px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl transition-colors text-sm font-bold">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center mr-3"></i> Keluar
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -88,7 +112,7 @@
             <div class="flex-1 overflow-y-auto py-2 pb-24 flex flex-col" id="chapter-list"></div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-darkBg p-4 sm:p-6 lg:p-8 w-full transition-all duration-300">
+        <main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-darkBg p-4 sm:p-6 lg:p-8 w-full transition-all duration-300" id="main-content-area">
             <div class="max-w-4xl mx-auto">
                 
                 <div id="content-container" class="animate-content">
@@ -324,6 +348,9 @@
         let currentQuizIndex = 0;
         let selectedOption = null;
         let userAnswers = [];
+        
+        // Simpan URL sertifikat jika sudah terbuat dari backend
+        let userCertUrl = "";
 
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
@@ -335,13 +362,18 @@
                 quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
                 quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
                 
-                document.getElementById('user-greeting').textContent = `Halo, ${userEmail.split('@')[0]}`;
+                document.getElementById('user-greeting').textContent = userEmail.split('@')[0];
                 
                 try {
                     const targetUrl = `${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`;
                     const response = await fetch(targetUrl);
                     const result = await response.json();
                     
+                    // Cek Sertifikat Tersimpan
+                    if(result.status === 'success' && result.certificate) {
+                        userCertUrl = result.certificate;
+                    }
+
                     // 1. Sync Progress (Kolom F)
                     if(result.status === 'success' && result.progress) {
                         completedChapters = result.progress.split(',').map(Number);
@@ -496,10 +528,8 @@
             
             if (isCompleted) {
                 if (isLastChapter) {
-                    // Jika bab terakhir dan sudah dipelajari, tombol jadi Final Quiz
                     btnHtml = `<button onclick="openQuizPage()" class="ml-auto flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1"><i class="fa-solid fa-medal text-xl mr-2"></i> Final Quiz</button>`;
                 } else {
-                    // Jika bab biasa, tombol jadi Tanda Ceklis (1 saja)
                     btnHtml = `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed"><i class="fa-solid fa-check text-xl mr-2"></i> Selesai Dipelajari</button>`;
                 }
             } else {
@@ -527,14 +557,12 @@
                 let newBtnHtml = '';
 
                 if (isLastChapter) {
-                    // Jika ini bab terakhir, tombol langsung berubah jadi Final Quiz
                     newBtnHtml = `<button onclick="openQuizPage()" class="ml-auto flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:-translate-y-1 animate-content"><i class="fa-solid fa-medal text-xl mr-2"></i> Final Quiz</button>`;
                 } else {
-                    // Tombol berubah jadi 1 Ceklis
                     newBtnHtml = `<button disabled class="ml-auto flex items-center px-6 py-3 bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 font-bold rounded-xl transition-all shadow-sm cursor-not-allowed animate-content"><i class="fa-solid fa-check text-xl mr-2"></i> Selesai Dipelajari</button>`;
                 }
 
-                // UI INSTAN UPDATE (Optimistic Update)
+                // UI INSTAN UPDATE
                 document.getElementById('chapter-desc').innerHTML = document.getElementById('chapter-desc').innerHTML.replace(
                     /<button id="btn-mark-done"[\s\S]*?<\/button>/,
                     newBtnHtml
@@ -569,6 +597,9 @@
             
             renderSidebar();
             if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
+            
+            // Scroll otomatis ke atas
+            document.getElementById('main-content-area').scrollTo(0,0);
         }
 
         function startQuizEngine() {
@@ -640,6 +671,8 @@
                 document.getElementById('quiz-area').classList.add('hidden');
                 showQuizResult(finalScore);
             }
+            // Auto scroll ke atas soal
+            document.getElementById('main-content-area').scrollTo(0,0);
         }
 
         function showQuizResult(score) {
@@ -701,6 +734,17 @@
             renderSidebar();
         }
 
+        // FUNGSI CEK SERTIFIKAT DARI DROPDOWN
+        function checkCertificate() {
+            if (userCertUrl && userCertUrl !== "") {
+                window.open(userCertUrl, '_blank');
+            } else {
+                alert("Anda belum memiliki sertifikat. Silakan selesaikan semua materi dan lulus Final Quiz terlebih dahulu.");
+            }
+            // Tutup dropdown setelah klik
+            document.getElementById('user-dropdown').classList.add('opacity-0', 'invisible', 'translate-y-2');
+        }
+
         async function downloadCertificate() {
             const btn = document.getElementById('btn-download-cert');
             btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Menyusun Sertifikat...`;
@@ -715,6 +759,9 @@
                 if(result.status === 'success' && result.url) {
                     btn.innerHTML = `<i class="fa-solid fa-check-double mr-2"></i> Berhasil Dibuat!`;
                     btn.classList.replace('bg-gray-500', 'bg-green-600');
+                    
+                    // Simpan URL secara lokal agar tombol di dropdown langsung berfungsi tanpa reload
+                    userCertUrl = result.url; 
                     
                     window.open(result.url, '_blank');
                     
@@ -797,28 +844,61 @@
             }
         }
 
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
+        // --- Logika Dark Mode & Dropdown User ---
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const themeIconDropdown = document.getElementById('theme-icon-dropdown');
+        const themeTextDropdown = document.getElementById('theme-text-dropdown');
         const htmlElement = document.documentElement;
 
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            htmlElement.classList.add('dark');
-            themeIcon.classList.replace('fa-moon', 'fa-sun');
-        } else {
-            htmlElement.classList.remove('dark');
-        }
+        const userMenuBtn = document.getElementById('user-menu-btn');
+        const userDropdown = document.getElementById('user-dropdown');
 
-        themeToggleBtn.addEventListener('click', () => {
-            htmlElement.classList.toggle('dark');
-            if (htmlElement.classList.contains('dark')) {
-                localStorage.setItem('theme', 'dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                localStorage.setItem('theme', 'light');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
+        // Toggle Dropdown Animasi
+        userMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('opacity-0');
+            userDropdown.classList.toggle('invisible');
+            userDropdown.classList.toggle('translate-y-2');
+        });
+
+        // Tutup dropdown jika klik di luar
+        document.addEventListener('click', (e) => {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('opacity-0', 'invisible', 'translate-y-2');
             }
         });
 
+        function updateThemeUI() {
+            if (htmlElement.classList.contains('dark')) {
+                themeIconDropdown.classList.replace('fa-moon', 'fa-sun');
+                themeTextDropdown.textContent = 'Mode Terang';
+            } else {
+                themeIconDropdown.classList.replace('fa-sun', 'fa-moon');
+                themeTextDropdown.textContent = 'Mode Gelap';
+            }
+        }
+
+        // Inisialisasi Tema
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+        updateThemeUI();
+
+        // Event Toggle Tema
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Agar dropdown tidak langsung menutup
+            htmlElement.classList.toggle('dark');
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+            updateThemeUI();
+        });
+
+        // --- Logika Sidebar Mobile/Desktop ---
         const sidebar = document.getElementById('sidebar');
         const sidebarBackdrop = document.getElementById('sidebar-backdrop');
         const desktopToggleIcon = document.getElementById('desktop-toggle-icon');
