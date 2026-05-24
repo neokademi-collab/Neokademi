@@ -289,7 +289,7 @@
 
         const data = modulData[modulKey];
 
-        // Render UI
+        // Render UI Basic
         document.title = data.title + " - LMS Neokademi";
         document.getElementById('detail-title').textContent = data.title;
         document.getElementById('detail-desc').textContent = data.desc;
@@ -306,26 +306,92 @@
         document.getElementById('lesson-count-badge').textContent = lessonCount + " Lessons";
         document.getElementById('feature-lesson-count').textContent = lessonCount + " Lessons";
 
-        // Link Checkout & Login
-        document.getElementById('btn-enroll-checkout').href = data.checkoutLink;
-        document.getElementById('btn-login-kelas').href = 'login.html?modul=' + modulKey;
+        // ==========================================
+        // LOGIKA PENGECEKAN KEPEMILIKAN KELAS (BARU)
+        // ==========================================
+        const rawSession = localStorage.getItem('neokademi_user');
+        let session = null;
+        let isEnrolled = false;
+        let completedChapters = [];
+        const now = new Date().getTime();
 
-        // Render Syllabus
+        if (rawSession) {
+            session = JSON.parse(rawSession);
+            // Cek apakah user login, sesi belum expired, DAN modul yang dibuka = modul yang dibeli
+            if (session.isLoggedIn && session.expiry && now <= session.expiry && session.modul === modulKey) {
+                isEnrolled = true;
+                // Tarik progres user
+                const progressKey = 'neokademi_progress_' + session.email.trim().toLowerCase();
+                const rawProgress = localStorage.getItem(progressKey);
+                if (rawProgress) {
+                    completedChapters = JSON.parse(rawProgress);
+                }
+            }
+        }
+
+        // --- Render Tombol CTA (Berdasarkan Status Enrollment) ---
+        const btnEnroll = document.getElementById('btn-enroll-checkout');
+        const btnLogin = document.getElementById('btn-login-kelas');
+
+        if (isEnrolled) {
+            const isCompleted = completedChapters.length >= data.syllabus.length;
+            
+            // Ubah tombol atas menjadi Continue (Lanjut Belajar)
+            btnEnroll.innerHTML = 'Continue <i class="fa-solid fa-arrow-right ml-2"></i>';
+            btnEnroll.href = 'materi.html';
+            
+            // Ubah tombol bawah menjadi status (In Progress / Complete)
+            if (isCompleted) {
+                btnLogin.innerHTML = '<i class="fa-solid fa-certificate mr-2"></i> Completed';
+                btnLogin.className = "w-full flex items-center justify-center px-6 py-3.5 bg-green-50 text-green-700 font-bold rounded-full cursor-default border border-green-200 shadow-inner";
+                btnLogin.href = "javascript:void(0)";
+            } else {
+                btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> In Progress';
+                btnLogin.className = "w-full flex items-center justify-center px-6 py-3.5 bg-yellow-50 text-yellow-700 font-bold rounded-full cursor-default border border-yellow-200 shadow-inner";
+                btnLogin.href = "javascript:void(0)";
+            }
+        } else {
+            // Logika Default (Belum Beli / Belum Login)
+            btnEnroll.href = data.checkoutLink;
+            btnLogin.href = 'login.html?modul=' + modulKey;
+        }
+
+        // --- Render Syllabus (Berdasarkan Status Enrollment) ---
         const syllabusContainer = document.getElementById('detail-syllabus');
         data.syllabus.forEach((item, index) => {
+            const chapterId = index + 1; // Asumsi ID materi dimulai dari 1 berurutan
+            const isChapterDone = isEnrolled && completedChapters.includes(chapterId);
+            
             const li = document.createElement('li');
             li.className = "group hover:bg-gray-50 transition-colors cursor-pointer";
-            li.innerHTML = `
-                <a href="#" class="flex items-center px-6 py-4">
-                    <!-- Icon Sebelah Kiri (Empty Circle ala LearnDash) -->
-                    <div class="flex-shrink-0 mr-4">
-                        <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center group-hover:border-primary transition-colors">
-                            <i class="fa-solid fa-play text-[8px] text-gray-300 group-hover:text-primary ml-0.5"></i>
-                        </div>
+            
+            let iconHtml = '';
+            let textClass = 'text-textColor group-hover:text-primary';
+
+            if (isChapterDone) {
+                // Jika sudah selesai, icon berubah jadi ceklis hijau
+                iconHtml = `
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center bg-green-100 border border-green-500">
+                        <i class="fa-solid fa-check text-[10px] text-green-600"></i>
                     </div>
-                    <!-- Judul Materi -->
+                `;
+                textClass = 'text-gray-900 font-semibold'; // Teks lebih tebal
+            } else {
+                // Default belum selesai / belum beli
+                iconHtml = `
+                    <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center group-hover:border-primary transition-colors">
+                        <i class="fa-solid fa-play text-[8px] text-gray-300 group-hover:text-primary ml-0.5"></i>
+                    </div>
+                `;
+            }
+
+            li.innerHTML = `
+                <a href="${isEnrolled ? 'materi.html' : '#'}" class="flex items-center px-6 py-4">
+                    <div class="flex-shrink-0 mr-4">
+                        ${iconHtml}
+                    </div>
                     <div class="flex-1">
-                        <span class="text-textColor font-medium group-hover:text-primary transition-colors">
+                        <span class="${textClass} transition-colors">
                             ${index + 1}. ${item}
                         </span>
                     </div>
