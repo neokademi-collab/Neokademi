@@ -12,9 +12,9 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#385DFF', /* Biru IDN / BuddyBoss */
-                        primaryHover: '#1E42DD',
-                        danger: '#EB4E4F', /* Merah IDN */
+                        primary: '#5A32FA', /* Warna ungu/biru menyerupai referensi IDN */
+                        primaryHover: '#4A28D0',
+                        danger: '#EB4E4F', 
                         darkBlue: '#122B46',
                         bgBody: '#FAFBFD',
                         borderColor: '#E7E9EC',
@@ -31,7 +31,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #FAFBFD; color: #4D5C6D; }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -41,7 +40,6 @@
             background: linear-gradient(135deg, rgba(18, 43, 70, 0.95) 0%, rgba(18, 43, 70, 0.8) 100%), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop') center/cover;
         }
 
-        /* Sidebar sticky offset */
         .sticky-sidebar {
             position: sticky;
             top: 100px;
@@ -50,28 +48,27 @@
 </head>
 <body class="antialiased flex flex-col min-h-screen">
 
-    <!-- NAVBAR -->
     <nav class="sticky top-0 z-50 bg-white border-b border-borderColor shadow-sm h-[76px] flex items-center transition-colors">
         <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            
             <a href="index.html" class="flex items-center">
-                <img src="assets/img/Neokademi.png" onerror="this.src='https://ui-avatars.com/api/?name=N&color=385DFF&background=D7DFFF'" alt="Logo" class="w-10 h-10 object-contain mr-3">
+                <img src="assets/img/Neokademi.png" onerror="this.src='https://ui-avatars.com/api/?name=N&color=5A32FA&background=D7DFFF'" alt="Logo" class="w-10 h-10 object-contain mr-3">
                 <span class="font-bold text-xl text-darkBlue">Neokademi</span>
             </a>
             
-            <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden md:flex items-center justify-end flex-1 space-x-8">
                 <a href="index.html" class="text-textColor hover:text-danger font-medium transition-colors"><i class="fa-solid fa-home mr-2 text-sm"></i>Beranda</a>
                 <a href="index.html#kelas-section" class="text-textColor hover:text-danger font-medium transition-colors"><i class="fa-solid fa-award mr-2 text-sm"></i>Pilihan Kursus</a>
                 <a href="#" class="text-textColor hover:text-danger font-medium transition-colors"><i class="fa-solid fa-comments mr-2 text-sm"></i>Group Diskusi</a>
-            </div>
-
-            <div class="hidden md:flex items-center space-x-4">
-                <a href="login.html" class="px-5 py-2 text-textColor font-medium hover:text-primary transition-colors">Masuk</a>
-                <a href="login.html" class="px-5 py-2 bg-primary text-white font-medium rounded-full hover:bg-primaryHover transition-colors shadow-md">Daftar</a>
+                
+                <div class="flex items-center space-x-3 pl-4 border-l border-gray-200">
+                    <a href="login.html" class="px-5 py-2 text-textColor font-medium hover:text-primary transition-colors">Masuk</a>
+                    <a href="login.html" class="px-5 py-2 bg-primary text-white font-medium rounded-full hover:bg-primaryHover transition-colors shadow-md">Daftar</a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- HERO BANNER -->
     <div class="banner-overlay w-full py-16 md:py-24 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="flex flex-col md:flex-row gap-8 items-center md:items-start justify-between">
@@ -81,11 +78,7 @@
                         <span class="text-gray-400">/</span>
                         <a href="#" class="text-gray-300 hover:text-white transition-colors">Premium</a>
                         <span class="text-gray-400">/</span>
-                        <span class="text-gray-100" id="detail-category-breadcrumb">Network</span>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-sm uppercase tracking-wider" id="detail-level">Premium Course</span>
+                        <span class="text-gray-100" id="detail-category-breadcrumb">Kategori</span>
                     </div>
                     
                     <h1 id="detail-title" class="text-4xl md:text-5xl font-bold mb-4 leading-tight">Memuat Judul...</h1>
@@ -99,22 +92,18 @@
         </div>
     </div>
 
-    <!-- MAIN CONTENT & SIDEBAR -->
     <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- LEFT COLUMN: Content & Syllabus (Di HP di bawah, di Laptop di Kiri) -->
             <div class="lg:col-span-2 space-y-8 order-2 lg:order-1">
                 
-                <!-- About Course -->
                 <div class="bg-white p-8 rounded-xl border border-borderColor shadow-sm">
-                    <h2 class="text-2xl font-bold text-darkBlue mb-4">Tentang Kursus Ini</h2>
-                    <p id="detail-desc" class="text-textColor leading-relaxed text-lg">
-                        Mohon tunggu sebentar, sedang menyiapkan data kelas...
+                    <h2 class="text-2xl font-bold text-darkBlue mb-4">Tentang Course</h2>
+                    <p id="detail-desc" class="text-textColor leading-relaxed text-[15px]">
+                        Mohon tunggu sebentar...
                     </p>
                 </div>
 
-                <!-- Course Content (Syllabus ala LearnDash) -->
                 <div class="bg-white rounded-xl border border-borderColor shadow-sm overflow-hidden">
                     <div class="bg-gray-50 border-b border-borderColor p-6 flex justify-between items-center">
                         <h2 class="text-xl font-bold text-darkBlue">Course Content</h2>
@@ -123,65 +112,45 @@
                     
                     <div class="p-0">
                         <ul id="detail-syllabus" class="divide-y divide-borderColor">
-                            <!-- List silabus akan dimuat via JS -->
-                        </ul>
+                            </ul>
                     </div>
                 </div>
 
             </div>
 
-            <!-- RIGHT COLUMN: Sticky Sidebar (Di HP di atas, di Laptop di Kanan) -->
             <div class="lg:col-span-1 order-1 lg:order-2">
                 <div class="bg-white rounded-xl border border-borderColor shadow-lg overflow-hidden sticky-sidebar">
                     
-                    <!-- Thumbnail Preview -->
-                    <div class="relative w-full h-52 bg-gray-100 flex items-center justify-center overflow-hidden" id="sidebar-thumbnail-bg">
-                        <div class="absolute inset-0 bg-black/40 z-10"></div>
-                        <!-- Ikon Play Overlay -->
-                        <div class="relative z-20 w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white cursor-pointer hover:scale-105 transition-transform">
-                            <i class="fa-solid fa-play text-2xl text-white ml-1"></i>
-                        </div>
-                        <div class="absolute bottom-3 text-white text-sm font-medium z-20 drop-shadow-md">
-                            Preview this Course
-                        </div>
-                        <!-- Icon dari JS -->
-                        <div id="sidebar-icon" class="absolute inset-0 flex items-center justify-center opacity-30 blur-sm scale-150">
+                    <div class="relative w-full h-[220px] bg-gray-900 flex items-center justify-center overflow-hidden">
+                        <img id="sidebar-thumbnail-img" src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?q=80&w=800&auto=format&fit=crop" alt="Course Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-overlay">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                        
+                        <div class="relative z-20 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/80 cursor-pointer hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,0,0,0.3)]">
+                            <i class="fa-solid fa-play text-xl text-white ml-1"></i>
                         </div>
                     </div>
 
                     <div class="p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <div class="text-2xl font-bold text-darkBlue">Premium</div>
-                        </div>
-                        
-                        <!-- CTA Buttons -->
-                        <div class="space-y-3 mb-8">
-                            <a id="btn-enroll-checkout" href="#" target="_blank" class="w-full flex items-center justify-center px-6 py-3.5 bg-primary text-white font-bold rounded-full hover:bg-primaryHover transition-colors shadow-md">
-                                Enroll Sekarang
-                            </a>
-                            <a id="btn-login-kelas" href="login.html" class="w-full flex items-center justify-center px-6 py-3.5 bg-gray-100 text-darkBlue font-semibold rounded-full hover:bg-gray-200 transition-colors">
-                                Sudah Punya Akses?
-                            </a>
+                        <div id="sidebar-action-buttons" class="space-y-3 mb-6">
+                            </div>
+
+                        <div class="text-center mb-6">
+                            <span class="text-gray-400 font-medium text-sm" id="detail-level">Premium Course</span>
                         </div>
 
-                        <!-- Course Includes -->
                         <div class="border-t border-borderColor pt-6">
-                            <h4 class="font-bold text-darkBlue mb-4 text-sm uppercase tracking-wider">Course Includes</h4>
+                            <h4 class="font-bold text-darkBlue mb-4 text-lg">Course Includes</h4>
                             <ul class="space-y-4 text-sm text-textColor">
                                 <li class="flex items-center">
-                                    <i class="fa-solid fa-book w-6 text-gray-400"></i> 
+                                    <i class="fa-regular fa-file-lines w-6 text-gray-400 text-lg"></i> 
                                     <span id="feature-lesson-count">... Lessons</span>
                                 </li>
                                 <li class="flex items-center">
-                                    <i class="fa-solid fa-clock w-6 text-gray-400"></i> 
-                                    <span>Akses Seumur Hidup</span>
+                                    <i class="fa-regular fa-circle-question w-6 text-gray-400 text-lg"></i> 
+                                    <span>1 Quiz</span>
                                 </li>
                                 <li class="flex items-center">
-                                    <i class="fa-solid fa-mobile-screen-button w-6 text-gray-400"></i> 
-                                    <span>Akses di HP & Laptop</span>
-                                </li>
-                                <li class="flex items-center">
-                                    <i class="fa-solid fa-certificate w-6 text-gray-400"></i> 
+                                    <i class="fa-solid fa-award w-6 text-gray-400 text-lg"></i> 
                                     <span>Course Certificate</span>
                                 </li>
                             </ul>
@@ -194,7 +163,6 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-white border-t border-borderColor pt-12 pb-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -226,9 +194,8 @@
                 title: "Linux System Administration",
                 category: "Server Management",
                 level: "Pemula - Menengah",
-                desc: "Kuasai fondasi sistem operasi open-source, manajemen server, security, dan bash scripting dari dasar hingga mahir. Sangat cocok untuk Anda yang ingin berkarir sebagai System Administrator atau Cloud Engineer.",
-                iconHtml: `<i class="fa-brands fa-linux text-9xl text-white"></i>`,
-                bgStyle: "bg-gradient-to-br from-yellow-500 to-orange-500",
+                desc: "Pelajari Linux dari nol. Mulai dari perintah dasar terminal, manajemen user, hingga setup web server. Materi disusun praktis sebagai bekal karir System Administrator.",
+                thumbnailImg: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?q=80&w=800&auto=format&fit=crop",
                 checkoutLink: "https://lynk.id/drawhen02/6k3o6e37q11q",
                 syllabus: [
                     "Instalasi & Pemahaman Hierarki Direktori Linux",
@@ -244,9 +211,8 @@
                 title: "Cloud Modern Workspace",
                 category: "Cloud Computing",
                 level: "Menengah",
-                desc: "Pelajari cara mengimplementasi dan mengelola ekosistem digital perusahaan modern secara aman dan efisien menggunakan layanan cloud ternama seperti Microsoft 365 dan Google Workspace (G-Suite).",
-                iconHtml: `<i class="fa-solid fa-cloud text-9xl text-white"></i>`,
-                bgStyle: "bg-gradient-to-br from-blue-500 to-cyan-500",
+                desc: "Panduan praktis mengelola ekosistem kerja digital. Fokus pada implementasi dan manajemen keamanan layanan Microsoft 365 serta Google Workspace untuk perusahaan.",
+                thumbnailImg: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop",
                 checkoutLink: "#", 
                 syllabus: [
                     "Konsep Dasar Modern Workspace & Cloud Computing",
@@ -262,9 +228,8 @@
                 title: "Digital Marketing Mastery",
                 category: "Marketing",
                 level: "Pemula",
-                desc: "Melejitkan omset bisnis dan jenjang karir Anda dengan mempelajari strategi komprehensif mulai dari Social Media Ads, Search Engine Optimization (SEO), hingga analitik dan optimasi tingkat konversi.",
-                iconHtml: `<i class="fa-solid fa-bullhorn text-9xl text-white"></i>`,
-                bgStyle: "bg-gradient-to-br from-rose-500 to-pink-500",
+                desc: "Kuasai teknik pemasaran digital yang terbukti menghasilkan konversi. Mulai dari riset audiens yang tepat, Facebook Ads, Google Ads, hingga analisis data mendalam.",
+                thumbnailImg: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
                 checkoutLink: "#",
                 syllabus: [
                     "Fundamental Digital Marketing & Customer Journey",
@@ -282,32 +247,26 @@
         const urlParams = new URLSearchParams(window.location.search);
         let modulKey = urlParams.get('modul');
         
-        // Default fallback untuk preview jika dibuka tanpa parameter
         if (!modulKey || !modulData[modulKey]) {
             modulKey = 'linux'; 
         }
 
         const data = modulData[modulKey];
 
-        // Render UI Basic
+        // Render Data HTML
         document.title = data.title + " - LMS Neokademi";
         document.getElementById('detail-title').textContent = data.title;
         document.getElementById('detail-desc').textContent = data.desc;
         document.getElementById('detail-level').textContent = data.level;
         document.getElementById('detail-category-breadcrumb').textContent = data.category;
+        document.getElementById('sidebar-thumbnail-img').src = data.thumbnailImg;
         
-        // Sidebar Styling
-        const sidebarBg = document.getElementById('sidebar-thumbnail-bg');
-        sidebarBg.className = `relative w-full h-52 flex items-center justify-center overflow-hidden ${data.bgStyle}`;
-        document.getElementById('sidebar-icon').innerHTML = data.iconHtml;
-        
-        // Hitung jumlah lesson
         const lessonCount = data.syllabus.length;
         document.getElementById('lesson-count-badge').textContent = lessonCount + " Lessons";
         document.getElementById('feature-lesson-count').textContent = lessonCount + " Lessons";
 
         // ==========================================
-        // LOGIKA PENGECEKAN KEPEMILIKAN KELAS (BARU)
+        // LOGIKA PENGECEKAN KEPEMILIKAN KELAS
         // ==========================================
         const rawSession = localStorage.getItem('neokademi_user');
         let session = null;
@@ -317,10 +276,8 @@
 
         if (rawSession) {
             session = JSON.parse(rawSession);
-            // Cek apakah user login, sesi belum expired, DAN modul yang dibuka = modul yang dibeli
             if (session.isLoggedIn && session.expiry && now <= session.expiry && session.modul === modulKey) {
                 isEnrolled = true;
-                // Tarik progres user
                 const progressKey = 'neokademi_progress_' + session.email.trim().toLowerCase();
                 const rawProgress = localStorage.getItem(progressKey);
                 if (rawProgress) {
@@ -329,37 +286,52 @@
             }
         }
 
-        // --- Render Tombol CTA (Berdasarkan Status Enrollment) ---
-        const btnEnroll = document.getElementById('btn-enroll-checkout');
-        const btnLogin = document.getElementById('btn-login-kelas');
-
-        if (isEnrolled) {
-            const isCompleted = completedChapters.length >= data.syllabus.length;
-            
-            // Ubah tombol atas menjadi Continue (Lanjut Belajar)
-            btnEnroll.innerHTML = 'Continue <i class="fa-solid fa-arrow-right ml-2"></i>';
-            btnEnroll.href = 'materi.html';
-            
-            // Ubah tombol bawah menjadi status (In Progress / Complete)
-            if (isCompleted) {
-                btnLogin.innerHTML = '<i class="fa-solid fa-certificate mr-2"></i> Completed';
-                btnLogin.className = "w-full flex items-center justify-center px-6 py-3.5 bg-green-50 text-green-700 font-bold rounded-full cursor-default border border-green-200 shadow-inner";
-                btnLogin.href = "javascript:void(0)";
-            } else {
-                btnLogin.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> In Progress';
-                btnLogin.className = "w-full flex items-center justify-center px-6 py-3.5 bg-yellow-50 text-yellow-700 font-bold rounded-full cursor-default border border-yellow-200 shadow-inner";
-                btnLogin.href = "javascript:void(0)";
-            }
+        // --- Render Tombol Sidebar ---
+        const btnContainer = document.getElementById('sidebar-action-buttons');
+        
+        if (!isEnrolled) {
+            // Belum Beli / Belum Login
+            btnContainer.innerHTML = `
+                <a href="${data.checkoutLink}" class="w-full flex items-center justify-center px-6 py-3.5 bg-primary text-white font-bold rounded-full hover:bg-primaryHover transition-colors shadow-md text-[15px]">
+                    Enroll Sekarang
+                </a>
+                <a href="login.html?modul=${modulKey}" class="w-full flex items-center justify-center px-6 py-3.5 bg-[#F4F5F7] text-[#4D5C6D] font-semibold rounded-full hover:bg-gray-200 transition-colors text-[15px]">
+                    Sudah Punya Akses?
+                </a>
+            `;
         } else {
-            // Logika Default (Belum Beli / Belum Login)
-            btnEnroll.href = data.checkoutLink;
-            btnLogin.href = 'login.html?modul=' + modulKey;
+            const isCompleted = completedChapters.length >= data.syllabus.length;
+
+            if (!isCompleted) {
+                // Sedang Dikerjakan (In Progress)
+                btnContainer.innerHTML = `
+                    <div class="w-full flex items-center justify-center px-6 py-3 bg-[#F9FAFB] text-[#6B7280] font-medium rounded-full cursor-default text-[15px]">
+                        In Progress
+                    </div>
+                    <a href="materi.html" class="w-full flex items-center justify-center px-6 py-3.5 bg-primary text-white font-bold rounded-full hover:bg-primaryHover transition-colors shadow-md text-[15px]">
+                        Review Course
+                    </a>
+                `;
+            } else {
+                // Selesai (Completed)
+                btnContainer.innerHTML = `
+                    <div class="w-full flex items-center justify-center px-6 py-3 bg-green-50 text-green-600 font-medium rounded-full border border-green-100 cursor-default text-[15px]">
+                        Completed
+                    </div>
+                    <a href="materi.html" class="w-full flex items-center justify-center px-6 py-3.5 bg-primary text-white font-bold rounded-full hover:bg-primaryHover transition-colors shadow-md text-[15px]">
+                        Review Course
+                    </a>
+                    <button onclick="alert('Sertifikat dapat dilihat dan diunduh di dalam Dashboard Materi Anda.'); window.location.href='materi.html';" class="w-full flex items-center justify-center px-6 py-3 bg-white border-2 border-primary text-primary font-bold rounded-full hover:bg-gray-50 transition-colors text-[15px]">
+                        View Certificate
+                    </button>
+                `;
+            }
         }
 
-        // --- Render Syllabus (Berdasarkan Status Enrollment) ---
+        // --- Render Syllabus List ---
         const syllabusContainer = document.getElementById('detail-syllabus');
         data.syllabus.forEach((item, index) => {
-            const chapterId = index + 1; // Asumsi ID materi dimulai dari 1 berurutan
+            const chapterId = index + 1; 
             const isChapterDone = isEnrolled && completedChapters.includes(chapterId);
             
             const li = document.createElement('li');
@@ -369,15 +341,13 @@
             let textClass = 'text-textColor group-hover:text-primary';
 
             if (isChapterDone) {
-                // Jika sudah selesai, icon berubah jadi ceklis hijau
                 iconHtml = `
                     <div class="w-6 h-6 rounded-full flex items-center justify-center bg-green-100 border border-green-500">
                         <i class="fa-solid fa-check text-[10px] text-green-600"></i>
                     </div>
                 `;
-                textClass = 'text-gray-900 font-semibold'; // Teks lebih tebal
+                textClass = 'text-gray-900 font-semibold';
             } else {
-                // Default belum selesai / belum beli
                 iconHtml = `
                     <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center group-hover:border-primary transition-colors">
                         <i class="fa-solid fa-play text-[8px] text-gray-300 group-hover:text-primary ml-0.5"></i>
