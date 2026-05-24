@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,18 +28,16 @@
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: { 
                 extend: { 
                     colors: { 
-                        primary: '#385DFF', /* BuddyBoss Blue */
+                        primary: '#385DFF', 
                         primaryHover: '#1E42DD', 
                         danger: '#EB4E4F',
-                        darkBg: '#0f172a', 
-                        darkCard: '#1e293b', 
-                        darkSidebar: '#111827',
+                        success: '#1CD991',
                         borderColor: '#E7E9EC',
-                        textColor: '#4D5C6D'
+                        textColor: '#4D5C6D',
+                        darkBlue: '#122B46'
                     } 
                 } 
             }
@@ -47,193 +45,153 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #4D5C6D; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #334155; }
-        
-        .active-chapter { 
-            background-color: rgba(56, 93, 255, 0.05); 
-            border-left: 3px solid #385DFF;
-        }
-        .dark .active-chapter { 
-            background-color: rgba(56, 93, 255, 0.1); 
-        }
-
-        .completed-icon { color: #1CD991; }
         
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade { animation: fade-in 0.3s ease-out forwards; }
         .sidebar-transition { transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
-<body class="bg-[#FAFBFD] text-textColor dark:bg-darkBg dark:text-gray-300 antialiased h-[100dvh] flex flex-col overflow-hidden hidden" id="main-body">
+<body class="antialiased h-[100dvh] flex flex-col overflow-hidden hidden" id="main-body">
 
-    <div id="global-loader" class="fixed inset-0 bg-white dark:bg-darkBg z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
+    <div id="global-loader" class="fixed inset-0 bg-white z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
     </div>
 
     <script>document.getElementById('main-body').classList.remove('hidden');</script>
 
-    <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-borderColor dark:border-gray-800 transition-colors h-[76px] flex items-center justify-between px-4 sm:px-6 lg:px-8 relative shadow-sm">
+    <nav class="shrink-0 z-40 bg-white border-b border-borderColor h-[76px] flex items-center justify-between px-4 sm:px-6 lg:px-8 relative shadow-sm">
         <div class="flex items-center gap-4">
-            <button onclick="toggleMobileSidebar()" class="md:hidden text-gray-500 hover:text-primary focus:outline-none">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-            <button onclick="toggleDesktopSidebar()" class="hidden md:block text-gray-500 hover:text-primary focus:outline-none transition-transform" id="desktop-toggle-icon" title="Toggle Sidebar">
+            <button onclick="toggleSidebar()" class="text-gray-500 hover:text-primary focus:outline-none transition-transform" id="sidebar-toggle-icon">
                 <i class="fa-solid fa-bars text-xl"></i>
             </button>
             <a href="index.html" class="flex items-center cursor-pointer ml-2 md:ml-0">
                 <img src="assets/img/Neokademi.png" onerror="this.src='https://ui-avatars.com/api/?name=N&color=385DFF&background=D7DFFF'" alt="Logo" class="w-8 h-8 object-contain mr-2">
-                <span class="font-bold text-lg hidden sm:block text-[#122B46] dark:text-white">Neokademi</span>
+                <span class="font-bold text-lg hidden sm:block text-darkBlue">Neokademi</span>
             </a>
         </div>
         
-        <div class="flex items-center space-x-5">
-            <button id="theme-toggle" class="text-gray-400 hover:text-primary dark:hover:text-amber-400 focus:outline-none transition-colors" title="Toggle Dark Mode">
-                <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+        <div class="flex items-center">
+            <button onclick="toggleRightMenu()" class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden border border-gray-300 focus:outline-none hover:ring-2 hover:ring-primary/50 transition-all">
+                <img src="https://ui-avatars.com/api/?name=User&background=385DFF&color=fff" alt="Avatar" id="user-avatar" class="w-full h-full object-cover">
             </button>
-
-            <div class="flex items-center relative">
-                <button id="user-menu-btn" class="flex items-center gap-3 focus:outline-none group">
-                    <span class="text-sm font-semibold text-[#122B46] dark:text-white hidden sm:block" id="user-greeting">Siswa</span>
-                    <div class="w-9 h-9 rounded-full bg-gray-200 overflow-hidden border border-gray-300 dark:border-gray-600">
-                        <img src="https://ui-avatars.com/api/?name=User&background=385DFF&color=fff" alt="Avatar" id="user-avatar" class="w-full h-full object-cover">
-                    </div>
-                    <i class="fa-solid fa-chevron-down text-xs text-gray-400 group-hover:text-primary transition-colors"></i>
-                </button>
-
-                <div id="user-dropdown" class="absolute top-[120%] right-0 w-56 bg-white dark:bg-darkCard rounded-lg shadow-lg border border-borderColor dark:border-gray-700 opacity-0 invisible transition-all duration-200 transform origin-top-right z-50">
-                    <div class="py-2">
-                        <a href="index.html" class="block px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary transition-colors">
-                            <i class="fa-solid fa-home w-5 mr-2"></i> Beranda
-                        </a>
-                        <button id="dropdown-cert-btn" onclick="checkCertificate()" class="w-full text-left block px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary transition-colors">
-                            <i class="fa-solid fa-award w-5 mr-2" id="dropdown-cert-icon"></i> <span id="dropdown-cert-text">Sertifikat Saya</span>
-                        </button>
-                        <div class="h-px bg-borderColor dark:bg-gray-700 my-1"></div>
-                        <button onclick="logout()" class="w-full text-left block px-4 py-2.5 text-sm font-medium text-danger hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                            <i class="fa-solid fa-sign-out-alt w-5 mr-2"></i> Keluar
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 
-    <div class="flex flex-1 overflow-hidden relative">
-        <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity opacity-0"></div>
+    <div id="right-menu-backdrop" onclick="toggleRightMenu()" class="fixed inset-0 bg-black/40 z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="right-menu" class="fixed top-0 right-0 z-[60] w-[300px] h-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col border-l border-borderColor">
+        <div class="px-6 h-[76px] flex justify-between items-center border-b border-gray-100">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full border border-teal-600 flex items-center justify-center text-teal-600">
+                    <i class="fa-solid fa-user text-xs"></i>
+                </div>
+                <span class="font-semibold text-sm text-darkBlue" id="right-menu-greeting">User</span>
+            </div>
+            <button onclick="toggleRightMenu()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div class="flex-grow py-4 flex flex-col">
+            <a href="index.html" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+                <i class="fa-solid fa-house w-6 text-gray-500"></i> Beranda
+            </a>
+            <a href="index.html#kelas-section" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+                <i class="fa-solid fa-award w-6 text-gray-500"></i> Pilihan Kursus <i class="fa-solid fa-chevron-down ml-auto text-[10px] text-gray-400"></i>
+            </a>
+            <a href="#" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+                <i class="fa-regular fa-comments w-6 text-gray-500"></i> Group Diskusi
+            </a>
+            <a href="#" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+                <i class="fa-regular fa-user w-6 text-gray-500"></i> My Courses
+            </a>
+            <button onclick="logout()" class="w-full text-left flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium mt-2 border-t border-gray-100">
+                <i class="fa-solid fa-arrow-right-from-bracket w-6 text-gray-500"></i> Log Out
+            </button>
+        </div>
+    </div>
 
-        <aside id="sidebar" class="sidebar-transition absolute inset-y-0 left-0 z-30 w-[320px] bg-white dark:bg-darkSidebar border-r border-borderColor dark:border-gray-800 transform -translate-x-full md:relative md:translate-x-0 flex flex-col shadow-2xl md:shadow-none">
+    <div class="flex flex-1 overflow-hidden relative">
+        <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 z-20 hidden md:hidden transition-opacity opacity-0 duration-300"></div>
+
+        <aside id="sidebar" class="sidebar-transition absolute inset-y-0 left-0 z-30 w-[320px] bg-white border-r border-borderColor transform -translate-x-full md:relative md:translate-x-0 flex flex-col shadow-2xl md:shadow-none">
             
-            <div class="p-5 border-b border-borderColor dark:border-gray-800 flex-shrink-0">
-                <a id="back-to-course-link" href="#" class="text-sm text-gray-500 hover:text-primary dark:text-gray-400 transition-colors flex items-center mb-3">
+            <div class="p-6 border-b border-gray-100 flex-shrink-0">
+                <a id="back-to-course-link" href="#" class="inline-flex items-center px-4 py-1.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium mb-6 hover:bg-gray-200 transition-colors">
                     <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
                 </a>
-                <h2 class="font-bold text-[#122B46] dark:text-white text-lg mb-5 leading-tight" id="course-title">Judul Course</h2>
+                <h2 class="font-bold text-darkBlue text-2xl mb-6 leading-tight" id="course-title">Judul Course</h2>
                 
-                <div class="mb-1 flex justify-between items-center text-sm font-medium">
-                    <span class="text-gray-500 dark:text-gray-400" id="progress-text-label">0% Complete</span>
+                <div class="w-full bg-gray-200 rounded-full h-1 overflow-hidden mb-2">
+                    <div id="progress-bar-fill" class="bg-success h-full transition-all duration-500" style="width: 0%"></div>
                 </div>
-                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 overflow-hidden">
-                    <div id="progress-bar-fill" class="bg-[#1CD991] h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
-                </div>
+                <div class="text-[13px] text-gray-500 mb-1" id="progress-text-label">0% Complete</div>
+                <div class="text-[13px] text-gray-400">Last activity on <span id="last-activity-date"></span></div>
             </div>
 
-            <div class="flex-1 overflow-y-auto py-2" id="chapter-list">
+            <div class="flex-1 overflow-y-auto" id="chapter-list">
                 </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto bg-[#FAFBFD] dark:bg-darkBg w-full transition-all duration-300 relative" id="main-content-area">
-            <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+        <main class="flex-1 overflow-y-auto bg-white w-full transition-all duration-300 relative" id="main-content-area">
+            <div class="max-w-4xl mx-auto p-4 sm:p-8 lg:p-10">
                 
                 <div id="content-container" class="animate-fade hidden">
                     
-                    <div class="mb-6">
-                        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-                            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                <span id="breadcrumb-course" class="truncate max-w-[150px] sm:max-w-[200px]">Course</span>
-                                <i class="fa-solid fa-angle-right text-xs"></i>
-                                <span id="breadcrumb-lesson" class="text-primary font-medium truncate max-w-[150px] sm:max-w-[200px]">Lesson</span>
-                            </div>
-                            <div class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded" id="status-badge">
-                                In Progress
-                            </div>
-                        </div>
+                    <h1 id="chapter-title" class="text-3xl md:text-4xl font-bold text-darkBlue leading-tight mb-8">
+                        Judul Materi
+                    </h1>
 
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-borderColor dark:border-gray-800 pb-4">
-                            <h1 id="chapter-title" class="text-2xl md:text-3xl font-bold text-[#122B46] dark:text-white leading-tight flex-1">
-                                Judul Materi
-                            </h1>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button id="btn-prev-nav" onclick="navigateChapter('prev')" class="px-3 py-1.5 text-sm border border-borderColor dark:border-gray-700 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300">
-                                    &larr; Prev
-                                </button>
-                                <button id="btn-next-nav" onclick="navigateChapter('next')" class="px-3 py-1.5 text-sm border border-borderColor dark:border-gray-700 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-300">
-                                    Next &rarr;
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-black rounded-lg overflow-hidden shadow-md aspect-video relative mb-8">
+                    <div class="bg-black rounded-lg overflow-hidden shadow-sm aspect-video relative mb-8">
                         <iframe id="video-player" class="absolute top-0 left-0 w-full h-full" src="" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
 
-                    <div class="bg-white dark:bg-darkCard rounded-lg p-6 md:p-8 shadow-sm border border-borderColor dark:border-gray-800 mb-12">
-                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed text-[15px]">
+                    <div class="mb-12">
+                        <div id="chapter-desc" class="prose max-w-none text-textColor leading-relaxed text-[15px] mb-8">
                             </div>
 
-                        <div class="mt-10 pt-6 border-t border-borderColor dark:border-gray-800 flex justify-start">
-                            <div id="action-btn-container">
-                                </div>
-                        </div>
+                        <div id="action-btn-container" class="mt-8">
+                            </div>
                     </div>
                 </div>
 
                 <div id="quiz-container" class="hidden animate-fade">
-                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-borderColor dark:border-gray-800 pb-4">
-                        <h1 class="text-2xl md:text-3xl font-bold text-[#122B46] dark:text-white">Final Quiz</h1>
-                        <div class="flex items-center gap-2">
-                            <button onclick="navigateChapter('prev')" class="px-3 py-1.5 text-sm border border-borderColor dark:border-gray-700 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300">
-                                &larr; Back to Lesson
-                            </button>
-                        </div>
-                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-darkBlue mb-8">Final Quiz</h1>
 
-                    <div class="bg-white dark:bg-darkCard rounded-lg p-6 md:p-10 shadow-sm border border-borderColor dark:border-gray-800 mb-12">
+                    <div class="bg-white rounded-lg shadow-sm border border-borderColor mb-12 overflow-hidden">
                         
-                        <div id="quiz-intro" class="text-center pb-4 hidden">
-                            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-primary flex items-center justify-center rounded-full mx-auto mb-4 text-2xl">
+                        <div id="quiz-intro" class="p-8 md:p-12 text-center hidden">
+                            <div class="w-20 h-20 bg-blue-50 text-primary flex items-center justify-center rounded-full mx-auto mb-6 text-3xl">
                                 <i class="fa-solid fa-clipboard-question"></i>
                             </div>
-                            <h2 class="text-2xl font-bold text-[#122B46] dark:text-white mb-2">Evaluasi Pembelajaran</h2>
+                            <h2 class="text-2xl font-bold text-darkBlue mb-3">Evaluasi Pembelajaran</h2>
                             <p class="text-gray-500 mb-8 max-w-md mx-auto">Selesaikan kuis ini untuk mendapatkan sertifikat. Nilai kelulusan minimum adalah 80.</p>
                             <button onclick="startQuizEngine()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors">
                                 Mulai Kuis
                             </button>
                         </div>
 
-                        <div id="quiz-area" class="hidden">
-                            <div class="mb-6 flex justify-between items-center text-sm font-medium text-gray-500">
+                        <div id="quiz-area" class="p-8 md:p-12 hidden">
+                            <div class="mb-8 flex justify-between items-center text-sm font-medium text-gray-500 border-b border-gray-100 pb-4">
                                 <span id="quiz-progress-badge">Soal 1 dari 15</span>
                             </div>
-                            <h3 id="question-text" class="text-lg font-bold text-[#122B46] dark:text-white mb-6 leading-relaxed">Pertanyaan...</h3>
+                            <h3 id="question-text" class="text-lg font-bold text-darkBlue mb-6 leading-relaxed">Pertanyaan...</h3>
                             <div id="options-container" class="space-y-3 mb-8"></div>
-                            <div class="flex justify-end border-t border-borderColor dark:border-gray-800 pt-6">
-                                <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-6 py-2.5 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed transition-colors">
+                            <div class="flex justify-end pt-6">
+                                <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-8 py-3 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed transition-colors">
                                     Selanjutnya
                                 </button>
                             </div>
                         </div>
 
-                        <div id="quiz-result" class="hidden text-center py-6">
-                            <div id="result-icon" class="text-5xl mb-4"></div>
-                            <h2 class="text-2xl font-bold text-[#122B46] dark:text-white mb-2">Hasil Kuis</h2>
-                            <div class="text-5xl font-black mb-4" id="result-score">0</div>
-                            <p class="text-gray-600 dark:text-gray-400 mb-8" id="result-msg"></p>
-                            <div class="flex flex-col sm:flex-row justify-center gap-3" id="quiz-action-buttons">
+                        <div id="quiz-result" class="p-8 md:p-12 hidden text-center">
+                            <div id="result-icon" class="text-6xl mb-6"></div>
+                            <h2 class="text-2xl font-bold text-darkBlue mb-2">Hasil Kuis</h2>
+                            <div class="text-6xl font-black mb-4" id="result-score">0</div>
+                            <p class="text-gray-600 mb-10" id="result-msg"></p>
+                            <div class="flex flex-col sm:flex-row justify-center gap-4" id="quiz-action-buttons">
                             </div>
                         </div>
 
@@ -250,34 +208,82 @@
 
         const courseData = {
             "linux": {
-                courseName: "Linux System Administration",
+                courseName: "Jaringan Dasar",
                 chapters: [
                     { 
                         id: 1, 
-                        title: "1. Instalasi & Pemahaman Direktori", 
+                        title: "1. Belajar Jaringan Komputer", 
                         video: "https://www.youtube.com/embed/wBp0Rb-ZJak", 
-                        desc: `<p>Pelajari fondasi utama sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p>` 
+                        desc: `<p>Materi pengenalan dasar mengenai jaringan komputer.</p>` 
                     },
                     { 
                         id: 2, 
-                        title: "2. Manajemen User, Group & Permission", 
+                        title: "2. Pengenalan Jaringan Komputer", 
                         video: "https://www.youtube.com/embed/rrB13utjYV4", 
-                        desc: `<p>Membahas cara mengelola pengguna dan membatasi hak akses file agar server aman.</p>` 
+                        desc: `<p>Memahami konsep dasar perangkat jaringan dan fungsinya.</p>` 
                     },
                     { 
                         id: 3, 
-                        title: "3. Manajemen Paket & Repository", 
+                        title: "3. OSI Layer VS TCP IP Layer", 
+                        video: "https://www.youtube.com/embed/3g1Bh7PmK-s", 
+                        desc: `<p>Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` 
+                    },
+                    { 
+                        id: 4, 
+                        title: "4. IP Protocol & Port", 
                         video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
-                        desc: `<p>Cara menginstal dan memperbarui aplikasi di Linux menggunakan APT/YUM.</p>` 
+                        desc: `<p>Pembahasan mendalam tentang protokol dan port.</p>` 
+                    },
+                    { 
+                        id: 5, 
+                        title: "5. MAC Address & IP Address", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `<p>Perbedaan alamat fisik dan logikal pada jaringan.</p>` 
+                    },
+                    { 
+                        id: 6, 
+                        title: "6. Subnetting Address", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `<p>Teknik memecah jaringan besar menjadi jaringan kecil.</p>` 
+                    },
+                    { 
+                        id: 7, 
+                        title: "7. Layer 1 UTP & STP Cable", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `<p>Media transmisi kabel tembaga.</p>` 
+                    },
+                    { 
+                        id: 8, 
+                        title: "8. Layer 1 Fiber Optic Cable", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `<p>Media transmisi berbasis cahaya.</p>` 
+                    },
+                    { 
+                        id: 9, 
+                        title: "9. What's Next", 
+                        video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                        desc: `<p>Kesimpulan dan langkah selanjutnya.</p>` 
                     }
+                ]
+            },
+            "cloud": {
+                courseName: "Cloud Modern Workspace",
+                chapters: [
+                    { id: 1, title: "1. Konsep Dasar Cloud", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", desc: "<p>Pengenalan cloud.</p>" }
+                ]
+            },
+            "digitalmarketing": {
+                courseName: "Digital Marketing Mastery",
+                chapters: [
+                    { id: 1, title: "1. Fundamental Digital Marketing", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", desc: "<p>Dasar marketing.</p>" }
                 ]
             }
         };
 
         const quizData = [
-            { q: "Apa direktori utama tertinggi pada struktur file Linux?", options: ["/home", "/root", "/", "/bin"], ans: 2 },
-            { q: "Perintah apa yang digunakan untuk menampilkan daftar isi direktori?", options: ["cd", "ls", "pwd", "mkdir"], ans: 1 },
-            { q: "Angka berapa yang merepresentasikan hak akses penuh (Read, Write, Execute)?", options: ["5", "6", "7", "4"], ans: 2 }
+            { q: "Apa kepanjangan dari OSI?", options: ["Open System Interconnection", "Open Source Internet", "Operating System Interface", "Optical System Interconnect"], ans: 0 },
+            { q: "Berapa jumlah layer pada OSI Model?", options: ["4", "5", "6", "7"], ans: 3 },
+            { q: "IP Address bekerja pada OSI layer ke berapa?", options: ["Layer 1", "Layer 2", "Layer 3", "Layer 4"], ans: 2 }
         ];
 
         let activeModulKey = "linux";
@@ -309,10 +315,19 @@
                 quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
                 quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
                 
-                document.getElementById('user-greeting').textContent = userEmail.split('@')[0];
-                document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${userEmail.charAt(0)}&background=385DFF&color=fff`;
+                const userName = userEmail.split('@')[0];
+                document.getElementById('user-greeting').textContent = userName;
+                document.getElementById('right-menu-greeting').textContent = userName;
+                
+                const avatarUrl = `https://ui-avatars.com/api/?name=${userName.charAt(0)}&background=1CD991&color=fff`;
+                document.getElementById('user-avatar').src = avatarUrl;
                 document.getElementById('back-to-course-link').href = `detail.html?modul=${activeModulKey}`;
                 
+                // Set Last Activity Date
+                const now = new Date();
+                const formattedDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                document.getElementById('last-activity-date').textContent = formattedDate;
+
                 try {
                     const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
                     const result = await response.json();
@@ -343,12 +358,9 @@
             }
 
             document.getElementById('course-title').textContent = activeData.courseName;
-            document.getElementById('breadcrumb-course').textContent = activeData.courseName;
-            
             document.getElementById('global-loader').classList.add('opacity-0');
             setTimeout(() => document.getElementById('global-loader').classList.add('hidden'), 300);
 
-            // Tentukan bab yang akan dimuat
             const lastCompletedIndex = completedChapters.length;
             if(lastCompletedIndex < activeData.chapters.length) {
                 const nextChap = activeData.chapters[lastCompletedIndex] || activeData.chapters[0];
@@ -374,40 +386,43 @@
                 const isActive = currentChapterId === chap.id;
                 
                 let iconHtml = isCompleted 
-                    ? `<i class="fa-solid fa-check text-[#1CD991] text-lg"></i>`
-                    : `<div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-gray-500 mt-0.5"></div>`;
+                    ? `<div class="w-[18px] h-[18px] rounded-full bg-success text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-check"></i></div>`
+                    : `<div class="w-[18px] h-[18px] rounded-full border border-gray-300 shrink-0"></div>`;
+                
+                let textClass = isCompleted ? 'text-gray-500 line-through' : 'text-darkBlue';
+                let bgClass = isActive ? 'bg-gray-50' : 'hover:bg-gray-50';
 
                 const btn = document.createElement('button');
-                btn.className = `w-full text-left px-5 py-3.5 border-b border-borderColor dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-start group ${isActive ? 'active-chapter' : ''}`;
+                btn.className = `w-full text-left px-6 py-4 border-b border-gray-100 flex items-center justify-between transition-colors ${bgClass}`;
                 btn.onclick = () => loadChapter(chap.id);
                 
                 btn.innerHTML = `
-                    <div class="flex-shrink-0 w-6 flex justify-center mr-2 pt-0.5">${iconHtml}</div>
-                    <div class="flex-1 min-w-0 pr-2">
-                        <p class="text-[14px] font-medium ${isActive ? 'text-primary' : 'text-[#4D5C6D] dark:text-gray-300'} group-hover:text-primary transition-colors">${chap.title}</p>
-                    </div>
+                    <span class="text-[14px] font-medium pr-4 ${textClass}">${chap.title}</span>
+                    ${iconHtml}
                 `;
                 listEl.appendChild(btn);
             });
 
-            // Tombol Quiz di Sidebar
             const allCompleted = completedChapters.length >= activeData.chapters.length;
             const isQuizActive = currentChapterId === null && !document.getElementById('quiz-container').classList.contains('hidden');
             
             const quizBtn = document.createElement('button');
             if(allCompleted) {
-                quizBtn.className = `w-full text-left px-5 py-4 border-b border-borderColor dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center group ${isQuizActive ? 'active-chapter' : ''}`;
+                quizBtn.className = `w-full text-left px-6 py-4 border-b border-gray-100 flex items-center justify-between transition-colors hover:bg-gray-50 ${isQuizActive ? 'bg-gray-50' : ''}`;
                 quizBtn.onclick = () => openQuizPage();
-                let qIcon = quizScoreVal !== null && quizScoreVal >= MIN_SCORE_PASS ? `<i class="fa-solid fa-check text-[#1CD991] text-lg"></i>` : `<i class="fa-solid fa-clipboard-question text-primary text-lg"></i>`;
+                let qIcon = quizScoreVal !== null && quizScoreVal >= MIN_SCORE_PASS 
+                    ? `<div class="w-[18px] h-[18px] rounded-full bg-success text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-check"></i></div>` 
+                    : `<div class="w-[18px] h-[18px] rounded-full border border-gray-300 shrink-0 text-primary flex items-center justify-center text-[10px]"><i class="fa-solid fa-question"></i></div>`;
+                let textClass = quizScoreVal !== null && quizScoreVal >= MIN_SCORE_PASS ? 'text-gray-500 line-through' : 'text-darkBlue';
                 quizBtn.innerHTML = `
-                    <div class="flex-shrink-0 w-6 flex justify-center mr-2">${qIcon}</div>
-                    <div class="flex-1 min-w-0 pr-2"><p class="text-[14px] font-medium ${isQuizActive ? 'text-primary' : 'text-[#4D5C6D] dark:text-gray-300'} group-hover:text-primary">Final Quiz</p></div>
+                    <span class="text-[14px] font-medium pr-4 ${textClass}">Final Quiz</span>
+                    ${qIcon}
                 `;
             } else {
-                quizBtn.className = `w-full text-left px-5 py-4 border-b border-borderColor dark:border-gray-800 flex items-center opacity-50 cursor-not-allowed bg-gray-50 dark:bg-darkSidebar`;
+                quizBtn.className = `w-full text-left px-6 py-4 border-b border-gray-100 flex items-center justify-between opacity-50 cursor-not-allowed bg-gray-50`;
                 quizBtn.innerHTML = `
-                    <div class="flex-shrink-0 w-6 flex justify-center mr-2"><i class="fa-solid fa-lock text-gray-400 text-sm"></i></div>
-                    <div class="flex-1 min-w-0 pr-2"><p class="text-[14px] font-medium text-gray-500">Final Quiz</p></div>
+                    <span class="text-[14px] font-medium pr-4 text-gray-500">Final Quiz</span>
+                    <div class="w-[18px] h-[18px] rounded-full border border-gray-300 shrink-0"></div>
                 `;
             }
             listEl.appendChild(quizBtn);
@@ -422,25 +437,6 @@
             document.getElementById('progress-text-label').textContent = percent + '% Complete';
         }
 
-        function navigateChapter(direction) {
-            if (currentChapterId === null) {
-                // Berarti sedang di kuis, back ke materi terakhir
-                if (direction === 'prev') loadChapter(activeData.chapters[activeData.chapters.length-1].id);
-                return;
-            }
-            
-            const currentIndex = activeData.chapters.findIndex(c => c.id === currentChapterId);
-            if (direction === 'prev' && currentIndex > 0) {
-                loadChapter(activeData.chapters[currentIndex - 1].id);
-            } else if (direction === 'next') {
-                if (currentIndex < activeData.chapters.length - 1) {
-                    loadChapter(activeData.chapters[currentIndex + 1].id);
-                } else {
-                    openQuizPage();
-                }
-            }
-        }
-
         function loadChapter(chapterId) {
             currentChapterId = chapterId;
             document.getElementById('quiz-container').classList.add('hidden');
@@ -448,34 +444,24 @@
             contentContainer.classList.remove('hidden');
             
             const chapter = activeData.chapters.find(c => c.id === chapterId);
-            const currentIndex = activeData.chapters.findIndex(c => c.id === chapterId);
             
             document.getElementById('video-player').src = chapter.video;
             document.getElementById('chapter-title').textContent = chapter.title;
-            document.getElementById('breadcrumb-lesson').textContent = chapter.title;
             document.getElementById('chapter-desc').innerHTML = chapter.desc;
 
-            // Navigasi Atas
-            document.getElementById('btn-prev-nav').disabled = currentIndex === 0;
-            document.getElementById('btn-next-nav').disabled = false; // Karena next bisa ke materi atau kuis
-
-            // Status Badge & Action Button
             const isCompleted = completedChapters.includes(chapterId);
-            const statusBadge = document.getElementById('status-badge');
             const actionContainer = document.getElementById('action-btn-container');
 
             if (isCompleted) {
-                statusBadge.textContent = "Completed";
-                statusBadge.className = "bg-[#1CD991] text-white text-xs font-bold px-3 py-1 rounded";
-                actionContainer.innerHTML = `<button disabled class="px-6 py-2.5 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed"><i class="fa-solid fa-check mr-2"></i> Materi Selesai</button>`;
+                actionContainer.innerHTML = `<button disabled class="px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed"><i class="fa-solid fa-check mr-2"></i> Mark Complete</button>`;
             } else {
-                statusBadge.textContent = "In Progress";
-                statusBadge.className = "bg-primary text-white text-xs font-bold px-3 py-1 rounded";
-                actionContainer.innerHTML = `<button onclick="markCurrentAsDone()" class="px-6 py-2.5 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors">Mark Complete</button>`;
+                actionContainer.innerHTML = `<button onclick="markCurrentAsDone()" class="px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors">Mark Complete</button>`;
             }
 
             renderSidebar();
-            if (window.innerWidth < 768) document.getElementById('sidebar').classList.add('-translate-x-full');
+            if (window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) {
+                toggleSidebar();
+            }
             document.getElementById('main-content-area').scrollTo(0,0);
         }
 
@@ -511,6 +497,9 @@
                 document.getElementById('quiz-result').classList.add('hidden');
             }
             renderSidebar();
+            if (window.innerWidth < 768 && !document.getElementById('sidebar').classList.contains('-translate-x-full')) {
+                toggleSidebar();
+            }
         }
 
         function startQuizEngine() {
@@ -530,7 +519,7 @@
             container.innerHTML = '';
             qData.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = `w-full text-left p-4 border rounded font-medium transition-colors border-borderColor dark:border-gray-700 bg-white dark:bg-darkSidebar hover:border-primary text-[#4D5C6D] dark:text-gray-300`;
+                btn.className = `w-full text-left p-4 border rounded font-medium transition-colors border-borderColor bg-white hover:border-primary text-textColor`;
                 btn.innerHTML = `<span class="inline-block w-6 font-bold text-gray-400">${String.fromCharCode(65 + index)}.</span> ${opt}`;
                 btn.onclick = () => selectOption(index, btn);
                 container.appendChild(btn);
@@ -538,7 +527,7 @@
 
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = true;
-            nextBtn.className = 'px-6 py-2.5 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed';
+            nextBtn.className = 'px-8 py-3 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed';
             nextBtn.textContent = currentQuizIndex === quizData.length - 1 ? 'Selesai' : 'Selanjutnya';
         }
 
@@ -546,13 +535,13 @@
             selectedOption = index;
             const allBtns = document.getElementById('options-container').children;
             for(let i=0; i<allBtns.length; i++) {
-                allBtns[i].className = `w-full text-left p-4 border rounded font-medium transition-colors border-borderColor dark:border-gray-700 bg-white dark:bg-darkSidebar text-[#4D5C6D] dark:text-gray-300`;
+                allBtns[i].className = `w-full text-left p-4 border rounded font-medium transition-colors border-borderColor bg-white text-textColor`;
             }
-            btnEl.className = `w-full text-left p-4 border rounded font-bold transition-colors border-primary bg-blue-50 dark:bg-blue-900/20 text-primary`;
+            btnEl.className = `w-full text-left p-4 border rounded font-bold transition-colors border-primary bg-blue-50 text-primary`;
 
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = false;
-            nextBtn.className = 'px-6 py-2.5 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors';
+            nextBtn.className = 'px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors';
         }
 
         function nextQuestion() {
@@ -591,15 +580,15 @@
             if(score >= MIN_SCORE_PASS) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
                 msgEl.innerHTML = `Selamat! Anda <strong>LULUS</strong> pada modul ini.`;
-                document.getElementById('result-score').className = "text-5xl font-black text-[#1CD991] mb-4";
+                document.getElementById('result-score').className = "text-6xl font-black text-success mb-4";
                 
-                actions.innerHTML = `<button onclick="checkCertificate()" class="px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-award mr-2"></i> Lihat Sertifikat</button>`;
+                actions.innerHTML = `<button onclick="checkCertificate()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-award mr-2"></i> Lihat Sertifikat</button>`;
             } else {
                 iconEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-danger"></i>`;
                 msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar kelulusan adalah ${MIN_SCORE_PASS}.`;
-                document.getElementById('result-score').className = "text-5xl font-black text-danger mb-4";
+                document.getElementById('result-score').className = "text-6xl font-black text-danger mb-4";
                 
-                actions.innerHTML = `<button onclick="retakeQuiz()" class="px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis</button>`;
+                actions.innerHTML = `<button onclick="retakeQuiz()" class="px-8 py-3 bg-darkBlue hover:bg-gray-800 text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis</button>`;
             }
             renderSidebar();
         }
@@ -621,48 +610,26 @@
             localStorage.removeItem('neokademi_user'); window.location.replace('login.html');
         }
 
-        // Toggle Sidebar
+        // Toggles
         const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('sidebar-backdrop');
-        function toggleMobileSidebar() {
-            sidebar.classList.toggle('-translate-x-full');
-            backdrop.classList.toggle('hidden');
-            setTimeout(() => backdrop.classList.toggle('opacity-0'), 10);
-        }
-        function toggleDesktopSidebar() {
-            sidebar.classList.toggle('md:-ml-[320px]');
-        }
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        const rightMenu = document.getElementById('right-menu');
+        const rightBackdrop = document.getElementById('right-menu-backdrop');
 
-        // Toggle User Dropdown
-        const userBtn = document.getElementById('user-menu-btn');
-        const userDrop = document.getElementById('user-dropdown');
-        userBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userDrop.classList.toggle('opacity-0'); userDrop.classList.toggle('invisible');
-        });
-        document.addEventListener('click', (e) => {
-            if (!userBtn.contains(e.target) && !userDrop.contains(e.target)) {
-                userDrop.classList.add('opacity-0', 'invisible');
+        function toggleSidebar() {
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarBackdrop.classList.toggle('hidden');
+                setTimeout(() => sidebarBackdrop.classList.toggle('opacity-0'), 10);
+            } else {
+                sidebar.classList.toggle('md:-ml-[320px]');
             }
-        });
-
-        // Dark Mode
-        const themeBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const htmlEl = document.documentElement;
-
-        function toggleTheme() {
-            htmlEl.classList.toggle('dark');
-            const isDark = htmlEl.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            themeIcon.className = isDark ? 'fa-solid fa-sun text-lg text-amber-400' : 'fa-solid fa-moon text-lg';
         }
-        themeBtn.addEventListener('click', toggleTheme);
 
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            htmlEl.classList.add('dark'); themeIcon.className = 'fa-solid fa-sun text-lg text-amber-400';
-        } else {
-            htmlEl.classList.remove('dark'); themeIcon.className = 'fa-solid fa-moon text-lg';
+        function toggleRightMenu() {
+            rightMenu.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+            setTimeout(() => rightBackdrop.classList.toggle('opacity-0'), 10);
         }
 
         window.addEventListener('DOMContentLoaded', initializeData);
