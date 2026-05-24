@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,16 @@
             if (!rawData) {
                 window.location.replace('login.html'); 
             } else {
-                const session = JSON.parse(rawData);
-                const now = new Date().getTime();
-                if (!session.isLoggedIn || !session.expiry || now > session.expiry) {
+                try {
+                    const session = JSON.parse(rawData);
+                    const now = new Date().getTime();
+                    if (!session.isLoggedIn || !session.expiry || now > session.expiry) {
+                        localStorage.removeItem('neokademi_user');
+                        alert("Sesi Anda telah berakhir. Silakan login kembali.");
+                        window.location.replace('login.html');
+                    }
+                } catch (e) {
                     localStorage.removeItem('neokademi_user');
-                    alert("Sesi Anda telah berakhir. Silakan login kembali.");
                     window.location.replace('login.html');
                 }
             }
@@ -34,10 +39,11 @@
                         primary: '#385DFF', 
                         primaryHover: '#1E42DD', 
                         danger: '#EB4E4F',
-                        success: '#1CD991',
+                        darkBg: '#0f172a', 
+                        darkCard: '#1e293b', 
+                        darkSidebar: '#111827',
                         borderColor: '#E7E9EC',
-                        textColor: '#4D5C6D',
-                        darkBlue: '#122B46'
+                        textColor: '#4D5C6D'
                     } 
                 } 
             }
@@ -45,17 +51,24 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #4D5C6D; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .active-chapter { 
+            background-color: rgba(56, 93, 255, 0.05); 
+            border-left: 3px solid #385DFF;
+        }
+
+        .completed-icon { color: #1CD991; }
         
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade { animation: fade-in 0.3s ease-out forwards; }
         .sidebar-transition { transition: margin-left 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
-<body class="antialiased h-[100dvh] flex flex-col overflow-hidden hidden" id="main-body">
+<body class="bg-[#FAFBFD] text-textColor antialiased h-[100dvh] flex flex-col overflow-hidden hidden" id="main-body">
 
     <div id="global-loader" class="fixed inset-0 bg-white z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
@@ -70,7 +83,7 @@
             </button>
             <a href="index.html" class="flex items-center cursor-pointer ml-2 md:ml-0">
                 <img src="assets/img/Neokademi.png" onerror="this.src='https://ui-avatars.com/api/?name=N&color=385DFF&background=D7DFFF'" alt="Logo" class="w-8 h-8 object-contain mr-2">
-                <span class="font-bold text-lg hidden sm:block text-darkBlue">Neokademi</span>
+                <span class="font-bold text-lg hidden sm:block text-[#122B46]">Neokademi</span>
             </a>
         </div>
         
@@ -88,26 +101,26 @@
                 <div class="w-8 h-8 rounded-full border border-teal-600 flex items-center justify-center text-teal-600">
                     <i class="fa-solid fa-user text-xs"></i>
                 </div>
-                <span class="font-semibold text-sm text-darkBlue" id="right-menu-greeting">User</span>
+                <span class="font-semibold text-sm text-[#122B46]" id="right-menu-greeting">User</span>
             </div>
             <button onclick="toggleRightMenu()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
         </div>
         <div class="flex-grow py-4 flex flex-col">
-            <a href="index.html" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+            <a href="index.html" class="flex items-center px-6 py-4 text-sm text-[#122B46] hover:bg-gray-50 transition-colors font-medium">
                 <i class="fa-solid fa-house w-6 text-gray-500"></i> Beranda
             </a>
-            <a href="index.html#kelas-section" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+            <a href="index.html#kelas-section" class="flex items-center px-6 py-4 text-sm text-[#122B46] hover:bg-gray-50 transition-colors font-medium">
                 <i class="fa-solid fa-award w-6 text-gray-500"></i> Pilihan Kursus <i class="fa-solid fa-chevron-down ml-auto text-[10px] text-gray-400"></i>
             </a>
-            <a href="#" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+            <a href="#" class="flex items-center px-6 py-4 text-sm text-[#122B46] hover:bg-gray-50 transition-colors font-medium">
                 <i class="fa-regular fa-comments w-6 text-gray-500"></i> Group Diskusi
             </a>
-            <a href="#" class="flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium">
+            <a href="#" class="flex items-center px-6 py-4 text-sm text-[#122B46] hover:bg-gray-50 transition-colors font-medium">
                 <i class="fa-regular fa-user w-6 text-gray-500"></i> My Courses
             </a>
-            <button onclick="logout()" class="w-full text-left flex items-center px-6 py-4 text-sm text-darkBlue hover:bg-gray-50 transition-colors font-medium mt-2 border-t border-gray-100">
+            <button onclick="logout()" class="w-full text-left flex items-center px-6 py-4 text-sm text-[#122B46] hover:bg-gray-50 transition-colors font-medium mt-2 border-t border-gray-100">
                 <i class="fa-solid fa-arrow-right-from-bracket w-6 text-gray-500"></i> Log Out
             </button>
         </div>
@@ -122,10 +135,10 @@
                 <a id="back-to-course-link" href="#" class="inline-flex items-center px-4 py-1.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium mb-6 hover:bg-gray-200 transition-colors">
                     <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
                 </a>
-                <h2 class="font-bold text-darkBlue text-2xl mb-6 leading-tight" id="course-title">Judul Course</h2>
+                <h2 class="font-bold text-[#122B46] text-2xl mb-6 leading-tight" id="course-title">Judul Course</h2>
                 
                 <div class="w-full bg-gray-200 rounded-full h-1 overflow-hidden mb-2">
-                    <div id="progress-bar-fill" class="bg-success h-full transition-all duration-500" style="width: 0%"></div>
+                    <div id="progress-bar-fill" class="bg-[#1CD991] h-full transition-all duration-500" style="width: 0%"></div>
                 </div>
                 <div class="text-[13px] text-gray-500 mb-1" id="progress-text-label">0% Complete</div>
                 <div class="text-[13px] text-gray-400">Last activity on <span id="last-activity-date"></span></div>
@@ -140,7 +153,7 @@
                 
                 <div id="content-container" class="animate-fade hidden">
                     
-                    <h1 id="chapter-title" class="text-3xl md:text-4xl font-bold text-darkBlue leading-tight mb-8">
+                    <h1 id="chapter-title" class="text-3xl md:text-4xl font-bold text-[#122B46] leading-tight mb-8">
                         Judul Materi
                     </h1>
 
@@ -158,7 +171,7 @@
                 </div>
 
                 <div id="quiz-container" class="hidden animate-fade">
-                    <h1 class="text-3xl md:text-4xl font-bold text-darkBlue mb-8">Final Quiz</h1>
+                    <h1 class="text-3xl md:text-4xl font-bold text-[#122B46] mb-8">Final Quiz</h1>
 
                     <div class="bg-white rounded-lg shadow-sm border border-borderColor mb-12 overflow-hidden">
                         
@@ -166,7 +179,7 @@
                             <div class="w-20 h-20 bg-blue-50 text-primary flex items-center justify-center rounded-full mx-auto mb-6 text-3xl">
                                 <i class="fa-solid fa-clipboard-question"></i>
                             </div>
-                            <h2 class="text-2xl font-bold text-darkBlue mb-3">Evaluasi Pembelajaran</h2>
+                            <h2 class="text-2xl font-bold text-[#122B46] mb-3">Evaluasi Pembelajaran</h2>
                             <p class="text-gray-500 mb-8 max-w-md mx-auto">Selesaikan kuis ini untuk mendapatkan sertifikat. Nilai kelulusan minimum adalah 80.</p>
                             <button onclick="startQuizEngine()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors">
                                 Mulai Kuis
@@ -177,7 +190,7 @@
                             <div class="mb-8 flex justify-between items-center text-sm font-medium text-gray-500 border-b border-gray-100 pb-4">
                                 <span id="quiz-progress-badge">Soal 1 dari 15</span>
                             </div>
-                            <h3 id="question-text" class="text-lg font-bold text-darkBlue mb-6 leading-relaxed">Pertanyaan...</h3>
+                            <h3 id="question-text" class="text-lg font-bold text-[#122B46] mb-6 leading-relaxed">Pertanyaan...</h3>
                             <div id="options-container" class="space-y-3 mb-8"></div>
                             <div class="flex justify-end pt-6">
                                 <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-8 py-3 bg-gray-200 text-gray-500 font-bold rounded cursor-not-allowed transition-colors">
@@ -188,7 +201,7 @@
 
                         <div id="quiz-result" class="p-8 md:p-12 hidden text-center">
                             <div id="result-icon" class="text-6xl mb-6"></div>
-                            <h2 class="text-2xl font-bold text-darkBlue mb-2">Hasil Kuis</h2>
+                            <h2 class="text-2xl font-bold text-[#122B46] mb-2">Hasil Kuis</h2>
                             <div class="text-6xl font-black mb-4" id="result-score">0</div>
                             <p class="text-gray-600 mb-10" id="result-msg"></p>
                             <div class="flex flex-col sm:flex-row justify-center gap-4" id="quiz-action-buttons">
@@ -304,56 +317,59 @@
         async function initializeData() {
             const rawUserData = localStorage.getItem('neokademi_user');
             if(rawUserData) {
-                const session = JSON.parse(rawUserData);
-                userEmail = session.email;
-                if(session.modul && courseData[session.modul]) {
-                    activeModulKey = session.modul;
-                    activeData = courseData[activeModulKey];
-                }
-                
-                progressKey = 'neokademi_progress_' + userEmail.trim().toLowerCase(); 
-                quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
-                quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
-                
-                const userName = userEmail.split('@')[0];
-                document.getElementById('user-greeting').textContent = userName;
-                document.getElementById('right-menu-greeting').textContent = userName;
-                
-                const avatarUrl = `https://ui-avatars.com/api/?name=${userName.charAt(0)}&background=1CD991&color=fff`;
-                document.getElementById('user-avatar').src = avatarUrl;
-                document.getElementById('back-to-course-link').href = `detail.html?modul=${activeModulKey}`;
-                
-                // Set Last Activity Date
-                const now = new Date();
-                const formattedDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-                document.getElementById('last-activity-date').textContent = formattedDate;
-
                 try {
-                    const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
-                    const result = await response.json();
+                    const session = JSON.parse(rawUserData);
+                    userEmail = session.email;
+                    if(session.modul && courseData[session.modul]) {
+                        activeModulKey = session.modul;
+                        activeData = courseData[activeModulKey];
+                    }
                     
-                    if(result.status === 'success') {
-                        userCertUrl = result.certificate || "";
-                        if(result.progress) {
-                            completedChapters = result.progress.split(',').map(Number);
-                            localStorage.setItem(progressKey, JSON.stringify(completedChapters));
-                        } else {
-                            completedChapters = [];
-                        }
+                    progressKey = 'neokademi_progress_' + userEmail.trim().toLowerCase(); 
+                    quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
+                    quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
+                    
+                    const userName = userEmail.split('@')[0];
+                    document.getElementById('right-menu-greeting').textContent = userName;
+                    
+                    const avatarUrl = `https://ui-avatars.com/api/?name=${userName.charAt(0)}&background=1CD991&color=fff`;
+                    document.getElementById('user-avatar').src = avatarUrl;
+                    document.getElementById('back-to-course-link').href = `detail.html?modul=${activeModulKey}`;
+                    
+                    // Set Last Activity Date
+                    const now = new Date();
+                    const formattedDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                    document.getElementById('last-activity-date').textContent = formattedDate;
 
-                        if(result.quiz !== undefined && result.quiz !== "") {
-                            quizScoreVal = parseInt(result.quiz);
-                            localStorage.setItem(quizScoreKey, quizScoreVal);
-                            if(result.answers) {
-                                userAnswers = JSON.parse(result.answers);
-                                localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
+                    try {
+                        const response = await fetch(`${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
+                        const result = await response.json();
+                        
+                        if(result.status === 'success') {
+                            userCertUrl = result.certificate || "";
+                            if(result.progress) {
+                                completedChapters = result.progress.split(',').map(Number);
+                                localStorage.setItem(progressKey, JSON.stringify(completedChapters));
+                            } else {
+                                completedChapters = [];
+                            }
+
+                            if(result.quiz !== undefined && result.quiz !== "") {
+                                quizScoreVal = parseInt(result.quiz);
+                                localStorage.setItem(quizScoreKey, quizScoreVal);
+                                if(result.answers) {
+                                    userAnswers = JSON.parse(result.answers);
+                                    localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
+                                }
                             }
                         }
+                    } catch(err) {
+                        completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
+                        const localScore = localStorage.getItem(quizScoreKey);
+                        if(localScore !== null) quizScoreVal = parseInt(localScore);
                     }
-                } catch(err) {
-                    completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
-                    const localScore = localStorage.getItem(quizScoreKey);
-                    if(localScore !== null) quizScoreVal = parseInt(localScore);
+                } catch(e) {
+                    console.error("Local data corrupted", e);
                 }
             }
 
@@ -386,10 +402,10 @@
                 const isActive = currentChapterId === chap.id;
                 
                 let iconHtml = isCompleted 
-                    ? `<div class="w-[18px] h-[18px] rounded-full bg-success text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-check"></i></div>`
+                    ? `<div class="w-[18px] h-[18px] rounded-full bg-[#1CD991] text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-check"></i></div>`
                     : `<div class="w-[18px] h-[18px] rounded-full border border-gray-300 shrink-0"></div>`;
                 
-                let textClass = isCompleted ? 'text-gray-500 line-through' : 'text-darkBlue';
+                let textClass = isCompleted ? 'text-gray-500 line-through' : 'text-[#122B46]';
                 let bgClass = isActive ? 'bg-gray-50' : 'hover:bg-gray-50';
 
                 const btn = document.createElement('button');
@@ -411,9 +427,9 @@
                 quizBtn.className = `w-full text-left px-6 py-4 border-b border-gray-100 flex items-center justify-between transition-colors hover:bg-gray-50 ${isQuizActive ? 'bg-gray-50' : ''}`;
                 quizBtn.onclick = () => openQuizPage();
                 let qIcon = quizScoreVal !== null && quizScoreVal >= MIN_SCORE_PASS 
-                    ? `<div class="w-[18px] h-[18px] rounded-full bg-success text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-check"></i></div>` 
+                    ? `<div class="w-[18px] h-[18px] rounded-full bg-[#1CD991] text-white flex items-center justify-center text-[10px] shrink-0"><i class="fa-solid fa-check"></i></div>` 
                     : `<div class="w-[18px] h-[18px] rounded-full border border-gray-300 shrink-0 text-primary flex items-center justify-center text-[10px]"><i class="fa-solid fa-question"></i></div>`;
-                let textClass = quizScoreVal !== null && quizScoreVal >= MIN_SCORE_PASS ? 'text-gray-500 line-through' : 'text-darkBlue';
+                let textClass = quizScoreVal !== null && quizScoreVal >= MIN_SCORE_PASS ? 'text-gray-500 line-through' : 'text-[#122B46]';
                 quizBtn.innerHTML = `
                     <span class="text-[14px] font-medium pr-4 ${textClass}">Final Quiz</span>
                     ${qIcon}
@@ -580,7 +596,7 @@
             if(score >= MIN_SCORE_PASS) {
                 iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
                 msgEl.innerHTML = `Selamat! Anda <strong>LULUS</strong> pada modul ini.`;
-                document.getElementById('result-score').className = "text-6xl font-black text-success mb-4";
+                document.getElementById('result-score').className = "text-6xl font-black text-[#1CD991] mb-4";
                 
                 actions.innerHTML = `<button onclick="checkCertificate()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-award mr-2"></i> Lihat Sertifikat</button>`;
             } else {
@@ -588,7 +604,7 @@
                 msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar kelulusan adalah ${MIN_SCORE_PASS}.`;
                 document.getElementById('result-score').className = "text-6xl font-black text-danger mb-4";
                 
-                actions.innerHTML = `<button onclick="retakeQuiz()" class="px-8 py-3 bg-darkBlue hover:bg-gray-800 text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis</button>`;
+                actions.innerHTML = `<button onclick="retakeQuiz()" class="px-8 py-3 bg-[#122B46] hover:bg-gray-800 text-white font-bold rounded shadow-md transition-colors"><i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis</button>`;
             }
             renderSidebar();
         }
