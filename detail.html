@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#5A32FA', /* Warna ungu/biru menyerupai referensi IDN */
+                        primary: '#5A32FA', 
                         primaryHover: '#4A28D0',
                         danger: '#EB4E4F', 
                         darkBlue: '#122B46',
@@ -112,7 +112,7 @@
                     
                     <div class="p-0">
                         <ul id="detail-syllabus" class="divide-y divide-borderColor">
-                            </ul>
+                        </ul>
                     </div>
                 </div>
 
@@ -121,18 +121,13 @@
             <div class="lg:col-span-1 order-1 lg:order-2">
                 <div class="bg-white rounded-xl border border-borderColor shadow-lg overflow-hidden sticky-sidebar">
                     
-                    <div class="relative w-full h-[220px] bg-gray-900 flex items-center justify-center overflow-hidden">
-                        <img id="sidebar-thumbnail-img" src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?q=80&w=800&auto=format&fit=crop" alt="Course Thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-overlay">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
-                        
-                        <div class="relative z-20 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/80 cursor-pointer hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,0,0,0.3)]">
-                            <i class="fa-solid fa-play text-xl text-white ml-1"></i>
-                        </div>
+                    <div class="relative w-full h-[220px] bg-gray-100 flex items-center justify-center overflow-hidden">
+                        <img id="sidebar-thumbnail-img" src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?q=80&w=800&auto=format&fit=crop" alt="Course Poster" class="w-full h-full object-cover">
                     </div>
 
                     <div class="p-6">
                         <div id="sidebar-action-buttons" class="space-y-3 mb-6">
-                            </div>
+                        </div>
 
                         <div class="text-center mb-6">
                             <span class="text-gray-400 font-medium text-sm" id="detail-level">Premium Course</span>
@@ -188,7 +183,6 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // --- Data Modul ---
         const modulData = {
             linux: {
                 title: "Linux System Administration",
@@ -243,7 +237,6 @@
             }
         };
 
-        // Ambil parameter modul dari URL
         const urlParams = new URLSearchParams(window.location.search);
         let modulKey = urlParams.get('modul');
         
@@ -253,7 +246,6 @@
 
         const data = modulData[modulKey];
 
-        // Render Data HTML
         document.title = data.title + " - LMS Neokademi";
         document.getElementById('detail-title').textContent = data.title;
         document.getElementById('detail-desc').textContent = data.desc;
@@ -265,9 +257,6 @@
         document.getElementById('lesson-count-badge').textContent = lessonCount + " Lessons";
         document.getElementById('feature-lesson-count').textContent = lessonCount + " Lessons";
 
-        // ==========================================
-        // LOGIKA PENGECEKAN KEPEMILIKAN KELAS
-        // ==========================================
         const rawSession = localStorage.getItem('neokademi_user');
         let session = null;
         let isEnrolled = false;
@@ -286,11 +275,9 @@
             }
         }
 
-        // --- Render Tombol Sidebar ---
         const btnContainer = document.getElementById('sidebar-action-buttons');
         
         if (!isEnrolled) {
-            // Belum Beli / Belum Login
             btnContainer.innerHTML = `
                 <a href="${data.checkoutLink}" class="w-full flex items-center justify-center px-6 py-3.5 bg-primary text-white font-bold rounded-full hover:bg-primaryHover transition-colors shadow-md text-[15px]">
                     Enroll Sekarang
@@ -303,7 +290,6 @@
             const isCompleted = completedChapters.length >= data.syllabus.length;
 
             if (!isCompleted) {
-                // Sedang Dikerjakan (In Progress)
                 btnContainer.innerHTML = `
                     <div class="w-full flex items-center justify-center px-6 py-3 bg-[#F9FAFB] text-[#6B7280] font-medium rounded-full cursor-default text-[15px]">
                         In Progress
@@ -313,7 +299,6 @@
                     </a>
                 `;
             } else {
-                // Selesai (Completed)
                 btnContainer.innerHTML = `
                     <div class="w-full flex items-center justify-center px-6 py-3 bg-green-50 text-green-600 font-medium rounded-full border border-green-100 cursor-default text-[15px]">
                         Completed
@@ -328,7 +313,6 @@
             }
         }
 
-        // --- Render Syllabus List ---
         const syllabusContainer = document.getElementById('detail-syllabus');
         data.syllabus.forEach((item, index) => {
             const chapterId = index + 1; 
