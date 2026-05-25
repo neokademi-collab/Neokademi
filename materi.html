@@ -1,905 +1,546 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Materi E-Course | Linux System Administration</title>
-    
-    <script>
-        // Proteksi Sesi Login
-        (function() {
-            const rawData = localStorage.getItem('neokademi_user');
-            if (!rawData) {
-                window.location.replace('login.html'); 
-            } else {
-                const session = JSON.parse(rawData);
-                const now = new Date().getTime();
-                if (!session.isLoggedIn || !session.expiry || now > session.expiry) {
-                    localStorage.removeItem('neokademi_user');
-                    alert("Sesi Anda telah berakhir (3 jam). Silakan login kembali.");
-                    window.location.replace('login.html');
-                }
-            }
-        })();
-    </script>
-
+    <title>NeoCourse - Materi Linux System Administration</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { 
-                extend: { 
-                    colors: { 
-                        primary: '#385DFF', // Buddyboss blue
-                        primaryHover: '#1E42DD', 
-                        redBrand: '#EB4E4F', // IDN Red
-                        darkBg: '#0f172a', 
-                        darkCard: '#1e293b', 
-                        darkSidebar: '#111827',
-                        textMain: '#4D5C6D',
-                        textHeading: '#122B46'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                    }
-                } 
-            }
-        }
-    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        /* Custom styles for the dark mode toggle switch */
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #385DFF; /* Primary blue */
+        }
+        .toggle-checkbox:checked + .toggle-label .toggle-circle {
+            transform: translateX(100%);
+        }
+        
+        /* Smooth scrolling and transitions */
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
-        .active-chapter { background-color: #f8fafc; font-weight: 700; }
-        .dark .active-chapter { background-color: #1e293b; }
-        @keyframes fade-in-up { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-content { animation: fade-in-up 0.4s ease-out forwards; }
-        .sidebar-transition { transition: transform 0.3s ease-in-out, margin 0.3s ease-in-out; }
+        
+        .sidebar-hidden {
+            display: none !important;
+        }
     </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#385DFF',
+                        primaryHover: '#1E42DD',
+                        redBrand: '#EB4E4F',
+                        secondary: '#4D5C6D',
+                        darkText: '#A3A5A9',
+                        bgDark: '#0f172a',
+                        bgCardDark: '#1e293b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-[#FAFBFD] text-textMain dark:bg-darkBg dark:text-gray-300 h-[100dvh] flex flex-col overflow-hidden hidden" id="main-body">
-
-    <div id="global-loader" class="fixed inset-0 bg-white/90 dark:bg-darkBg/90 z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
-        <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
-        <p class="font-semibold text-textHeading dark:text-gray-300 mt-2">Menyinkronkan Workspace...</p>
-    </div>
-
-    <script>document.getElementById('main-body').classList.remove('hidden');</script>
-
-    <nav class="shrink-0 z-40 bg-white dark:bg-darkCard border-b border-gray-200 dark:border-gray-800 transition-colors h-[76px] flex items-center justify-between px-4 lg:px-8 relative shadow-sm">
-        
-        <div class="flex items-center gap-6 h-full">
-            <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
-
-            <a href="index.html" class="flex items-center cursor-pointer">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-redBrand rounded-full flex items-center justify-center text-white font-bold text-xl"><i class="fa-solid fa-network-wired text-sm"></i></div>
-                    <span class="font-bold text-xl hidden sm:block text-textHeading dark:text-white">Neo<span class="text-redBrand">Networkers</span></span>
-                </div>
-            </a>
-
-            <div class="hidden lg:flex items-center h-full gap-6 ml-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
-                <a href="#" class="hover:text-primary flex items-center gap-2 transition-colors"><i class="fa-solid fa-house"></i> Beranda</a>
-                
-                <div class="relative group h-full flex items-center">
-                    <a href="#" class="hover:text-primary flex items-center gap-2 transition-colors cursor-pointer">
-                        <i class="fa-solid fa-layer-group"></i> Pilihan Kursus <i class="fa-solid fa-angle-down text-[10px]"></i>
-                    </a>
-                    <div class="absolute top-[76px] left-0 w-48 bg-white dark:bg-darkCard border border-gray-100 dark:border-gray-700 shadow-lg rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
-                        <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm"><i class="fa-solid fa-video mr-2"></i> Kursus Gratis</a>
-                        <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm"><i class="fa-solid fa-award mr-2"></i> Kursus Premium</a>
-                    </div>
-                </div>
-
-                <a href="#" class="hover:text-primary flex items-center gap-2 transition-colors"><i class="fa-solid fa-comments"></i> Group Diskusi</a>
-                <a href="#" class="hover:text-primary flex items-center gap-2 transition-colors"><i class="fa-solid fa-users"></i> My Courses</a>
-            </div>
-        </div>
-        
-        <div class="flex items-center space-x-3 sm:space-x-5">
-            <button id="theme-toggle" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors focus:outline-none" title="Toggle Dark Mode">
-                <i class="fa-regular fa-moon text-xl hidden dark:inline-block"></i>
-                <i class="fa-regular fa-sun text-xl dark:hidden inline-block"></i>
-            </button>
-
-            <button onclick="toggleDesktopSidebar()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors focus:outline-none" id="desktop-toggle-icon" title="Maximize">
-                <i class="fa-solid fa-expand text-xl"></i>
-            </button>
-
-            <div class="flex items-center relative z-50">
-                <button id="user-menu-btn" class="flex items-center gap-2 focus:outline-none">
-                    <span class="text-sm text-textHeading dark:text-gray-200 font-semibold hidden sm:block" id="user-greeting">Siswa</span>
-                    <i class="fa-solid fa-angle-down text-[10px] text-gray-400 hidden sm:block mr-2"></i>
-                    <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
-                        <i class="fa-solid fa-user text-gray-500 dark:text-gray-400"></i>
-                    </div>
+<body class="font-sans antialiased bg-[#FAFBFD] text-secondary dark:bg-bgDark dark:text-darkText transition-colors duration-300">
+    
+    <nav class="bg-white dark:bg-bgCardDark border-b border-gray-200 dark:border-gray-800 shadow-sm sticky top-0 z-50 h-[76px] flex items-center">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center justify-between">
+            
+            <div class="flex items-center space-x-4">
+                <button id="mobile-menu-button" class="lg:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none text-2xl">
+                    <i id="hamburger-icon" class="fa-solid fa-bars"></i>
                 </button>
 
-                <div id="user-dropdown" class="absolute top-[120%] right-0 w-56 bg-white dark:bg-darkCard rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible transition-all duration-200 transform origin-top-right translate-y-2">
-                    <div class="p-2 space-y-1">
-                        <button id="dropdown-cert-btn" onclick="checkCertificate()" class="w-full text-left flex items-center px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <i class="fa-solid fa-certificate w-5 text-center mr-2 text-primary" id="dropdown-cert-icon"></i> <span id="dropdown-cert-text">Lihat Sertifikat</span>
-                        </button>
-                        <div class="h-px bg-gray-100 dark:bg-gray-700 my-1 mx-2"></div>
-                        <button onclick="logout()" class="w-full text-left flex items-center px-4 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg transition-colors text-sm font-medium">
-                            <i class="fa-solid fa-sign-out-alt w-5 text-center mr-2"></i> Keluar
-                        </button>
+                <a href="index.html" class="flex items-center space-x-3">
+                    <img src="assets/img/Neokademi.png" alt="Logo Neokademi" class="h-8 md:h-10 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=NK&background=EB4E4F&color=fff&rounded=true'">
+                    <span class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Neo<span class="text-primary">Course</span></span>
+                </a>
+
+                <div class="hidden lg:flex items-center space-x-6 ml-8 text-sm font-semibold text-gray-600 dark:text-gray-300">
+                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-house"></i> Beranda</a>
+                    <div class="relative group h-[76px] flex items-center">
+                        <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-layer-group"></i> Pilihan Kursus <i class="fa-solid fa-angle-down text-[10px]"></i>
+                        </a>
+                        <div class="absolute top-[76px] left-0 w-48 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 shadow-lg rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
+                            <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-video mr-2"></i> Kursus Gratis</a>
+                            <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-award mr-2"></i> Kursus Premium</a>
+                        </div>
+                    </div>
+                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-comments"></i> Group Diskusi</a>
+                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-users"></i> My Courses</a>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4 md:space-x-6">
+                
+                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-primary dark:hover:text-white transition-colors" title="Toggle Sidebar Progress">
+                    <i id="maximize-icon" class="fa-solid fa-expand text-xl"></i>
+                </button>
+
+                <div class="hidden sm:flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-sun text-yellow-500 text-lg"></i>
+                    <div class="relative inline-block w-11 h-6 align-middle select-none">
+                        <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 dark:border-gray-600 appearance-none cursor-pointer transition-transform duration-300"/>
+                        <label for="dark-mode-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer transition-colors duration-300">
+                            <span class="toggle-circle absolute block w-6 h-6 rounded-full bg-white shadow-sm transition-transform duration-300"></span>
+                        </label>
+                    </div>
+                    <i class="fa-solid fa-moon text-gray-400 text-lg"></i>
+                </div>
+
+                <button onclick="viewCertificate()" class="hidden md:flex bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold items-center space-x-2 transition-colors">
+                    <i class="fa-solid fa-certificate text-primary"></i>
+                    <span>Sertifikat</span>
+                </button>
+
+                <div class="relative">
+                    <button id="profile-dropdown-button" class="flex items-center space-x-2 md:space-x-3 focus:outline-none">
+                        <span class="hidden md:inline text-sm font-semibold text-gray-800 dark:text-white">jobamidreams</span>
+                        <div class="bg-gray-200 dark:bg-gray-800 rounded-full h-10 w-10 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
+                            <i class="fa-solid fa-user text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                        <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 transition-transform hidden sm:block"></i>
+                    </button>
+                    <div id="profile-dropdown-content" class="hidden absolute right-0 mt-3 w-56 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl z-50 transition-all duration-300">
+                        <div class="p-2 space-y-1">
+                            <div class="sm:hidden flex items-center justify-between px-4 py-3">
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Mode Gelap</span>
+                                <input type="checkbox" id="mobile-dark-mode-toggle" class="toggle-checkbox w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 appearance-none cursor-pointer relative after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-transform checked:bg-primary checked:after:translate-x-5" />
+                            </div>
+                            <button onclick="viewCertificate()" class="md:hidden w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center space-x-3">
+                                <i class="fa-solid fa-certificate text-primary w-5"></i>
+                                <span>Sertifikat</span>
+                            </button>
+                            <div class="border-t border-gray-100 dark:border-gray-800 my-1 md:hidden"></div>
+                            <button onclick="logOut()" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3">
+                                <i class="fa-solid fa-sign-out-alt w-5"></i>
+                                <span>Log Out</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div id="mobile-menu-backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity opacity-0 lg:hidden"></div>
-    <div id="mobile-menu" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-darkSidebar z-50 transform -translate-x-full transition-transform duration-300 lg:hidden flex flex-col shadow-2xl">
+    <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity opacity-0 lg:hidden"></div>
+    <div id="mobile-menu" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-bgCardDark z-50 transform -translate-x-full transition-transform duration-300 lg:hidden flex flex-col shadow-2xl">
         <div class="p-5 flex justify-end">
-            <button onclick="toggleMobileMenu()" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <button id="close-mobile-menu" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
         </div>
         <div class="flex-1 overflow-y-auto py-2">
-            <nav class="flex flex-col space-y-1 px-4 text-sm font-medium text-textHeading dark:text-gray-300">
+            <nav class="flex flex-col space-y-1 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
                 <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-house w-5"></i> Beranda</a>
-                
                 <div class="flex flex-col">
                     <button onclick="document.getElementById('mobile-submenu').classList.toggle('hidden')" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center justify-between w-full">
                         <span class="flex items-center gap-3"><i class="fa-solid fa-layer-group w-5"></i> Pilihan Kursus</span>
                         <i class="fa-solid fa-angle-down"></i>
                     </button>
                     <div id="mobile-submenu" class="hidden flex-col pl-12 pr-4 space-y-1 mt-1">
-                        <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400 flex items-center gap-2"><i class="fa-solid fa-video text-xs"></i> Kursus Gratis</a>
-                        <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400 flex items-center gap-2"><i class="fa-solid fa-award text-xs"></i> Kursus Premium</a>
+                        <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400">Kursus Gratis</a>
+                        <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400">Kursus Premium</a>
                     </div>
                 </div>
-
                 <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-comments w-5"></i> Group Diskusi</a>
                 <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-users w-5"></i> My Courses</a>
-                <div class="h-px bg-gray-100 dark:bg-gray-800 my-4 mx-4"></div>
-                <button onclick="logout()" class="px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg flex items-center gap-3 text-left"><i class="fa-solid fa-sign-out-alt w-5"></i> Log Out</button>
             </nav>
         </div>
     </div>
 
-    <div class="flex flex-1 overflow-hidden relative">
+    <div class="flex flex-col md:flex-row max-w-screen-2xl mx-auto p-4 md:p-6 lg:p-8 relative h-[calc(100vh-76px)] overflow-hidden">
         
-        <div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/50 z-20 hidden md:hidden transition-opacity opacity-0"></div>
-
-        <aside id="sidebar" class="sidebar-transition absolute inset-y-0 left-0 z-30 w-80 bg-white dark:bg-darkSidebar border-r border-gray-200 dark:border-gray-800 transform -translate-x-full md:relative md:translate-x-0 flex flex-col shadow-xl md:shadow-none shrink-0">
+        <aside id="sidebar-progress" class="hidden md:flex flex-col w-80 lg:w-96 flex-shrink-0 bg-white dark:bg-bgCardDark rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-all duration-300 mr-6 lg:mr-8 h-full overflow-hidden">
             
             <div class="p-6 border-b border-gray-100 dark:border-gray-800">
                 <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary dark:text-gray-400 flex items-center mb-4 transition-colors">
                     <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
                 </a>
-                <h2 class="font-bold text-textHeading dark:text-white text-xl mb-6 leading-tight" id="course-title">Linux System Administration</h2>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Linux System Administration</h2>
                 
                 <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-gray-500 dark:text-gray-400" id="progress-text">0% Complete</span>
+                    <div class="flex justify-between items-center text-sm mb-2">
+                        <span class="text-gray-600 dark:text-gray-400 font-semibold">Progres Kursus</span>
+                        <span id="progress-percentage" class="font-bold text-[#019e7c]">0%</span>
                     </div>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden mb-2">
-                        <div id="progress-bar-fill" class="bg-[#019e7c] h-1.5 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+                    <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                        <div id="progress-bar-fill" class="h-full bg-[#019e7c] rounded-full transition-all duration-500" style="width: 0%;"></div>
                     </div>
-                    <span class="text-[10px] text-gray-400 dark:text-gray-500" id="last-activity"></span>
+                    <span class="text-[10px] text-gray-400 mt-2 block" id="last-activity">Aktivitas terakhir pada --</span>
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto py-2 flex flex-col" id="chapter-list"></div>
+            <div id="materi-list" class="flex-1 overflow-y-auto">
+                </div>
         </aside>
+        
+        <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity duration-300">
+            <div id="mobile-sidebar-content" class="fixed top-[76px] left-0 h-[calc(100%-76px)] w-80 bg-white dark:bg-bgCardDark flex flex-col transition-transform duration-300 translate-x-[-100%] shadow-xl z-50">
+                <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+                    <h2 class="font-bold text-gray-900 dark:text-white">Daftar Materi</h2>
+                    <button onclick="toggleMobileSidebarProgress()" class="text-gray-500 hover:text-gray-800 dark:text-gray-300 text-xl p-2">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="mobile-materi-list" class="flex-1 overflow-y-auto">
+                    </div>
+            </div>
+        </div>
 
-        <main class="flex-1 overflow-y-auto bg-white dark:bg-darkBg p-0 w-full transition-all duration-300 relative" id="main-content-area">
+        <main class="flex-grow flex flex-col h-full overflow-y-auto pr-2 pb-10 custom-scrollbar">
             
-            <button onclick="toggleMobileSidebar()" class="md:hidden absolute top-4 left-4 z-10 bg-white dark:bg-darkCard shadow-md rounded-full w-10 h-10 flex items-center justify-center text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                <i class="fa-solid fa-list-ul"></i>
-            </button>
-
-            <div class="max-w-4xl mx-auto p-4 sm:p-8 lg:p-12 lg:pt-10">
-                
-                <div id="content-container" class="animate-content">
-                    
-                    <h1 id="chapter-title" class="text-2xl md:text-3xl lg:text-[32px] font-bold text-textHeading dark:text-white mb-8 leading-tight pl-12 md:pl-0">Memuat Materi...</h1>
-                    
-                    <div class="bg-black rounded-lg overflow-hidden shadow-sm aspect-video relative mb-8">
-                        <iframe id="video-player" class="absolute top-0 left-0 w-full h-full" src="" title="Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                    </div>
-
-                    <div class="prose dark:prose-invert max-w-none text-textMain dark:text-gray-300 leading-relaxed text-base">
-                        <p class="mb-6">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>
-                        
-                        <div id="chapter-desc" class="hidden"></div> <div class="pt-6 mt-8" id="action-container">
-                            </div>
+            <div class="max-w-4xl w-full mx-auto space-y-6">
+                <div class="bg-white dark:bg-bgCardDark p-2 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
+                    <div class="relative pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black group">
+                        <iframe id="video-frame" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
                     </div>
                 </div>
 
-                <div id="quiz-container" class="hidden animate-content">
-                    <div class="bg-white dark:bg-darkCard rounded-xl p-8 shadow-sm border border-gray-100 dark:border-gray-800">
-                        
-                        <div id="quiz-intro" class="text-center pb-8 border-b border-gray-100 dark:border-gray-800 mb-8 hidden">
-                            <h2 class="text-3xl font-bold text-textHeading dark:text-white mb-4">Final Quiz Modul</h2>
-                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-8">Uji pemahaman Anda dengan menjawab pertanyaan seputar materi yang telah dipelajari.</p>
-                            <button id="btn-start-quiz" onclick="startQuizEngine()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-md">Mulai Quiz Sekarang</button>
+                <div class="bg-white dark:bg-bgCardDark p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
+                    <h1 id="materi-title" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Memuat Materi...</h1>
+                    
+                    <div id="materi-explanation" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed text-base">
                         </div>
-
-                        <div id="quiz-area" class="hidden">
-                            <div class="mb-6 text-sm font-semibold text-gray-500" id="quiz-progress-badge">Soal 1/15</div>
-                            <h3 id="question-text" class="text-xl font-bold text-textHeading dark:text-white mb-6">Pertanyaan dimuat...</h3>
-                            <div id="options-container" class="space-y-3"></div>
-                            <div class="mt-8 flex justify-end">
-                                <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 font-bold rounded-full transition-all cursor-not-allowed">Lanjut <i class="fa-solid fa-arrow-right ml-2"></i></button>
-                            </div>
-                        </div>
-
-                        <div id="quiz-result" class="hidden text-center py-8">
-                            <div id="result-icon" class="text-6xl mb-4"></div>
-                            <h2 class="text-3xl font-bold text-textHeading dark:text-white mb-2">Quiz Selesai!</h2>
-                            <p class="text-gray-500 dark:text-gray-400 mb-2">Nilai Akhir Anda:</p>
-                            <div class="text-6xl font-black text-primary mb-6" id="result-score">100</div>
-                            <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-6"></div>
-                            <p class="text-sm text-gray-500 mb-8" id="result-msg"></p>
-                            
-                            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8" id="quiz-action-buttons"></div>
-                        </div>
-
-                        <div id="quiz-review" class="hidden">
-                            <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 dark:border-gray-800">
-                                <h2 class="text-2xl font-bold text-textHeading dark:text-white">Pembahasan Kuis</h2>
-                                <button onclick="showQuizResult(quizScoreVal)" class="text-sm font-bold text-gray-500 hover:text-textHeading dark:hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Skor</button>
-                            </div>
-                            <div id="review-content" class="space-y-6"></div>
-                            <div class="mt-8 text-center">
-                                <button onclick="showQuizResult(quizScoreVal)" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-full transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Selesai Review</button>
-                            </div>
-                        </div>
-
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end" id="action-container">
+                        <button onclick="markComplete()" class="bg-primary hover:bg-primaryHover text-white px-8 py-3 rounded-full text-sm font-bold flex items-center space-x-2 transition-all shadow-lg hover:-translate-y-1">
+                            <i class="fa-regular fa-circle-check"></i>
+                            <span>Mark Complete</span>
+                        </button>
                     </div>
                 </div>
-
             </div>
         </main>
+
     </div>
 
     <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyJcarKrJQUYKMK81f531gpgwY8UVQxSVz6NExABGst1fnprd8DnCdhIH0VpQzeDg/exec';
-        const MIN_SCORE_PASS = 80;
-
-        const courseData = {
-            "linux": {
-                courseName: "Linux System Administration",
-                chapters: [
-                    { id: 1, title: "1. Instalasi & Pemahaman Direktori Dasar", video: "https://www.youtube.com/embed/wBp0Rb-ZJak" },
-                    { id: 2, title: "2. Manajemen User, Group & Permission", video: "https://www.youtube.com/embed/rrB13utjYV4" },
-                    { id: 3, title: "3. Manajemen Paket & Repository", video: "https://www.youtube.com/embed/v_1zbOUXYzI" },
-                    { id: 4, title: "4. Konfigurasi Jaringan & SSH Server", video: "https://www.youtube.com/embed/jBzwzrDvZ18" },
-                    { id: 5, title: "5. Monitoring Sistem & Manajemen Proses", video: "https://www.youtube.com/embed/H5G9Oun_9U0" },
-                    { id: 6, title: "6. Instalasi Web Server & Database", video: "https://www.youtube.com/embed/Z0bE8v8XmG4" },
-                    { id: 7, title: "7. Dasar-dasar Bash Scripting", video: "https://www.youtube.com/embed/e7B7vX7DscI" }
-                ]
+        // --- DATA MATERI LINUX (Sesuai Prompt Awal) ---
+        const linuxCourseData = [
+            { 
+                id: 1, 
+                title: "1. Instalasi & Pemahaman Direktori Dasar", 
+                video: "https://www.youtube.com/embed/wBp0Rb-ZJak",
+                desc: `
+                    <p class="mb-3">Pada bab pertama ini, kita akan mempelajari fondasi utama dari sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p>
+                    <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                    <ul class="list-disc pl-5 space-y-1 mb-4">
+                        <li>Pemahaman direktori utama: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/</code> (Root), <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/home</code> (User), <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/etc</code> (Konfigurasi), dan <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/var</code> (Data dinamis).</li>
+                        <li>Navigasi via terminal CLI.</li>
+                        <li>Perintah dasar manajemen file dan folder.</li>
+                    </ul>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                        <p class="text-sm font-semibold text-primary mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                        <p class="text-sm font-mono text-gray-600 dark:text-gray-400">pwd, ls -la, cd, mkdir, rm -rf, cp, mv</p>
+                    </div>` 
+            },
+            { 
+                id: 2, 
+                title: "2. Manajemen User, Group & Permission", 
+                video: "https://www.youtube.com/embed/rrB13utjYV4",
+                desc: `
+                    <p class="mb-3">Keamanan adalah prioritas utama di Linux. Bab ini membahas cara mengelola pengguna dan membatasi hak akses file agar server tidak mudah diretas.</p>
+                    <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
+                    <ul class="list-disc pl-5 space-y-1 mb-4">
+                        <li>Membuat dan menghapus User serta Group.</li>
+                        <li>Konsep otorisasi Superuser (Root) dan Sudo.</li>
+                        <li>Membaca hak akses file: Read (4), Write (2), Execute (1).</li>
+                    </ul>` 
+            },
+            { 
+                id: 3, 
+                title: "3. Manajemen Paket & Repository", 
+                video: "https://www.youtube.com/embed/v_1zbOUXYzI",
+                desc: `
+                    <p class="mb-3">Pelajari cara menginstal, memperbarui, dan menghapus aplikasi (software) di lingkungan Linux menggunakan sistem manajemen paket.</p>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 mt-4">
+                        <p class="text-sm font-semibold text-primary mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
+                        <p class="text-sm font-mono text-gray-600 dark:text-gray-400">apt update, apt upgrade, apt install [paket], apt remove</p>
+                    </div>` 
+            },
+            { 
+                id: 4, 
+                title: "4. Konfigurasi Jaringan & SSH Server", 
+                video: "https://www.youtube.com/embed/jBzwzrDvZ18",
+                desc: `<p>Server Linux biasanya berada di Data Center tanpa layar. Bab ini memandu Anda mengonfigurasi IP dan mengakses server dari jarak jauh (Remote).</p>` 
+            },
+            { 
+                id: 5, 
+                title: "5. Monitoring Sistem & Manajemen Proses", 
+                video: "https://www.youtube.com/embed/H5G9Oun_9U0",
+                desc: `<p>Seorang System Administrator harus tahu cara menganalisis beban server (Resource) dan mematikan program yang bermasalah menggunakan perintah seperti <code>top</code>, <code>htop</code>, atau <code>kill</code>.</p>` 
+            },
+            { 
+                id: 6, 
+                title: "6. Instalasi Web Server & Database", 
+                video: "https://www.youtube.com/embed/Z0bE8v8XmG4",
+                desc: `<p>Mulai praktik membangun infrastruktur web. Kita akan menyulap Linux kosong menjadi server *Production* yang siap menjalankan website dengan Nginx dan MySQL.</p>` 
+            },
+            { 
+                id: 7, 
+                title: "7. Dasar-dasar Bash Scripting", 
+                video: "https://www.youtube.com/embed/e7B7vX7DscI",
+                desc: `<p>Bab terakhir! Pelajari cara mengotomatisasi pekerjaan yang berulang-ulang dengan menulis skrip pemrograman sederhana di terminal Linux.</p>` 
             }
-        };
-
-        const quizData = [
-            { q: "Apa direktori utama tertinggi pada struktur file Linux?", options: ["/home", "/root", "/", "/bin"], ans: 2 },
-            { q: "Perintah apa yang digunakan untuk menampilkan daftar isi direktori?", options: ["cd", "ls", "pwd", "mkdir"], ans: 1 },
-            { q: "Angka berapa yang merepresentasikan hak akses penuh?", options: ["5", "6", "7", "4"], ans: 2 },
-            { q: "Paket manager bawaan pada keluarga Debian adalah?", options: ["yum", "dnf", "apt", "pacman"], ans: 2 },
-            { q: "Port default yang digunakan oleh SSH adalah?", options: ["21", "22", "80", "443"], ans: 1 },
-            { q: "Bagaimana cara mengecek sisa storage yang dapat dibaca manusia?", options: ["df -h", "free -m", "ls -la", "top"], ans: 0 },
-            { q: "Perintah untuk mematikan paksa proses ber-PID 1234 adalah?", options: ["stop 1234", "kill -9 1234", "end 1234", "systemctl kill"], ans: 1 },
-            { q: "Web Server yang menangani koneksi tinggi dengan RAM rendah?", options: ["MySQL", "Apache", "Nginx", "Postfix"], ans: 2 },
-            { q: "Agar service Nginx otomatis aktif saat server restart?", options: ["systemctl start", "systemctl enable nginx", "systemctl status", "service restart"], ans: 1 },
-            { q: "Setiap file bash script wajib diawali dengan penanda?", options: ["Header", "Shebang (#!/bin/bash)", "Compiler", "Root"], ans: 1 },
-            { q: "Direktori penyimpanan file konfigurasi Linux?", options: ["/var", "/home", "/etc", "/opt"], ans: 2 },
-            { q: "Perintah pindah direktori?", options: ["move", "cd", "ls", "pwd"], ans: 1 },
-            { q: "Izin 'Read' direpresentasikan angka?", options: ["1", "2", "3", "4"], ans: 3 },
-            { q: "Melihat lokasi direktori aktif saat ini?", options: ["ls", "where", "pwd", "cd"], ans: 2 },
-            { q: "Memberikan hak eksekusi script.sh?", options: ["chmod +x script.sh", "chown script", "execute script", "run script"], ans: 0 }
         ];
 
-        let currentCourse = "linux";
-        let activeData = courseData[currentCourse] || courseData["linux"];
-        let currentChapterId = null;
-        
-        let completedChapters = [];
-        let userEmail = "";
-        let progressKey = ""; 
-        let quizScoreKey = "";
-        let quizAnswersKey = "";
-        
-        let quizScoreVal = null; 
-        let currentQuizIndex = 0;
-        let selectedOption = null;
-        let userAnswers = [];
-        
-        let userCertUrl = "";
-        let isGeneratingCert = false;
-        let hasTriggeredPreGen = false;
+        // --- STATE & VARIABEL ---
+        let completedChapters = [1, 2]; // Dummy data untuk contoh progres
+        let currentChapterId = 3;
+        let isSidebarVisible = true; // Sidebar terbuka secara default di desktop
 
+        // --- FUNGSI FORMAT TANGGAL ---
         function setLastActivity() {
             const date = new Date();
             const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' };
             document.getElementById('last-activity').textContent = `Last activity on ${date.toLocaleDateString('en-GB', options)}`;
         }
 
-        async function initializeData() {
-            setLastActivity();
-            const rawUserData = localStorage.getItem('neokademi_user');
-            if(rawUserData) {
-                const session = JSON.parse(rawUserData);
-                userEmail = session.email;
-                progressKey = 'neokademi_progress_' + userEmail.trim().toLowerCase(); 
-                quizScoreKey = 'neokademi_quizscore_' + userEmail.trim().toLowerCase();
-                quizAnswersKey = 'neokademi_quizanswers_' + userEmail.trim().toLowerCase();
+        // --- FUNGSI RENDER SIDEBAR MATERI ---
+        function renderSidebarList() {
+            const listDesktop = document.getElementById('materi-list');
+            listDesktop.innerHTML = '';
+            
+            linuxCourseData.forEach((materi) => {
+                const isCompleted = completedChapters.includes(materi.id);
+                const isActive = currentChapterId === materi.id;
                 
-                document.getElementById('user-greeting').textContent = userEmail.split('@')[0];
+                let iconHtml = '';
+                let bgClass = 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800';
                 
-                try {
-                    const targetUrl = `${GAS_URL}?action=getProgress&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`;
-                    const response = await fetch(targetUrl);
-                    const result = await response.json();
-                    
-                    if(result.status === 'success') {
-                        if(result.certificate && result.certificate !== "") { userCertUrl = result.certificate; } 
-                        else { userCertUrl = ""; }
-
-                        if(result.progress && result.progress !== "") {
-                            completedChapters = result.progress.split(',').map(Number);
-                            localStorage.setItem(progressKey, JSON.stringify(completedChapters));
-                        } else {
-                            completedChapters = [];
-                            localStorage.removeItem(progressKey);
-                        }
-
-                        if(result.quiz !== undefined && result.quiz !== "") {
-                            quizScoreVal = parseInt(result.quiz);
-                            localStorage.setItem(quizScoreKey, quizScoreVal);
-                            if(result.answers && result.answers !== "") {
-                                userAnswers = JSON.parse(result.answers);
-                                localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
-                            }
-                        } else {
-                            quizScoreVal = null;
-                            userAnswers = [];
-                            localStorage.removeItem(quizScoreKey);
-                            localStorage.removeItem(quizAnswersKey);
-                        }
-                    } else { throw new Error("Gagal mengambil data dari server"); }
-                } catch(err) {
-                    completedChapters = JSON.parse(localStorage.getItem(progressKey)) || [];
-                    const localScore = localStorage.getItem(quizScoreKey);
-                    if(localScore !== null) quizScoreVal = parseInt(localScore);
-                    userAnswers = JSON.parse(localStorage.getItem(quizAnswersKey)) || [];
+                if (isActive) {
+                    bgClass = 'bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-primary border-b border-b-gray-100 dark:border-b-gray-800';
+                    iconHtml = `
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-primary">
+                            <i class="fa-regular fa-circle-dot text-sm"></i>
+                        </div>`;
+                } else if (isCompleted) {
+                    iconHtml = `
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-[#019e7c]">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                        </div>`;
+                } else {
+                    iconHtml = `
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-600">
+                            <i class="fa-regular fa-circle text-sm"></i>
+                        </div>`;
                 }
-            }
-
-            document.getElementById('global-loader').classList.add('opacity-0');
-            setTimeout(() => document.getElementById('global-loader').classList.add('hidden'), 300);
-
-            renderSidebar();
-            
-            const lastCompletedIndex = completedChapters.length;
-            if(lastCompletedIndex < activeData.chapters.length) {
-                loadChapter(activeData.chapters[lastCompletedIndex] ? activeData.chapters[lastCompletedIndex].id : activeData.chapters[0].id);
-            } else {
-                if(quizScoreVal === null) { openQuizPage(); } 
-                else { loadChapter(activeData.chapters[activeData.chapters.length - 1].id); }
-            }
-        }
-
-        function sendDataBeacon(action, dataValue, extraData = "") {
-            const paramName = action === 'saveQuiz' ? 'score' : 'progress';
-            let url = `${GAS_URL}?action=${action}&email=${encodeURIComponent(userEmail)}&${paramName}=${encodeURIComponent(dataValue)}&t=${new Date().getTime()}`;
-            if(action === 'saveQuiz' && extraData !== "") url += `&answers=${encodeURIComponent(extraData)}`;
-            const beacon = new Image();
-            beacon.src = url;
-        }
-
-        function triggerBackgroundGeneration() {
-            if (!userCertUrl || userCertUrl === "") {
-                isGeneratingCert = true;
-                fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`)
-                .then(res => res.json())
-                .then(data => { if(data.status === 'success') { userCertUrl = data.url; } })
-                .catch(e => console.log("Background generation silent"))
-                .finally(() => { isGeneratingCert = false; });
-            }
-        }
-
-        function renderSidebar() {
-            const chapterListEl = document.getElementById('chapter-list');
-            chapterListEl.innerHTML = ''; 
-            
-            activeData.chapters.forEach((chap) => {
-                const isCompleted = completedChapters.includes(chap.id);
-                const isActive = currentChapterId === chap.id;
-                
-                const iconHtml = isCompleted 
-                    ? `<i class="fa-solid fa-circle-check text-[#019e7c] text-lg"></i>`
-                    : `<div class="w-[18px] h-[18px] rounded-full border-2 border-gray-300 dark:border-gray-600"></div>`;
 
                 const btn = document.createElement('button');
-                btn.className = `w-full text-left px-6 py-4 flex items-center justify-between group transition-colors border-b border-gray-50 dark:border-gray-800 ${isActive ? 'bg-gray-50 dark:bg-gray-800/50' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`;
-                btn.onclick = () => loadChapter(chap.id);
+                btn.className = `w-full text-left p-4 flex items-center justify-between transition-colors ${bgClass}`;
+                btn.onclick = () => loadMateri(materi.id);
                 
                 btn.innerHTML = `
-                    <div class="flex-1 pr-4">
-                        <p class="text-[13px] ${isActive ? 'font-bold text-textHeading dark:text-white' : 'font-medium text-gray-600 dark:text-gray-400 group-hover:text-textHeading dark:group-hover:text-gray-300'} transition-colors leading-relaxed">${chap.title}</p>
+                    <div class="flex items-center space-x-3 pr-2">
+                        <div class="flex-shrink-0">${iconHtml}</div>
+                        <span class="text-[13px] ${isActive ? 'font-bold text-primary' : (isCompleted ? 'font-medium text-gray-500 line-through' : 'font-medium text-gray-700 dark:text-gray-300')} leading-snug">
+                            ${materi.title}
+                        </span>
                     </div>
-                    <div class="flex-shrink-0 flex items-center justify-center">${iconHtml}</div>
                 `;
-                chapterListEl.appendChild(btn);
+                listDesktop.appendChild(btn);
             });
 
-            const allCompleted = completedChapters.length >= activeData.chapters.length;
+            // Tambahkan tombol Final Quiz di akhir
+            const allCompleted = completedChapters.length >= linuxCourseData.length;
             const quizBtn = document.createElement('button');
-            const isQuizActive = currentChapterId === null && !document.getElementById('quiz-container').classList.contains('hidden');
-            
             if(allCompleted) {
-                quizBtn.className = `w-full text-left px-6 py-5 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-between group mt-4 border-t border-gray-100 dark:border-gray-800`;
-                quizBtn.onclick = () => openQuizPage();
-                const quizText = quizScoreVal !== null ? `Final Quiz (${quizScoreVal})` : `Final Quiz`;
-                quizBtn.innerHTML = `
-                    <div class="flex-1"><p class="text-[13px] font-bold text-primary">${quizText}</p></div>
-                    <div class="flex-shrink-0"><i class="fa-solid fa-medal text-primary text-lg"></i></div>
-                `;
+                quizBtn.className = `w-full text-left p-5 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-between border-t border-gray-100 dark:border-gray-800`;
+                quizBtn.innerHTML = `<span class="text-[13px] font-bold text-primary">Final Quiz</span> <i class="fa-solid fa-medal text-primary text-lg"></i>`;
+                quizBtn.onclick = () => alert('Buka halaman Final Quiz');
             } else {
-                quizBtn.className = `w-full text-left px-6 py-5 transition-all flex items-center justify-between mt-4 opacity-50 cursor-not-allowed border-t border-gray-100 dark:border-gray-800`;
-                quizBtn.innerHTML = `
-                    <div class="flex-1"><p class="text-[13px] font-bold text-gray-400">Final Quiz</p></div>
-                    <div class="flex-shrink-0"><i class="fa-solid fa-lock text-gray-300 text-lg"></i></div>
-                `;
+                quizBtn.className = `w-full text-left p-5 transition-all flex items-center justify-between opacity-50 cursor-not-allowed border-t border-gray-100 dark:border-gray-800`;
+                quizBtn.innerHTML = `<span class="text-[13px] font-bold text-gray-400">Final Quiz</span> <i class="fa-solid fa-lock text-gray-300 text-lg"></i>`;
             }
-            chapterListEl.appendChild(quizBtn);
+            listDesktop.appendChild(quizBtn);
+
             updateProgressBar();
+            
+            // Kloning ke mobile sidebar
+            document.getElementById('mobile-materi-list').innerHTML = listDesktop.innerHTML;
+            
+            // Re-attach event listener to mobile clones
+            const mobileBtns = document.getElementById('mobile-materi-list').querySelectorAll('button');
+            mobileBtns.forEach((btn, index) => {
+                if(index < linuxCourseData.length) {
+                    btn.onclick = () => { loadMateri(linuxCourseData[index].id); toggleMobileSidebarProgress(); };
+                } else {
+                    if(allCompleted) btn.onclick = () => alert('Buka halaman Final Quiz');
+                }
+            });
         }
 
+        // --- FUNGSI UPDATE PROGRESS ---
         function updateProgressBar() {
-            const total = activeData.chapters.length;
+            const total = linuxCourseData.length;
             const completedCount = completedChapters.length;
             const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+            
             document.getElementById('progress-bar-fill').style.width = percent + '%';
-            document.getElementById('progress-text').textContent = percent + '% Complete';
+            document.getElementById('progress-percentage').textContent = percent + '%';
         }
 
-        function loadChapter(chapterId) {
-            currentChapterId = chapterId;
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('content-container').classList.remove('hidden');
+        // --- FUNGSI LOAD MATERI ---
+        function loadMateri(id) {
+            currentChapterId = id;
+            const data = linuxCourseData.find(c => c.id === id);
+            if (!data) return;
 
-            const chapter = activeData.chapters.find(c => c.id === chapterId);
-            if(!chapter) return;
-
-            const contentContainer = document.getElementById('content-container');
-            contentContainer.classList.remove('animate-content');
-            void contentContainer.offsetWidth; 
-            contentContainer.classList.add('animate-content');
-
-            document.getElementById('video-player').src = chapter.video;
-            document.getElementById('chapter-title').textContent = chapter.title;
+            // Set Video
+            document.getElementById('video-frame').src = data.video;
             
-            const isCompleted = completedChapters.includes(chapterId);
-            const isLastChapter = (chapterId === activeData.chapters[activeData.chapters.length - 1].id);
+            // Set Title & Explanation
+            document.getElementById('materi-title').textContent = data.title;
+            document.getElementById('materi-explanation').innerHTML = `<p class="mb-6 font-medium">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` + data.desc;
+            
+            // Set Button State
+            const isCompleted = completedChapters.includes(id);
             const actionContainer = document.getElementById('action-container');
             
             if (isCompleted) {
-                if (isLastChapter) {
-                    actionContainer.innerHTML = `<button onclick="openQuizPage()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-md">Lanjut ke Final Quiz</button>`;
-                } else {
-                    actionContainer.innerHTML = `<button disabled class="px-8 py-3 bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400 font-bold rounded-full transition-all cursor-not-allowed"><i class="fa-solid fa-check mr-2"></i> Selesai Dipelajari</button>`;
-                }
+                actionContainer.innerHTML = `<button disabled class="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 px-8 py-3 rounded-full text-sm font-bold flex items-center space-x-2 cursor-not-allowed border border-gray-200 dark:border-gray-700"><i class="fa-solid fa-check"></i> <span>Selesai Dipelajari</span></button>`;
             } else {
-                actionContainer.innerHTML = `<button id="btn-mark-done" onclick="markCurrentAsDone()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-md">Mark Complete</button>`;
+                actionContainer.innerHTML = `<button onclick="markComplete(${id})" class="bg-primary hover:bg-primaryHover text-white px-8 py-3 rounded-full text-sm font-bold flex items-center space-x-2 transition-all shadow-lg hover:-translate-y-1"><i class="fa-regular fa-circle-check"></i> <span>Mark Complete</span></button>`;
             }
 
-            renderSidebar();
-            if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
+            renderSidebarList();
         }
 
-        function markCurrentAsDone() {
-            if (currentChapterId && !completedChapters.includes(currentChapterId)) {
-                completedChapters.push(currentChapterId);
-                const progressString = completedChapters.join(',');
-                
-                localStorage.setItem(progressKey, JSON.stringify(completedChapters));
-                sendDataBeacon('updateProgress', progressString);
+        // --- FUNGSI MARK COMPLETE ---
+        function markComplete(id) {
+            if (!completedChapters.includes(id)) {
+                completedChapters.push(id);
                 setLastActivity();
-
-                const isLastChapter = (currentChapterId === activeData.chapters[activeData.chapters.length - 1].id);
-                const actionContainer = document.getElementById('action-container');
-
-                if (isLastChapter) {
-                    actionContainer.innerHTML = `<button onclick="openQuizPage()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-md animate-content">Lanjut ke Final Quiz</button>`;
+                
+                // Cek materi selanjutnya
+                const nextChapter = linuxCourseData.find(c => c.id === id + 1);
+                if (nextChapter) {
+                    loadMateri(nextChapter.id);
                 } else {
-                    actionContainer.innerHTML = `<button disabled class="px-8 py-3 bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400 font-bold rounded-full transition-all cursor-not-allowed animate-content"><i class="fa-solid fa-check mr-2"></i> Selesai Dipelajari</button>`;
-                    
-                    // Auto load next chapter
-                    const nextChapterObj = activeData.chapters.find(c => c.id === currentChapterId + 1);
-                    if(nextChapterObj) {
-                        setTimeout(() => { loadChapter(nextChapterObj.id); }, 800);
-                    }
+                    loadMateri(id); // Reload state current
+                    alert("Semua materi selesai! Silahkan ikuti Final Quiz.");
                 }
-                renderSidebar();
             }
         }
 
-        function openQuizPage() {
-            currentChapterId = null; 
-            document.getElementById('video-player').src = ""; 
-            document.getElementById('content-container').classList.add('hidden');
+        // --- FUNGSI TOGGLE MAXIMIZE / SIDEBAR PROGRESS ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-progress');
+            const maximizeIcon = document.getElementById('maximize-icon');
             
-            const quizContainer = document.getElementById('quiz-container');
-            quizContainer.classList.remove('hidden');
-            quizContainer.classList.remove('animate-content');
-            void quizContainer.offsetWidth;
-            quizContainer.classList.add('animate-content');
-
-            if (quizScoreVal !== null) {
-                document.getElementById('quiz-intro').classList.add('hidden');
-                document.getElementById('quiz-area').classList.add('hidden');
-                document.getElementById('quiz-review').classList.add('hidden');
-                showQuizResult(quizScoreVal);
+            isSidebarVisible = !isSidebarVisible;
+            
+            if (isSidebarVisible) {
+                // Tampilkan sidebar (Kembali normal)
+                sidebar.classList.remove('sidebar-hidden');
+                maximizeIcon.classList.remove('fa-compress');
+                maximizeIcon.classList.add('fa-expand');
             } else {
-                document.getElementById('quiz-intro').classList.remove('hidden');
-                document.getElementById('quiz-area').classList.add('hidden');
-                document.getElementById('quiz-result').classList.add('hidden');
-                document.getElementById('quiz-review').classList.add('hidden');
+                // Sembunyikan sidebar (Maximize Video/Content)
+                sidebar.classList.add('sidebar-hidden');
+                maximizeIcon.classList.remove('fa-expand');
+                maximizeIcon.classList.add('fa-compress');
             }
+        }
+
+        // --- FUNGSI TOGGLE MOBILE SIDEBAR PROGRESS ---
+        function toggleMobileSidebarProgress() {
+            const overlay = document.getElementById('mobile-sidebar-overlay');
+            const content = document.getElementById('mobile-sidebar-content');
             
-            renderSidebar();
-            if (window.innerWidth < 768 && isMobileSidebarOpen) toggleMobileSidebar();
-            document.getElementById('main-content-area').scrollTo(0,0);
+            overlay.classList.toggle('hidden');
+            content.classList.toggle('translate-x-[-100%]');
         }
 
-        function startQuizEngine() {
-            document.getElementById('quiz-intro').classList.add('hidden');
-            document.getElementById('quiz-result').classList.add('hidden');
-            document.getElementById('quiz-review').classList.add('hidden');
-            document.getElementById('quiz-area').classList.remove('hidden');
-            
-            currentQuizIndex = 0;
-            userAnswers = [];
-            hasTriggeredPreGen = false; 
-            renderQuestion();
+        // Trigger Mobile Sidebar Progress by expanding top title area (optional helper)
+        document.getElementById('materi-title').addEventListener('click', () => {
+            if(window.innerWidth < 768) toggleMobileSidebarProgress();
+        });
+
+        // --- LOGIKA UI UMUM (Dark Mode, Dropdown, Mobile Menu) ---
+        const html = document.documentElement;
+        
+        // Dark Mode Desktop
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); } 
+            else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); }
+        });
+        
+        // Dark Mode Mobile
+        const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
+        mobileDarkModeToggle.addEventListener('change', () => {
+            if (mobileDarkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); darkModeToggle.checked = true; } 
+            else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); darkModeToggle.checked = false; }
+        });
+
+        // Init Theme
+        if (localStorage.getItem('theme') === 'dark') {
+            html.classList.add('dark');
+            darkModeToggle.checked = true;
+            mobileDarkModeToggle.checked = true;
         }
 
-        function renderQuestion() {
-            selectedOption = null;
-            const qData = quizData[currentQuizIndex];
-            document.getElementById('quiz-progress-badge').textContent = `Soal ${currentQuizIndex + 1} / ${quizData.length}`;
-            document.getElementById('question-text').textContent = qData.q;
-            
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-
-            qData.options.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = `w-full text-left p-4 border rounded-xl font-medium transition-all ${selectedOption === index ? 'border-primary bg-blue-50 dark:bg-blue-900/10 text-primary' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-darkSidebar hover:border-gray-300 text-gray-700 dark:text-gray-300'}`;
-                btn.innerHTML = `<span class="inline-block w-8 font-bold">${String.fromCharCode(65 + index)}.</span> ${opt}`;
-                btn.onclick = () => selectOption(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-
-            const nextBtn = document.getElementById('btn-next-question');
-            nextBtn.disabled = true;
-            nextBtn.className = 'px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 font-bold rounded-full transition-all cursor-not-allowed';
-            nextBtn.innerHTML = currentQuizIndex === quizData.length - 1 ? `Selesai & Lihat Nilai` : `Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>`;
-        }
-
-        function selectOption(index, btnEl) {
-            selectedOption = index;
-            const allBtns = document.getElementById('options-container').children;
-            for(let i=0; i<allBtns.length; i++) {
-                allBtns[i].className = `w-full text-left p-4 border rounded-xl font-medium transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-darkSidebar text-gray-700 dark:text-gray-300`;
-            }
-            btnEl.className = `w-full text-left p-4 border rounded-xl font-medium transition-all border-primary bg-blue-50 dark:bg-blue-900/10 text-primary font-bold`;
-
-            const nextBtn = document.getElementById('btn-next-question');
-            nextBtn.disabled = false;
-            nextBtn.className = 'px-8 py-3 bg-primary text-white dark:bg-primaryHover font-bold rounded-full transition-all shadow-md';
-        }
-
-        function nextQuestion() {
-            userAnswers[currentQuizIndex] = selectedOption;
-
-            let currentCorrect = 0;
-            userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) currentCorrect++; });
-            const requiredCorrect = Math.ceil((MIN_SCORE_PASS / 100) * quizData.length); 
-            
-            if (currentCorrect >= requiredCorrect && !hasTriggeredPreGen && (!userCertUrl || userCertUrl === "")) {
-                hasTriggeredPreGen = true;
-                triggerBackgroundGeneration();
-            }
-
-            if(currentQuizIndex < quizData.length - 1) {
-                currentQuizIndex++;
-                renderQuestion();
-            } else {
-                const finalScore = Math.round((currentCorrect / quizData.length) * 100);
-                quizScoreVal = finalScore;
-                localStorage.setItem(quizScoreKey, finalScore);
-                localStorage.setItem(quizAnswersKey, JSON.stringify(userAnswers));
-                sendDataBeacon('saveQuiz', finalScore, JSON.stringify(userAnswers));
-
-                if (finalScore >= MIN_SCORE_PASS && !hasTriggeredPreGen) {
-                    hasTriggeredPreGen = true;
-                    triggerBackgroundGeneration();
-                }
-
-                document.getElementById('quiz-area').classList.add('hidden');
-                showQuizResult(finalScore);
-            }
-            document.getElementById('main-content-area').scrollTo(0,0);
-        }
-
-        function showQuizResult(score) {
-            document.getElementById('quiz-review').classList.add('hidden');
-            document.getElementById('quiz-result').classList.remove('hidden');
-            document.getElementById('result-score').textContent = score;
-            
-            let correctCount = 0;
-            if(userAnswers.length > 0) {
-                userAnswers.forEach((ans, i) => { if(ans === quizData[i].ans) correctCount++; });
-            } else {
-                correctCount = Math.round((score / 100) * quizData.length);
-            }
-
-            const percentCorrect = Math.round((correctCount / quizData.length) * 100);
-            const detailContainer = document.getElementById('result-detail-container');
-            detailContainer.innerHTML = `
-                <div class="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 px-2"><span>${correctCount} Benar</span><span>${quizData.length - correctCount} Salah</span></div>
-                <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden flex">
-                    <div class="bg-[#019e7c] h-full transition-all duration-1000 ease-out" style="width: ${percentCorrect}%"></div>
-                </div>
-            `;
-
-            const iconEl = document.getElementById('result-icon');
-            const msgEl = document.getElementById('result-msg');
-            let actionButtonsHtml = `<button onclick="showReview()" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-textHeading dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 font-bold rounded-full transition-all whitespace-nowrap">Lihat Pembahasan</button>`;
-
-            if(score >= MIN_SCORE_PASS) {
-                iconEl.innerHTML = `<i class="fa-solid fa-circle-check text-[#019e7c]"></i>`;
-                msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
-                document.getElementById('result-score').className = "text-6xl font-black text-[#019e7c] mb-6";
-                actionButtonsHtml += `<button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-3 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-md whitespace-nowrap"><i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat</button>`;
-            } else {
-                iconEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-redBrand"></i>`;
-                msgEl.innerHTML = `Anda <strong>BELUM LULUS</strong>. Standar KKM adalah ${MIN_SCORE_PASS}. Silakan pelajari kembali dan ulangi kuis!`;
-                document.getElementById('result-score').className = "text-6xl font-black text-redBrand mb-6";
-                actionButtonsHtml += `<button id="btn-retake" onclick="retakeQuiz()" class="px-6 py-3 bg-redBrand hover:bg-red-600 text-white font-bold rounded-full transition-all whitespace-nowrap"><i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis</button>`;
-            }
-            
-            document.getElementById('quiz-action-buttons').innerHTML = actionButtonsHtml;
-            renderSidebar();
-        }
-
-        function checkCertificate() {
-            if (userCertUrl && userCertUrl !== "") {
-                window.open(userCertUrl, '_blank');
-            } else if (isGeneratingCert) {
-                const dropIcon = document.getElementById('dropdown-cert-icon');
-                const dropText = document.getElementById('dropdown-cert-text');
-                dropIcon.className = "fa-solid fa-circle-notch fa-spin w-5 text-center mr-2 text-primary";
-                dropText.textContent = "Sedang Memuat...";
-                setTimeout(() => {
-                    dropIcon.className = "fa-solid fa-certificate w-5 text-center mr-2 text-primary";
-                    dropText.textContent = "Lihat Sertifikat";
-                }, 3000);
-            } else {
-                alert("Anda belum memiliki sertifikat. Silakan selesaikan materi dan kuis terlebih dahulu.");
-            }
-            if (!isGeneratingCert) { document.getElementById('user-dropdown').classList.add('opacity-0', 'invisible', 'translate-y-2'); }
-        }
-
-        function downloadCertificate() {
-            const btn = document.getElementById('btn-download-cert');
-            if (userCertUrl && userCertUrl !== "") {
-                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
-                btn.classList.replace('bg-primary', 'bg-[#019e7c]');
-                window.open(userCertUrl, '_blank');
-                setTimeout(() => {
-                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                    btn.classList.replace('bg-[#019e7c]', 'bg-primary');
-                    btn.disabled = false;
-                }, 3000);
-                return;
-            }
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
-            btn.disabled = true;
-            btn.classList.replace('bg-primary', 'bg-gray-400');
-            
-            if (isGeneratingCert) {
-                const checkInterval = setInterval(() => {
-                    if (!isGeneratingCert) {
-                        clearInterval(checkInterval);
-                        if (userCertUrl && userCertUrl !== "") {
-                            btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
-                            btn.classList.replace('bg-gray-400', 'bg-[#019e7c]');
-                            window.open(userCertUrl, '_blank');
-                            setTimeout(() => {
-                                btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                                btn.classList.replace('bg-[#019e7c]', 'bg-primary');
-                                btn.disabled = false;
-                            }, 3000);
-                        } else { executeManualGen(btn); }
-                    }
-                }, 1000);
-                return;
-            }
-            executeManualGen(btn);
-        }
-
-        async function executeManualGen(btn) {
-            isGeneratingCert = true;
-            try {
-                const response = await fetch(`${GAS_URL}?action=generateCertificate&email=${encodeURIComponent(userEmail)}&t=${new Date().getTime()}`);
-                const result = await response.json();
-                if(result.status === 'success' && result.url) {
-                    btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
-                    btn.classList.replace('bg-gray-400', 'bg-[#019e7c]');
-                    userCertUrl = result.url; 
-                    window.open(result.url, '_blank');
-                    setTimeout(() => {
-                        btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                        btn.classList.replace('bg-[#019e7c]', 'bg-primary');
-                        btn.disabled = false;
-                    }, 3000);
-                } else {
-                    btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                    btn.classList.replace('bg-gray-400', 'bg-primary');
-                    btn.disabled = false;
-                }
-            } catch(e) {
-                btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                btn.classList.replace('bg-gray-400', 'bg-primary');
-                btn.disabled = false;
-            } finally {
-                isGeneratingCert = false;
-            }
-        }
-
-        function retakeQuiz() {
-            if(confirm("Apakah Anda yakin ingin mengulang kuis dari awal? Nilai lama akan ditimpa.")) {
-                quizScoreVal = null;
-                userAnswers = [];
-                hasTriggeredPreGen = false;
-                userCertUrl = "";
-                localStorage.removeItem(quizScoreKey);
-                localStorage.removeItem(quizAnswersKey);
-                startQuizEngine();
-            }
-        }
-
-        function showReview() {
-            document.getElementById('quiz-result').classList.add('hidden');
-            const reviewEl = document.getElementById('quiz-review');
-            const reviewContent = document.getElementById('review-content');
-            
-            reviewEl.classList.remove('hidden');
-            reviewContent.innerHTML = '';
-
-            if (userAnswers.length === 0) {
-                reviewContent.innerHTML = '<p class="text-gray-500 text-center py-4">Data jawaban tidak tersedia di perangkat ini. Silakan ulangi kuis untuk melihat pembahasan.</p>';
-                return;
-            }
-
-            quizData.forEach((q, i) => {
-                const userAnswer = userAnswers[i];
-                const isCorrect = userAnswer === q.ans;
-
-                let optionsHtml = q.options.map((opt, optIdx) => {
-                    let optClass = "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 bg-white dark:bg-darkCard";
-                    let icon = "";
-                    if (optIdx === q.ans) {
-                        optClass = "border-[#019e7c] bg-[#019e7c]/10 text-[#019e7c] font-bold border-2";
-                        icon = `<i class="fa-solid fa-check text-[#019e7c] float-right mt-1"></i>`;
-                    } else if (optIdx === userAnswer && !isCorrect) {
-                        optClass = "border-redBrand bg-red-50 dark:bg-red-900/20 text-redBrand font-bold border-2";
-                        icon = `<i class="fa-solid fa-xmark text-redBrand float-right mt-1"></i>`;
-                    }
-                    return `<div class="p-3 border rounded-lg mb-2 text-sm ${optClass}">${String.fromCharCode(65+optIdx)}. ${opt} ${icon}</div>`;
-                }).join('');
-
-                reviewContent.innerHTML += `
-                    <div class="p-6 border rounded-xl bg-gray-50 dark:bg-darkSidebar ${isCorrect ? 'border-green-200 dark:border-green-900/50' : 'border-red-200 dark:border-red-900/50'}">
-                        <div class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs mr-4 ${isCorrect ? 'bg-[#019e7c]' : 'bg-redBrand'}">${i+1}</span>
-                            <div class="flex-1"><p class="font-bold text-textHeading dark:text-white mb-4">${q.q}</p>${optionsHtml}</div>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function logout() {
-            if(confirm("Keluar dari Workspace? Progres materi dan nilai akan tetap aman tersimpan.")) {
-                localStorage.removeItem('neokademi_user'); 
-                window.location.replace('login.html');
-            }
-        }
-
-        // UI Interactions
-        const htmlElement = document.documentElement;
-        const userMenuBtn = document.getElementById('user-menu-btn');
-        const userDropdown = document.getElementById('user-dropdown');
-        const themeToggleBtn = document.getElementById('theme-toggle');
-
-        userMenuBtn.addEventListener('click', (e) => {
+        // Profile Dropdown
+        const profileBtn = document.getElementById('profile-dropdown-button');
+        const profileContent = document.getElementById('profile-dropdown-content');
+        const profileArrow = document.getElementById('profile-arrow');
+        
+        profileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            userDropdown.classList.toggle('opacity-0');
-            userDropdown.classList.toggle('invisible');
-            userDropdown.classList.toggle('translate-y-2');
+            profileContent.classList.toggle('hidden');
+            profileArrow.classList.toggle('rotate-180');
+        });
+        window.addEventListener('click', (e) => {
+            if (!profileBtn.contains(e.target)) {
+                profileContent.classList.add('hidden');
+                profileArrow.classList.remove('rotate-180');
+            }
         });
 
-        document.addEventListener('click', (e) => {
-            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('opacity-0', 'invisible', 'translate-y-2');
-            }
+        // Mobile Nav Menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+        const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        function toggleMobileNav() {
+            mobileMenuBackdrop.classList.toggle('hidden');
+            mobileMenu.classList.toggle('-translate-x-full');
+            setTimeout(() => mobileMenuBackdrop.classList.toggle('opacity-100'), 10);
+        }
+        mobileMenuBtn.addEventListener('click', toggleMobileNav);
+        closeMobileMenuBtn.addEventListener('click', toggleMobileNav);
+        mobileMenuBackdrop.addEventListener('click', toggleMobileNav);
+
+        // Dummy actions
+        function viewCertificate() { alert('Membuka Sertifikat...'); }
+        function logOut() { alert('Keluar dari akun...'); }
+
+        // --- MENGATASI NAVIGASI BACK HP (Kembali ke detail.html) ---
+        function setupBackNavigation() {
+            history.pushState({page: 'materi'}, "NeoCourse - Materi Kursus", location.href);
+            window.addEventListener('popstate', function(event) {
+                // Event popstate dipicu saat user menekan back hardware/browser
+                location.replace('detail.html');
+            });
+        }
+
+        // --- INISIALISASI ---
+        window.addEventListener('DOMContentLoaded', () => {
+            setLastActivity();
+            renderSidebarList();
+            loadMateri(currentChapterId);
+            setupBackNavigation();
         });
 
-        function toggleTheme(e) {
-            if(e) e.stopPropagation();
-            htmlElement.classList.toggle('dark');
-            const isDark = htmlElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        if(themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            htmlElement.classList.add('dark');
-        } else {
-            htmlElement.classList.remove('dark');
-        }
-
-        const sidebar = document.getElementById('sidebar');
-        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
-        const desktopToggleIcon = document.getElementById('desktop-toggle-icon');
-        let isMobileSidebarOpen = false; 
-        let isDesktopSidebarOpen = true;
-
-        function toggleMobileSidebar() {
-            isMobileSidebarOpen = !isMobileSidebarOpen;
-            if (isMobileSidebarOpen) {
-                sidebar.classList.remove('-translate-x-full');
-                sidebarBackdrop.classList.remove('hidden', 'opacity-0');
-                setTimeout(() => sidebarBackdrop.classList.add('opacity-100'), 10);
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                sidebarBackdrop.classList.remove('opacity-100');
-                sidebarBackdrop.classList.add('opacity-0');
-                setTimeout(() => sidebarBackdrop.classList.add('hidden'), 300);
-            }
-        }
-
-        function toggleDesktopSidebar() {
-            isDesktopSidebarOpen = !isDesktopSidebarOpen;
-            if (isDesktopSidebarOpen) {
-                sidebar.classList.remove('md:-ml-80'); 
-                desktopToggleIcon.innerHTML = '<i class="fa-solid fa-expand text-xl"></i>';
-            } else {
-                sidebar.classList.add('md:-ml-80'); 
-                desktopToggleIcon.innerHTML = '<i class="fa-solid fa-compress text-xl"></i>'; 
-            }
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const backdrop = document.getElementById('mobile-menu-backdrop');
-            
-            if (menu.classList.contains('-translate-x-full')) {
-                menu.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
-                setTimeout(() => backdrop.classList.add('opacity-100'), 10);
-            } else {
-                menu.classList.add('-translate-x-full');
-                backdrop.classList.remove('opacity-100');
-                setTimeout(() => backdrop.classList.add('hidden'), 300);
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', initializeData);
     </script>
 </body>
 </html>
