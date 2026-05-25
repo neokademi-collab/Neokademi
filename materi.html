@@ -173,7 +173,7 @@
                     <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
                         <div id="progress-bar-fill" class="h-full bg-[#019e7c] rounded-full transition-all duration-500" style="width: 0%;"></div>
                     </div>
-                    <span class="text-[10px] text-gray-400 mt-2 block" id="last-activity">Aktivitas terakhir pada --</span>
+                    <span class="text-xs text-gray-400 mt-2 block" id="last-activity">Aktivitas terakhir pada --</span>
                 </div>
             </div>
 
@@ -210,11 +210,7 @@
                         </div>
                     
                     <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end" id="action-container">
-                        <button onclick="markComplete()" class="bg-primary hover:bg-primaryHover text-white px-8 py-3 rounded-full text-sm font-bold flex items-center space-x-2 transition-all shadow-lg hover:-translate-y-1">
-                            <i class="fa-regular fa-circle-check"></i>
-                            <span>Mark Complete</span>
-                        </button>
-                    </div>
+                        </div>
                 </div>
             </div>
         </main>
@@ -292,9 +288,9 @@
         ];
 
         // --- STATE & VARIABEL ---
-        let completedChapters = [1, 2]; // Dummy data untuk contoh progres
+        let completedChapters = [1, 2]; 
         let currentChapterId = 3;
-        let isSidebarVisible = true; // Sidebar terbuka secara default di desktop
+        let isSidebarVisible = true; 
 
         // --- FUNGSI FORMAT TANGGAL ---
         function setLastActivity() {
@@ -348,7 +344,6 @@
                 listDesktop.appendChild(btn);
             });
 
-            // Tambahkan tombol Final Quiz di akhir
             const allCompleted = completedChapters.length >= linuxCourseData.length;
             const quizBtn = document.createElement('button');
             if(allCompleted) {
@@ -366,7 +361,7 @@
             // Kloning ke mobile sidebar
             document.getElementById('mobile-materi-list').innerHTML = listDesktop.innerHTML;
             
-            // Re-attach event listener to mobile clones
+            // Re-attach event listener ke klon seluler
             const mobileBtns = document.getElementById('mobile-materi-list').querySelectorAll('button');
             mobileBtns.forEach((btn, index) => {
                 if(index < linuxCourseData.length) {
@@ -393,14 +388,10 @@
             const data = linuxCourseData.find(c => c.id === id);
             if (!data) return;
 
-            // Set Video
             document.getElementById('video-frame').src = data.video;
-            
-            // Set Title & Explanation
             document.getElementById('materi-title').textContent = data.title;
             document.getElementById('materi-explanation').innerHTML = `<p class="mb-6 font-medium">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` + data.desc;
             
-            // Set Button State
             const isCompleted = completedChapters.includes(id);
             const actionContainer = document.getElementById('action-container');
             
@@ -419,12 +410,11 @@
                 completedChapters.push(id);
                 setLastActivity();
                 
-                // Cek materi selanjutnya
                 const nextChapter = linuxCourseData.find(c => c.id === id + 1);
                 if (nextChapter) {
                     loadMateri(nextChapter.id);
                 } else {
-                    loadMateri(id); // Reload state current
+                    loadMateri(id); 
                     alert("Semua materi selesai! Silahkan ikuti Final Quiz.");
                 }
             }
@@ -438,12 +428,10 @@
             isSidebarVisible = !isSidebarVisible;
             
             if (isSidebarVisible) {
-                // Tampilkan sidebar (Kembali normal)
                 sidebar.classList.remove('sidebar-hidden');
                 maximizeIcon.classList.remove('fa-compress');
                 maximizeIcon.classList.add('fa-expand');
             } else {
-                // Sembunyikan sidebar (Maximize Video/Content)
                 sidebar.classList.add('sidebar-hidden');
                 maximizeIcon.classList.remove('fa-expand');
                 maximizeIcon.classList.add('fa-compress');
@@ -459,36 +447,27 @@
             content.classList.toggle('translate-x-[-100%]');
         }
 
-        // Trigger Mobile Sidebar Progress by expanding top title area (optional helper)
-        document.getElementById('materi-title').addEventListener('click', () => {
-            if(window.innerWidth < 768) toggleMobileSidebarProgress();
-        });
-
         // --- LOGIKA UI UMUM (Dark Mode, Dropdown, Mobile Menu) ---
         const html = document.documentElement;
         
-        // Dark Mode Desktop
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         darkModeToggle.addEventListener('change', () => {
             if (darkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); } 
             else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); }
         });
         
-        // Dark Mode Mobile
         const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
         mobileDarkModeToggle.addEventListener('change', () => {
             if (mobileDarkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); darkModeToggle.checked = true; } 
             else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); darkModeToggle.checked = false; }
         });
 
-        // Init Theme
         if (localStorage.getItem('theme') === 'dark') {
             html.classList.add('dark');
             darkModeToggle.checked = true;
             mobileDarkModeToggle.checked = true;
         }
 
-        // Profile Dropdown
         const profileBtn = document.getElementById('profile-dropdown-button');
         const profileContent = document.getElementById('profile-dropdown-content');
         const profileArrow = document.getElementById('profile-arrow');
@@ -505,7 +484,6 @@
             }
         });
 
-        // Mobile Nav Menu
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
         const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
         const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
@@ -520,16 +498,15 @@
         closeMobileMenuBtn.addEventListener('click', toggleMobileNav);
         mobileMenuBackdrop.addEventListener('click', toggleMobileNav);
 
-        // Dummy actions
         function viewCertificate() { alert('Membuka Sertifikat...'); }
         function logOut() { alert('Keluar dari akun...'); }
 
-        // --- MENGATASI NAVIGASI BACK HP (Kembali ke detail.html) ---
+        // --- KOREKSI NAVIGASI TOMBOL BACK HP (Kembali ke materi.html) ---
         function setupBackNavigation() {
             history.pushState({page: 'materi'}, "NeoCourse - Materi Kursus", location.href);
             window.addEventListener('popstate', function(event) {
-                // Event popstate dipicu saat user menekan back hardware/browser
-                location.replace('detail.html');
+                // Sesuai instruksi koreksi terbaru: diarahkan ke materi.html
+                location.replace('materi.html');
             });
         }
 
@@ -540,7 +517,6 @@
             loadMateri(currentChapterId);
             setupBackNavigation();
         });
-
     </script>
 </body>
 </html>
