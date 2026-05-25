@@ -3,28 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeoCourse - Materi Linux System Administration</title>
+    <title>NeoCourse - Linux System Administration</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Custom styles for the dark mode toggle switch */
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #385DFF; /* Primary blue */
-        }
-        .toggle-checkbox:checked + .toggle-label .toggle-circle {
-            transform: translateX(100%);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
-        /* Smooth scrolling and transitions */
-        html { scroll-behavior: smooth; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #334155; }
-        
-        .sidebar-hidden {
-            display: none !important;
+        body { font-family: 'Inter', sans-serif; overflow: hidden; }
+
+        /* Sembunyikan scrollbar tapi tetap bisa scroll (Clean UI) */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animasi Smooth untuk Sidebar Progress Mobile */
+        #mobile-progress-panel {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* Toggle Dark Mode Desktop */
+        .toggle-checkbox:checked + .toggle-label { background-color: #385DFF; }
+        .toggle-checkbox:checked + .toggle-label .toggle-circle { transform: translateX(100%); }
+        
+        /* Toggle Dark Mode Mobile (Hanya Ikon) */
+        .dark-switch {
+            width: 50px;
+            height: 26px;
+            background: #e2e8f0;
+            border-radius: 50px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .dark .dark-switch { background: #334155; }
+        .dark-switch-circle {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #64748b;
+        }
+        .dark .dark-switch-circle { transform: translateX(24px); background: #0f172a; color: #facc15; }
+        
+        .sidebar-desktop-hidden { display: none !important; }
     </style>
     <script>
         tailwind.config = {
@@ -35,41 +63,36 @@
                         primary: '#385DFF',
                         primaryHover: '#1E42DD',
                         redBrand: '#EB4E4F',
-                        secondary: '#4D5C6D',
-                        darkText: '#A3A5A9',
                         bgDark: '#0f172a',
                         bgCardDark: '#1e293b',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="font-sans antialiased bg-[#FAFBFD] text-secondary dark:bg-bgDark dark:text-darkText transition-colors duration-300">
+<body class="bg-[#FAFBFD] text-slate-600 dark:bg-bgDark dark:text-slate-400 transition-colors duration-300">
     
-    <nav class="bg-white dark:bg-bgCardDark border-b border-gray-200 dark:border-gray-800 shadow-sm sticky top-0 z-50 h-[76px] flex items-center">
+    <nav class="bg-white dark:bg-bgCardDark border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 h-[70px] flex items-center shadow-sm">
         <div class="w-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center justify-between">
             
             <div class="flex items-center space-x-4">
-                <button id="mobile-menu-button" class="lg:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none text-2xl">
-                    <i id="hamburger-icon" class="fa-solid fa-bars"></i>
+                <button onclick="toggleMobileNav()" class="lg:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
+                    <i class="fa-solid fa-bars-staggered text-2xl"></i>
                 </button>
 
                 <a href="index.html" class="flex items-center space-x-3">
-                    <img src="assets/img/Neokademi.png" alt="Logo Neokademi" class="h-8 md:h-10 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=NK&background=EB4E4F&color=fff&rounded=true'">
-                    <span class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Neo<span class="text-primary">Course</span></span>
+                    <img src="assets/img/Neokademi.png" alt="Logo" class="h-8 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=NK&background=385DFF&color=fff'">
+                    <span class="text-xl font-bold text-gray-900 dark:text-white">Neo<span class="text-primary">Course</span></span>
                 </a>
 
                 <div class="hidden lg:flex items-center space-x-6 ml-8 text-sm font-semibold text-gray-600 dark:text-gray-300">
                     <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-house"></i> Beranda</a>
-                    <div class="relative group h-[76px] flex items-center">
+                    <div class="relative group h-[70px] flex items-center">
                         <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
                             <i class="fa-solid fa-layer-group"></i> Pilihan Kursus <i class="fa-solid fa-angle-down text-[10px]"></i>
                         </a>
-                        <div class="absolute top-[76px] left-0 w-48 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 shadow-lg rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
+                        <div class="absolute top-[70px] left-0 w-48 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 shadow-lg rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
                             <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-video mr-2"></i> Kursus Gratis</a>
                             <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-award mr-2"></i> Kursus Premium</a>
                         </div>
@@ -81,11 +104,11 @@
 
             <div class="flex items-center space-x-4 md:space-x-6">
                 
-                <button onclick="toggleSidebar()" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors" title="Lihat Progress Course">
-                    <i id="maximize-icon" class="fa-solid fa-expand text-xl"></i>
+                <button onclick="toggleProgressPanel()" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500 hover:text-primary dark:text-gray-400 transition-all border border-gray-200 dark:border-gray-700" title="Progress Course">
+                    <i id="expand-icon" class="fa-solid fa-expand text-lg"></i>
                 </button>
 
-                <div class="hidden md:flex items-center justify-center space-x-2">
+                <div class="hidden sm:flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-sun text-yellow-500 text-lg"></i>
                     <div class="relative inline-block w-11 h-6 align-middle select-none">
                         <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 dark:border-gray-600 appearance-none cursor-pointer transition-transform duration-300"/>
@@ -96,479 +119,405 @@
                     <i class="fa-solid fa-moon text-gray-400 text-lg"></i>
                 </div>
 
-                <button onclick="viewCertificate()" class="hidden md:flex bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold items-center space-x-2 transition-colors">
-                    <i class="fa-solid fa-certificate text-primary"></i>
+                <button onclick="viewCert()" class="hidden md:flex bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold items-center space-x-2 transition-colors border border-gray-200 dark:border-gray-700">
+                    <i class="fa-solid fa-award text-amber-500 text-lg"></i>
                     <span>Sertifikat</span>
                 </button>
 
-                <div class="relative hidden md:block">
-                    <button id="profile-dropdown-button" class="flex items-center space-x-2 md:space-x-3 focus:outline-none">
+                <div class="hidden md:flex items-center space-x-3 pl-4 border-l border-gray-200 dark:border-gray-700 relative">
+                    <button id="profile-btn" class="flex items-center space-x-3 focus:outline-none">
                         <span class="text-sm font-semibold text-gray-800 dark:text-white">jobamidreams</span>
-                        <div class="bg-gray-200 dark:bg-gray-800 rounded-full h-10 w-10 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
-                            <i class="fa-solid fa-user text-gray-500 dark:text-gray-400"></i>
+                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700">
+                            <i class="fa-solid fa-user text-gray-400"></i>
                         </div>
                         <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 transition-transform"></i>
                     </button>
-                    <div id="profile-dropdown-content" class="hidden absolute right-0 mt-3 w-56 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl z-50 transition-all duration-300">
-                        <div class="p-2 space-y-1">
-                            <button onclick="logOut()" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3">
-                                <i class="fa-solid fa-sign-out-alt w-5"></i>
-                                <span>Log Out</span>
+                    <div id="profile-dropdown" class="hidden absolute right-0 top-12 mt-2 w-48 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl z-50">
+                        <div class="p-2">
+                            <button onclick="logOut()" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3">
+                                <i class="fa-solid fa-sign-out-alt"></i> <span>Log Out</span>
                             </button>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </nav>
 
-    <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity opacity-0 lg:hidden"></div>
-    <div id="mobile-menu" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-bgCardDark z-50 transform -translate-x-full transition-transform duration-300 lg:hidden flex flex-col shadow-2xl">
+    <div id="mobile-nav-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity opacity-0"></div>
+    <div id="mobile-nav-content" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-bgCardDark z-[61] transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         
-        <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-bgCardDark">
-            <div class="flex items-center space-x-3">
-                <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-10 w-10 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
-                    <i class="fa-solid fa-user text-gray-500 dark:text-gray-400"></i>
-                </div>
-                <span class="font-bold text-gray-900 dark:text-white">jobamidreams</span>
+        <div class="p-6 flex flex-col border-b border-gray-100 dark:border-gray-800 relative">
+            <button onclick="toggleMobileNav()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 dark:hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                <i class="fa-solid fa-user text-primary text-xl"></i>
             </div>
-            <button id="close-mobile-menu" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <span class="font-bold text-gray-900 dark:text-white text-lg">jobamidreams</span>
+            <span class="text-xs text-gray-500">Siswa NeoCourse</span>
         </div>
-
-        <div class="flex-1 overflow-y-auto py-4">
-            <nav class="flex flex-col space-y-1 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
+        
+        <div class="flex-1 py-4 overflow-y-auto hide-scrollbar">
+            <nav class="px-4 space-y-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-house w-5 text-center"></i> Beranda</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-layer-group w-5 text-center"></i> Pilihan Kursus</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-comments w-5 text-center"></i> Group Diskusi</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-users w-5 text-center"></i> My Courses</a>
                 
-                <div class="px-4 py-3 flex items-center justify-between">
-                    <span class="flex items-center gap-3"><i class="fa-solid fa-moon w-5 text-center text-gray-500 dark:text-gray-400"></i> Mode Gelap</span>
-                    <input type="checkbox" id="mobile-menu-dark-mode-toggle" class="toggle-checkbox w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 appearance-none cursor-pointer relative after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-transform checked:bg-primary checked:after:translate-x-5" />
-                </div>
-
-                <button onclick="viewCertificate()" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3 w-full text-left">
-                    <i class="fa-solid fa-certificate w-5 text-center text-gray-500 dark:text-gray-400"></i> Sertifikat
+                <div class="h-px bg-gray-100 dark:bg-gray-800 my-2 mx-2"></div>
+                <button onclick="viewCert()" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl w-full text-left">
+                    <i class="fa-solid fa-award w-5 text-center text-amber-500 text-lg"></i> Sertifikat
                 </button>
-
-                <div class="border-t border-gray-100 dark:border-gray-800 my-2 mx-2"></div>
-
-                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-house w-5 text-center text-gray-500 dark:text-gray-400"></i> Beranda</a>
-                <div class="flex flex-col">
-                    <button onclick="document.getElementById('mobile-submenu').classList.toggle('hidden')" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center justify-between w-full">
-                        <span class="flex items-center gap-3"><i class="fa-solid fa-layer-group w-5 text-center text-gray-500 dark:text-gray-400"></i> Pilihan Kursus</span>
-                        <i class="fa-solid fa-angle-down"></i>
-                    </button>
-                    <div id="mobile-submenu" class="hidden flex-col pl-12 pr-4 space-y-1 mt-1">
-                        <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400">Kursus Gratis</a>
-                        <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400">Kursus Premium</a>
-                    </div>
-                </div>
-                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-comments w-5 text-center text-gray-500 dark:text-gray-400"></i> Group Diskusi</a>
-                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-users w-5 text-center text-gray-500 dark:text-gray-400"></i> My Courses</a>
-                
-                <div class="border-t border-gray-100 dark:border-gray-800 my-2 mx-2"></div>
-                <button onclick="logOut()" class="px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg flex items-center gap-3 w-full text-left">
+                <button onclick="logOut()" class="flex items-center gap-4 px-4 py-3 text-redBrand hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl w-full text-left">
                     <i class="fa-solid fa-sign-out-alt w-5 text-center"></i> Log Out
                 </button>
             </nav>
         </div>
-    </div>
 
-    <div class="flex flex-col md:flex-row max-w-screen-2xl mx-auto p-4 md:p-6 lg:p-8 relative h-[calc(100vh-76px)] overflow-hidden">
-        
-        <aside id="sidebar-progress" class="hidden md:flex flex-col w-80 lg:w-96 flex-shrink-0 bg-white dark:bg-bgCardDark rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-all duration-300 mr-6 lg:mr-8 h-full overflow-hidden">
-            
-            <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-bgCardDark">
-                <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary dark:text-gray-400 flex items-center mb-4 transition-colors">
-                    <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
-                </a>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Linux System Administration</h2>
-                
-                <div>
-                    <div class="flex justify-between items-center text-sm mb-2">
-                        <span class="text-gray-600 dark:text-gray-400 font-semibold">Progres Kursus</span>
-                        <span id="progress-percentage" class="font-bold text-[#019e7c]">0%</span>
-                    </div>
-                    <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                        <div id="progress-bar-fill" class="h-full bg-[#019e7c] rounded-full transition-all duration-500" style="width: 0%;"></div>
-                    </div>
-                    <span class="text-xs text-gray-400 mt-2 block" id="last-activity">Aktivitas terakhir pada --</span>
+        <div class="p-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end bg-gray-50 dark:bg-bgCardDark">
+            <div class="dark-switch" onclick="toggleDarkMode()">
+                <div class="dark-switch-circle">
+                    <i class="fa-solid fa-moon"></i>
                 </div>
-            </div>
-
-            <div id="materi-list" class="flex-1 overflow-y-auto">
-                </div>
-        </aside>
-        
-        <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity duration-300">
-            <div id="mobile-sidebar-content" class="fixed top-[76px] right-0 h-[calc(100%-76px)] w-80 bg-white dark:bg-bgCardDark flex flex-col transition-transform duration-300 translate-x-[100%] shadow-xl z-50">
-                <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-bgCardDark">
-                    <h2 class="font-bold text-gray-900 dark:text-white text-lg">Progres Kursus</h2>
-                    <button onclick="toggleMobileSidebarProgress()" class="text-gray-500 hover:text-gray-800 dark:text-gray-300 text-xl p-2">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-                <div class="p-4 border-b border-gray-100 dark:border-gray-800">
-                    <div class="flex justify-between items-center text-sm mb-2">
-                        <span class="text-gray-600 dark:text-gray-400 font-semibold">100% Complete</span>
-                    </div>
-                    <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                        <div id="mobile-progress-bar-fill" class="h-full bg-[#019e7c] rounded-full transition-all duration-500" style="width: 0%;"></div>
-                    </div>
-                </div>
-                <div id="mobile-materi-list" class="flex-1 overflow-y-auto">
-                    </div>
             </div>
         </div>
+    </div>
 
-        <main class="flex-grow flex flex-col h-full overflow-y-auto pr-2 pb-10 custom-scrollbar">
+    <div id="progress-overlay" class="fixed inset-0 bg-black/40 z-[55] hidden transition-opacity opacity-0"></div>
+    <div id="mobile-progress-panel" class="fixed inset-y-0 left-0 w-80 md:w-96 bg-white dark:bg-bgCardDark z-[56] transform -translate-x-full shadow-2xl flex flex-col">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-800">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-bold text-gray-900 dark:text-white text-xl">Linux System Administration</h2>
+                <button onclick="toggleProgressPanel()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            <div class="flex justify-between text-xs font-bold mb-2">
+                <span class="text-gray-500 uppercase tracking-wider">Progres Belajar</span>
+                <span id="mobile-progress-percent" class="text-[#019e7c]">0%</span>
+            </div>
+            <div class="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div id="mobile-progress-bar" class="h-full bg-[#019e7c] transition-all duration-700" style="width: 0%"></div>
+            </div>
+        </div>
+        <div id="mobile-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-4 px-2">
+            </div>
+    </div>
+
+    <div class="flex h-[calc(100vh-70px)] overflow-hidden">
+        
+        <aside id="desktop-sidebar" class="sidebar-desktop-hidden w-80 lg:w-96 bg-white dark:bg-bgCardDark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 flex-shrink-0 relative z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-none">
+            <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-bgCardDark">
+                <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary transition-colors flex items-center mb-3">
+                    <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
+                </a>
+                <h2 class="font-extrabold text-gray-900 dark:text-white text-xl mb-4 leading-tight">Linux System Administration</h2>
+                <div class="flex justify-between text-xs font-bold mb-2">
+                    <span class="text-gray-500 uppercase tracking-wider">Progres Belajar</span>
+                    <span id="desktop-progress-percent" class="text-[#019e7c]">0%</span>
+                </div>
+                <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-1">
+                    <div id="desktop-progress-bar" class="h-full bg-[#019e7c] transition-all duration-700" style="width: 0%"></div>
+                </div>
+                <span id="last-activity" class="text-[10px] text-gray-400">Aktivitas terakhir pada --</span>
+            </div>
             
-            <div class="max-w-4xl w-full mx-auto space-y-6">
-                <div class="bg-white dark:bg-bgCardDark p-2 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <div class="relative pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black group">
-                        <iframe id="video-frame" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
-                    </div>
+            <div id="desktop-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-2">
+                </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto hide-scrollbar p-4 md:p-8 lg:p-10 relative">
+            <div class="max-w-4xl mx-auto space-y-8 pb-12">
+                
+                <div class="bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-xl aspect-video relative border border-gray-200 dark:border-gray-800">
+                    <iframe id="video-frame" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
 
-                <div class="bg-white dark:bg-bgCardDark p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800">
-                    <h1 id="materi-title" class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white mb-6">Memuat Materi...</h1>
+                <div class="bg-white dark:bg-bgCardDark p-6 md:p-10 rounded-2xl md:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-sm">
+                    <h1 id="materi-title" class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">Memuat...</h1>
                     
-                    <div id="materi-explanation" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300 leading-relaxed text-base">
-                        </div>
-                    
-                    <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end" id="action-container">
+                    <div id="materi-desc" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed mb-10">
+                    </div>
+
+                    <div class="flex justify-end border-t border-gray-100 dark:border-gray-800 pt-8" id="action-container">
                         </div>
                 </div>
             </div>
         </main>
-
     </div>
 
     <script>
         // --- DATA MATERI LINUX ---
-        const linuxCourseData = [
+        const linuxCourse = [
             { 
                 id: 1, 
                 title: "1. Instalasi & Pemahaman Direktori Dasar", 
-                video: "https://www.youtube.com/embed/wBp0Rb-ZJak",
-                desc: `
-                    <p class="mb-3">Pada bab pertama ini, kita akan mempelajari fondasi utama dari sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p>
-                    <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
-                    <ul class="list-disc pl-5 space-y-1 mb-4">
-                        <li>Pemahaman direktori utama: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/</code> (Root), <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/home</code> (User), <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/etc</code> (Konfigurasi), dan <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/var</code> (Data dinamis).</li>
-                        <li>Navigasi via terminal CLI.</li>
-                        <li>Perintah dasar manajemen file dan folder.</li>
-                    </ul>
-                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50">
-                        <p class="text-sm font-semibold text-primary mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
-                        <p class="text-sm font-mono text-gray-600 dark:text-gray-400">pwd, ls -la, cd, mkdir, rm -rf, cp, mv</p>
-                    </div>` 
+                video: "https://www.youtube.com/embed/wBp0Rb-ZJak", 
+                desc: `<p>Pada bab pertama ini, kita akan mempelajari fondasi utama dari sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p>
+                       <ul class="list-disc pl-5 mt-3 space-y-1"><li>Pemahaman direktori utama: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/</code>, <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/home</code>, <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/etc</code></li><li>Navigasi via terminal CLI.</li></ul>` 
             },
             { 
                 id: 2, 
                 title: "2. Manajemen User, Group & Permission", 
-                video: "https://www.youtube.com/embed/rrB13utjYV4",
-                desc: `
-                    <p class="mb-3">Keamanan adalah prioritas utama di Linux. Bab ini membahas cara mengelola pengguna dan membatasi hak akses file agar server tidak mudah diretas.</p>
-                    <h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4>
-                    <ul class="list-disc pl-5 space-y-1 mb-4">
-                        <li>Membuat dan menghapus User serta Group.</li>
-                        <li>Konsep otorisasi Superuser (Root) dan Sudo.</li>
-                        <li>Membaca hak akses file: Read (4), Write (2), Execute (1).</li>
-                    </ul>` 
+                video: "https://www.youtube.com/embed/rrB13utjYV4", 
+                desc: `<p>Keamanan adalah prioritas utama di Linux. Bab ini membahas cara mengelola pengguna dan membatasi hak akses file agar server tidak mudah diretas.</p>
+                       <ul class="list-disc pl-5 mt-3 space-y-1"><li>Membuat dan menghapus User serta Group.</li><li>Membaca hak akses file: Read (4), Write (2), Execute (1).</li></ul>` 
             },
             { 
                 id: 3, 
-                title: "3. OSI Layer VS TCP IP Layer", 
-                video: "https://www.youtube.com/embed/3g1Bh7PmK-s",
-                desc: `
-                    <p class="mb-3">Pelajari perbedaan mendasar antara model OSI dan arsitektur TCP/IP dalam komunikasi jaringan.</p>` 
+                title: "3. Manajemen Paket & Repository", 
+                video: "https://www.youtube.com/embed/v_1zbOUXYzI", 
+                desc: `<p>Pelajari cara menginstal, memperbarui, dan menghapus aplikasi (software) di lingkungan Linux menggunakan sistem manajemen paket.</p>
+                       <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl mt-4 border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-primary mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">apt update, apt upgrade, apt install [paket]</p></div>` 
             },
             { 
                 id: 4, 
                 title: "4. Konfigurasi Jaringan & SSH Server", 
-                video: "https://www.youtube.com/embed/jBzwzrDvZ18",
+                video: "https://www.youtube.com/embed/jBzwzrDvZ18", 
                 desc: `<p>Server Linux biasanya berada di Data Center tanpa layar. Bab ini memandu Anda mengonfigurasi IP dan mengakses server dari jarak jauh (Remote).</p>` 
             },
             { 
                 id: 5, 
                 title: "5. Monitoring Sistem & Manajemen Proses", 
-                video: "https://www.youtube.com/embed/H5G9Oun_9U0",
-                desc: `<p>Seorang System Administrator harus tahu cara menganalisis beban server (Resource) dan mematikan program yang bermasalah menggunakan perintah seperti <code>top</code>, <code>htop</code>, atau <code>kill</code>.</p>` 
+                video: "https://www.youtube.com/embed/H5G9Oun_9U0", 
+                desc: `<p>Seorang System Administrator harus tahu cara menganalisis beban server (Resource) dan mematikan program yang bermasalah.</p>` 
             },
             { 
                 id: 6, 
                 title: "6. Instalasi Web Server & Database", 
-                video: "https://www.youtube.com/embed/Z0bE8v8XmG4",
-                desc: `<p>Mulai praktik membangun infrastruktur web. Kita akan menyulap Linux kosong menjadi server *Production* yang siap menjalankan website dengan Nginx dan MySQL.</p>` 
+                video: "https://www.youtube.com/embed/Z0bE8v8XmG4", 
+                desc: `<p>Mulai praktik membangun infrastruktur web. Kita akan menyulap Linux kosong menjadi server Production yang siap menjalankan website.</p>` 
             },
             { 
                 id: 7, 
                 title: "7. Dasar-dasar Bash Scripting", 
-                video: "https://www.youtube.com/embed/e7B7vX7DscI",
+                video: "https://www.youtube.com/embed/e7B7vX7DscI", 
                 desc: `<p>Bab terakhir! Pelajari cara mengotomatisasi pekerjaan yang berulang-ulang dengan menulis skrip pemrograman sederhana di terminal Linux.</p>` 
             }
         ];
 
-        // --- STATE & VARIABEL ---
-        let completedChapters = [1, 2]; 
-        let currentChapterId = 3;
-        let isSidebarVisible = true; 
+        let currentId = 3; // Default materi yang aktif
+        let completed = [1, 2]; // Contoh yang sudah selesai
 
-        // --- FUNGSI FORMAT TANGGAL ---
+        // --- UPDATE TANGGAL TERAKHIR ---
         function setLastActivity() {
             const date = new Date();
             const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' };
-            document.getElementById('last-activity').textContent = `Last activity on ${date.toLocaleDateString('en-GB', options)}`;
+            document.getElementById('last-activity').textContent = `Aktivitas terakhir pada ${date.toLocaleDateString('id-ID', options)}`;
         }
 
-        // --- FUNGSI RENDER SIDEBAR MATERI ---
-        function renderSidebarList() {
-            const listDesktop = document.getElementById('materi-list');
-            listDesktop.innerHTML = '';
+        // --- RENDER SIDEBAR MATERI (Desktop & Mobile Clone) ---
+        function renderMateriList() {
+            const desktopContainer = document.getElementById('desktop-materi-list');
+            desktopContainer.innerHTML = '';
             
-            linuxCourseData.forEach((materi) => {
-                const isCompleted = completedChapters.includes(materi.id);
-                const isActive = currentChapterId === materi.id;
+            linuxCourse.forEach(m => {
+                const isActive = m.id === currentId;
+                const isDone = completed.includes(m.id);
                 
-                let iconHtml = '';
-                let bgClass = 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800';
+                const item = document.createElement('button');
+                item.className = `w-full text-left px-6 py-4 transition-colors border-b border-gray-100 dark:border-gray-800/50 flex items-center justify-between group ${isActive ? 'bg-blue-50/50 dark:bg-blue-900/10 border-l-4 border-l-primary' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'}`;
                 
-                if (isActive) {
-                    bgClass = 'bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-primary border-b border-b-gray-100 dark:border-b-gray-800';
-                    iconHtml = `
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-primary">
-                            <i class="fa-regular fa-circle-dot text-sm"></i>
-                        </div>`;
-                } else if (isCompleted) {
-                    iconHtml = `
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-[#019e7c]">
-                            <i class="fa-solid fa-circle-check text-lg"></i>
-                        </div>`;
-                } else {
-                    iconHtml = `
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-600">
-                            <i class="fa-regular fa-circle text-sm"></i>
-                        </div>`;
-                }
+                // Set onClick (Untuk Desktop langsung load, untuk mobile load + tutup panel)
+                item.setAttribute('data-id', m.id);
+                
+                let icon = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-600"><i class="fa-regular fa-circle text-sm"></i></div>`;
+                if(isActive) icon = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-primary"><i class="fa-regular fa-circle-dot text-sm"></i></div>`;
+                else if(isDone) icon = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-[#019e7c]"><i class="fa-solid fa-circle-check text-lg"></i></div>`;
 
-                const btn = document.createElement('button');
-                btn.className = `w-full text-left p-4 flex items-center justify-between transition-colors ${bgClass}`;
-                btn.onclick = () => loadMateri(materi.id);
-                
-                btn.innerHTML = `
-                    <div class="flex items-center space-x-3 pr-2">
-                        <div class="flex-shrink-0">${iconHtml}</div>
-                        <span class="text-[13px] ${isActive ? 'font-bold text-primary' : (isCompleted ? 'font-medium text-gray-500 line-through' : 'font-medium text-gray-700 dark:text-gray-300')} leading-snug">
-                            ${materi.title}
+                item.innerHTML = `
+                    <div class="flex items-center space-x-4 pr-2">
+                        <div class="flex-shrink-0">${icon}</div>
+                        <span class="text-[13.5px] leading-snug ${isActive ? 'font-bold text-primary' : (isDone ? 'font-medium text-gray-500 line-through' : 'font-medium text-gray-700 dark:text-gray-300')}">
+                            ${m.title}
                         </span>
                     </div>
                 `;
-                listDesktop.appendChild(btn);
+                desktopContainer.appendChild(item);
             });
 
-            const allCompleted = completedChapters.length >= linuxCourseData.length;
+            // Tambah Final Quiz Button
+            const isAllDone = completed.length >= linuxCourse.length;
             const quizBtn = document.createElement('button');
-            if(allCompleted) {
-                quizBtn.className = `w-full text-left p-5 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-between border-t border-gray-100 dark:border-gray-800`;
-                quizBtn.innerHTML = `<span class="text-[13px] font-bold text-primary">Final Quiz</span> <i class="fa-solid fa-medal text-primary text-lg"></i>`;
-                quizBtn.onclick = () => alert('Buka halaman Final Quiz');
-            } else {
-                quizBtn.className = `w-full text-left p-5 transition-all flex items-center justify-between opacity-50 cursor-not-allowed border-t border-gray-100 dark:border-gray-800`;
-                quizBtn.innerHTML = `<span class="text-[13px] font-bold text-gray-400">Final Quiz</span> <i class="fa-solid fa-lock text-gray-300 text-lg"></i>`;
-            }
-            listDesktop.appendChild(quizBtn);
+            quizBtn.className = `w-full text-left p-6 transition-all flex items-center justify-between border-t border-gray-100 dark:border-gray-800 ${isAllDone ? 'bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50' : 'opacity-50 cursor-not-allowed'}`;
+            quizBtn.innerHTML = `
+                <span class="text-[13.5px] font-bold ${isAllDone ? 'text-primary' : 'text-gray-400'}">Final Quiz</span> 
+                <i class="fa-solid fa-medal ${isAllDone ? 'text-primary' : 'text-gray-300'} text-lg"></i>`;
+            if(isAllDone) quizBtn.setAttribute('data-quiz', 'true');
+            desktopContainer.appendChild(quizBtn);
 
-            updateProgressBar();
-            
-            // Kloning ke mobile sidebar progress
-            document.getElementById('mobile-materi-list').innerHTML = listDesktop.innerHTML;
-            
-            // Re-attach event listener ke klon seluler
-            const mobileBtns = document.getElementById('mobile-materi-list').querySelectorAll('button');
-            mobileBtns.forEach((btn, index) => {
-                if(index < linuxCourseData.length) {
-                    btn.onclick = () => { loadMateri(linuxCourseData[index].id); toggleMobileSidebarProgress(); };
-                } else {
-                    if(allCompleted) btn.onclick = () => alert('Buka halaman Final Quiz');
-                }
+            updateProgressUI();
+
+            // Clone ke Mobile Sidebar
+            const mobileContainer = document.getElementById('mobile-materi-list');
+            mobileContainer.innerHTML = desktopContainer.innerHTML;
+
+            // Pasang event listener click untuk desktop
+            document.querySelectorAll('#desktop-materi-list button').forEach(btn => {
+                btn.onclick = () => {
+                    if(btn.hasAttribute('data-id')) loadChapter(parseInt(btn.getAttribute('data-id')));
+                    else if(btn.hasAttribute('data-quiz')) alert('Membuka Final Quiz...');
+                };
+            });
+
+            // Pasang event listener click untuk mobile (plus tutup panel)
+            document.querySelectorAll('#mobile-materi-list button').forEach(btn => {
+                btn.onclick = () => {
+                    if(btn.hasAttribute('data-id')) loadChapter(parseInt(btn.getAttribute('data-id')));
+                    else if(btn.hasAttribute('data-quiz')) alert('Membuka Final Quiz...');
+                    toggleProgressPanel(); // Tutup setelah klik
+                };
             });
         }
 
-        // --- FUNGSI UPDATE PROGRESS ---
-        function updateProgressBar() {
-            const total = linuxCourseData.length;
-            const completedCount = completedChapters.length;
-            const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
-            
-            document.getElementById('progress-bar-fill').style.width = percent + '%';
-            document.getElementById('progress-percentage').textContent = percent + '%';
-            
-            // Mobile specific
-            document.getElementById('mobile-progress-bar-fill').style.width = percent + '%';
+        // --- UPDATE PROGRESS BAR ---
+        function updateProgressUI() {
+            const percent = Math.round((completed.length / linuxCourse.length) * 100);
+            document.getElementById('desktop-progress-percent').innerText = percent + '%';
+            document.getElementById('desktop-progress-bar').style.width = percent + '%';
+            document.getElementById('mobile-progress-percent').innerText = percent + '%';
+            document.getElementById('mobile-progress-bar').style.width = percent + '%';
         }
 
-        // --- FUNGSI LOAD MATERI ---
-        function loadMateri(id) {
-            currentChapterId = id;
-            const data = linuxCourseData.find(c => c.id === id);
-            if (!data) return;
-
+        // --- LOAD KONTEN MATERI ---
+        function loadChapter(id) {
+            currentId = id;
+            const data = linuxCourse.find(x => x.id === id);
+            
             document.getElementById('video-frame').src = data.video;
-            document.getElementById('materi-title').textContent = data.title;
-            document.getElementById('materi-explanation').innerHTML = `<p class="mb-6 font-medium">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` + data.desc;
+            document.getElementById('materi-title').innerText = data.title;
+            document.getElementById('materi-desc').innerHTML = `<p class="mb-6 font-semibold">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` + data.desc;
             
-            const isCompleted = completedChapters.includes(id);
-            const actionContainer = document.getElementById('action-container');
-            
-            if (isCompleted) {
-                actionContainer.innerHTML = `<button disabled class="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 px-8 py-3 rounded-full text-sm font-bold flex items-center space-x-2 cursor-not-allowed border border-gray-200 dark:border-gray-700"><i class="fa-solid fa-check"></i> <span>Selesai Dipelajari</span></button>`;
+            const btnContainer = document.getElementById('action-container');
+            if(completed.includes(id)) {
+                btnContainer.innerHTML = `
+                    <button disabled class="bg-gray-100 text-gray-400 dark:bg-gray-800 px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 cursor-not-allowed border border-gray-200 dark:border-gray-700">
+                        <i class="fa-solid fa-check"></i> Selesai Dipelajari
+                    </button>`;
             } else {
-                actionContainer.innerHTML = `<button onclick="markComplete(${id})" class="bg-primary hover:bg-primaryHover text-white px-8 py-3 rounded-full text-sm font-bold flex items-center space-x-2 transition-all shadow-lg hover:-translate-y-1"><i class="fa-regular fa-circle-check"></i> <span>Mark Complete</span></button>`;
+                btnContainer.innerHTML = `
+                    <button onclick="markComplete(${id})" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 transition-all shadow-lg hover:-translate-y-1">
+                        <i class="fa-regular fa-circle-check text-lg"></i> Mark Complete
+                    </button>`;
             }
-
-            renderSidebarList();
+            renderMateriList();
         }
 
-        // --- FUNGSI MARK COMPLETE ---
         function markComplete(id) {
-            if (!completedChapters.includes(id)) {
-                completedChapters.push(id);
+            if(!completed.includes(id)) {
+                completed.push(id);
                 setLastActivity();
-                
-                const nextChapter = linuxCourseData.find(c => c.id === id + 1);
-                if (nextChapter) {
-                    loadMateri(nextChapter.id);
-                } else {
-                    loadMateri(id); 
-                    alert("Semua materi selesai! Silahkan ikuti Final Quiz.");
-                }
             }
+            const next = linuxCourse.find(x => x.id === id + 1);
+            if(next) loadChapter(next.id);
+            else { loadChapter(id); alert("Selamat! Anda telah menyelesaikan semua materi. Silahkan ambil Final Quiz."); }
         }
 
-        // --- FUNGSI TOGGLE MAXIMIZE / SIDEBAR PROGRESS (Mengecek Lebar Layar) ---
-        function toggleSidebar() {
-            // Jika layar adalah perangkat mobile (kurang dari 768px/md breakpoint pada Tailwind)
-            if (window.innerWidth < 768) {
-                toggleMobileSidebarProgress();
+        // --- TOGGLE PANELS (Mobile & Desktop) ---
+        function toggleProgressPanel() {
+            // Pada Mobile (< 1024px/lg breakpoint pada tailwind)
+            if (window.innerWidth < 1024) {
+                const panel = document.getElementById('mobile-progress-panel');
+                const overlay = document.getElementById('progress-overlay');
+                
+                if (panel.classList.contains('-translate-x-full')) {
+                    // Buka (Muncul dari Kiri secara Smooth)
+                    overlay.classList.remove('hidden');
+                    // Tunggu sebentar untuk memicu transisi opacity
+                    setTimeout(() => overlay.classList.add('opacity-100'), 10);
+                    panel.classList.remove('-translate-x-full');
+                } else {
+                    // Tutup
+                    panel.classList.add('-translate-x-full');
+                    overlay.classList.remove('opacity-100');
+                    setTimeout(() => overlay.classList.add('hidden'), 300); // Sesuaikan dengan durasi animasi css
+                }
             } else {
-                // Logika Desktop
-                const sidebar = document.getElementById('sidebar-progress');
-                const maximizeIcon = document.getElementById('maximize-icon');
+                // Pada Desktop
+                const sidebar = document.getElementById('desktop-sidebar');
+                const icon = document.getElementById('expand-icon');
                 
-                isSidebarVisible = !isSidebarVisible;
-                
-                if (isSidebarVisible) {
-                    sidebar.classList.remove('sidebar-hidden');
-                    maximizeIcon.classList.remove('fa-compress');
-                    maximizeIcon.classList.add('fa-expand');
+                if (sidebar.classList.contains('sidebar-desktop-hidden')) {
+                    sidebar.classList.remove('sidebar-desktop-hidden');
+                    icon.className = 'fa-solid fa-compress text-lg';
                 } else {
-                    sidebar.classList.add('sidebar-hidden');
-                    maximizeIcon.classList.remove('fa-expand');
-                    maximizeIcon.classList.add('fa-compress');
+                    sidebar.classList.add('sidebar-desktop-hidden');
+                    icon.className = 'fa-solid fa-expand text-lg';
                 }
             }
         }
 
-        // --- FUNGSI TOGGLE MOBILE SIDEBAR PROGRESS ---
-        function toggleMobileSidebarProgress() {
-            const overlay = document.getElementById('mobile-sidebar-overlay');
-            const content = document.getElementById('mobile-sidebar-content');
-            
-            overlay.classList.toggle('hidden');
-            // Ganti animasi dari kanan ke kiri
-            content.classList.toggle('translate-x-[100%]');
-        }
-
-        // Tutup modal progress course bila overlay di klik
-        document.getElementById('mobile-sidebar-overlay').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('mobile-sidebar-overlay')) {
-                toggleMobileSidebarProgress();
-            }
-        });
-
-        // --- LOGIKA UI UMUM (Dark Mode, Dropdown, Mobile Menu) ---
-        const html = document.documentElement;
-        
-        // Desktop Dark Mode Toggle
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        darkModeToggle.addEventListener('change', () => {
-            if (darkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); } 
-            else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); }
-            
-            const mobileToggle = document.getElementById('mobile-menu-dark-mode-toggle');
-            if (mobileToggle) mobileToggle.checked = darkModeToggle.checked;
-        });
-        
-        // Mobile Dark Mode Toggle (di menu navigasi hamburger)
-        const mobileMenuDarkModeToggle = document.getElementById('mobile-menu-dark-mode-toggle');
-        if(mobileMenuDarkModeToggle) {
-            mobileMenuDarkModeToggle.addEventListener('change', () => {
-                if (mobileMenuDarkModeToggle.checked) { 
-                    html.classList.add('dark'); 
-                    localStorage.setItem('theme', 'dark'); 
-                    darkModeToggle.checked = true; 
-                } else { 
-                    html.classList.remove('dark'); 
-                    localStorage.setItem('theme', 'light'); 
-                    darkModeToggle.checked = false; 
-                }
-            });
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-            html.classList.add('dark');
-            darkModeToggle.checked = true;
-            if(mobileMenuDarkModeToggle) mobileMenuDarkModeToggle.checked = true;
-        }
-
-        const profileBtn = document.getElementById('profile-dropdown-button');
-        const profileContent = document.getElementById('profile-dropdown-content');
-        const profileArrow = document.getElementById('profile-arrow');
-        
-        profileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileContent.classList.toggle('hidden');
-            if (profileArrow) profileArrow.classList.toggle('rotate-180');
-        });
-        window.addEventListener('click', (e) => {
-            if (!profileBtn.contains(e.target)) {
-                profileContent.classList.add('hidden');
-                if (profileArrow) profileArrow.classList.remove('rotate-180');
-            }
-        });
-
-        // Hamburger Nav Menu (Kiri)
-        const mobileMenuBtn = document.getElementById('mobile-menu-button');
-        const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
-        const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
         function toggleMobileNav() {
-            mobileMenuBackdrop.classList.toggle('hidden');
-            mobileMenu.classList.toggle('-translate-x-full');
-            setTimeout(() => mobileMenuBackdrop.classList.toggle('opacity-100'), 10);
-        }
-        mobileMenuBtn.addEventListener('click', toggleMobileNav);
-        closeMobileMenuBtn.addEventListener('click', toggleMobileNav);
-        mobileMenuBackdrop.addEventListener('click', toggleMobileNav);
-
-        function viewCertificate() { alert('Membuka Sertifikat...'); }
-        function logOut() { alert('Keluar dari akun...'); }
-
-        // --- KOREKSI NAVIGASI TOMBOL BACK HP (Kembali ke materi.html) ---
-        function setupBackNavigation() {
-            history.pushState({page: 'materi'}, "NeoCourse - Materi Kursus", location.href);
-            window.addEventListener('popstate', function(event) {
-                // Sesuai instruksi: diarahkan me-reload/kembali ke materi.html
-                location.replace('materi.html');
-            });
+            const nav = document.getElementById('mobile-nav-content');
+            const overlay = document.getElementById('mobile-nav-overlay');
+            if (nav.classList.contains('-translate-x-full')) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+                nav.classList.remove('-translate-x-full');
+            } else {
+                nav.classList.add('-translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
         }
 
-        // --- INISIALISASI ---
+        // Profile Dropdown Desktop
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDrop = document.getElementById('profile-dropdown');
+        const profileArrow = document.getElementById('profile-arrow');
+        if(profileBtn) {
+            profileBtn.onclick = (e) => {
+                e.stopPropagation();
+                profileDrop.classList.toggle('hidden');
+                profileArrow.classList.toggle('rotate-180');
+            };
+            window.onclick = (e) => {
+                if(!profileBtn.contains(e.target)) {
+                    profileDrop.classList.add('hidden');
+                    profileArrow.classList.remove('rotate-180');
+                }
+            };
+        }
+
+        // --- DARK MODE ---
+        const darkToggle = document.getElementById('dark-mode-toggle'); // Desktop
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if(darkToggle) darkToggle.checked = isDark;
+        }
+        
+        if(darkToggle) {
+            darkToggle.onchange = () => toggleDarkMode();
+        }
+
+        // Init Dark Mode
+        if(localStorage.theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            if(darkToggle) darkToggle.checked = true;
+        }
+
+        // --- BACK BUTTON BROWSER FIX ---
+        history.pushState({page: 'materi'}, null, location.href);
+        window.addEventListener('popstate', function() {
+            location.replace("materi.html");
+        });
+
+        // Event Overlays Close
+        document.getElementById('progress-overlay').onclick = toggleProgressPanel;
+        document.getElementById('mobile-nav-overlay').onclick = toggleMobileNav;
+
+        // Dummy utils
+        function viewCert() { alert("Membuka Sertifikat..."); }
+        function logOut() { if(confirm("Keluar dari Workspace?")) window.location.href='login.html'; }
+
+        // Start
         window.addEventListener('DOMContentLoaded', () => {
             setLastActivity();
-            renderSidebarList();
-            loadMateri(currentChapterId);
-            setupBackNavigation();
+            loadChapter(currentId);
         });
+
     </script>
 </body>
 </html>
