@@ -81,11 +81,11 @@
 
             <div class="flex items-center space-x-4 md:space-x-6">
                 
-                <button onclick="toggleSidebar()" class="text-gray-400 hover:text-primary dark:hover:text-white transition-colors" title="Toggle Sidebar Progress">
+                <button onclick="toggleSidebar()" class="text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white transition-colors" title="Lihat Progress Course">
                     <i id="maximize-icon" class="fa-solid fa-expand text-xl"></i>
                 </button>
 
-                <div class="hidden sm:flex items-center justify-center space-x-2">
+                <div class="hidden md:flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-sun text-yellow-500 text-lg"></i>
                     <div class="relative inline-block w-11 h-6 align-middle select-none">
                         <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 dark:border-gray-600 appearance-none cursor-pointer transition-transform duration-300"/>
@@ -101,25 +101,16 @@
                     <span>Sertifikat</span>
                 </button>
 
-                <div class="relative">
+                <div class="relative hidden md:block">
                     <button id="profile-dropdown-button" class="flex items-center space-x-2 md:space-x-3 focus:outline-none">
-                        <span class="hidden md:inline text-sm font-semibold text-gray-800 dark:text-white">jobamidreams</span>
+                        <span class="text-sm font-semibold text-gray-800 dark:text-white">jobamidreams</span>
                         <div class="bg-gray-200 dark:bg-gray-800 rounded-full h-10 w-10 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
                             <i class="fa-solid fa-user text-gray-500 dark:text-gray-400"></i>
                         </div>
-                        <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 transition-transform hidden sm:block"></i>
+                        <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 transition-transform"></i>
                     </button>
                     <div id="profile-dropdown-content" class="hidden absolute right-0 mt-3 w-56 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl z-50 transition-all duration-300">
                         <div class="p-2 space-y-1">
-                            <div class="sm:hidden flex items-center justify-between px-4 py-3">
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Mode Gelap</span>
-                                <input type="checkbox" id="mobile-dark-mode-toggle" class="toggle-checkbox w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 appearance-none cursor-pointer relative after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-transform checked:bg-primary checked:after:translate-x-5" />
-                            </div>
-                            <button onclick="viewCertificate()" class="md:hidden w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center space-x-3">
-                                <i class="fa-solid fa-certificate text-primary w-5"></i>
-                                <span>Sertifikat</span>
-                            </button>
-                            <div class="border-t border-gray-100 dark:border-gray-800 my-1 md:hidden"></div>
                             <button onclick="logOut()" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3">
                                 <i class="fa-solid fa-sign-out-alt w-5"></i>
                                 <span>Log Out</span>
@@ -133,15 +124,35 @@
 
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity opacity-0 lg:hidden"></div>
     <div id="mobile-menu" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-bgCardDark z-50 transform -translate-x-full transition-transform duration-300 lg:hidden flex flex-col shadow-2xl">
-        <div class="p-5 flex justify-end">
-            <button id="close-mobile-menu" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        
+        <div class="p-5 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-bgCardDark">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-10 w-10 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-gray-600">
+                    <i class="fa-solid fa-user text-gray-500 dark:text-gray-400"></i>
+                </div>
+                <span class="font-bold text-gray-900 dark:text-white">jobamidreams</span>
+            </div>
+            <button id="close-mobile-menu" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
-        <div class="flex-1 overflow-y-auto py-2">
+
+        <div class="flex-1 overflow-y-auto py-4">
             <nav class="flex flex-col space-y-1 px-4 text-sm font-medium text-gray-700 dark:text-gray-300">
-                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-house w-5"></i> Beranda</a>
+                
+                <div class="px-4 py-3 flex items-center justify-between">
+                    <span class="flex items-center gap-3"><i class="fa-solid fa-moon w-5 text-center text-gray-500 dark:text-gray-400"></i> Mode Gelap</span>
+                    <input type="checkbox" id="mobile-menu-dark-mode-toggle" class="toggle-checkbox w-10 h-5 rounded-full bg-gray-200 dark:bg-gray-700 appearance-none cursor-pointer relative after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-transform checked:bg-primary checked:after:translate-x-5" />
+                </div>
+
+                <button onclick="viewCertificate()" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3 w-full text-left">
+                    <i class="fa-solid fa-certificate w-5 text-center text-gray-500 dark:text-gray-400"></i> Sertifikat
+                </button>
+
+                <div class="border-t border-gray-100 dark:border-gray-800 my-2 mx-2"></div>
+
+                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-house w-5 text-center text-gray-500 dark:text-gray-400"></i> Beranda</a>
                 <div class="flex flex-col">
                     <button onclick="document.getElementById('mobile-submenu').classList.toggle('hidden')" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center justify-between w-full">
-                        <span class="flex items-center gap-3"><i class="fa-solid fa-layer-group w-5"></i> Pilihan Kursus</span>
+                        <span class="flex items-center gap-3"><i class="fa-solid fa-layer-group w-5 text-center text-gray-500 dark:text-gray-400"></i> Pilihan Kursus</span>
                         <i class="fa-solid fa-angle-down"></i>
                     </button>
                     <div id="mobile-submenu" class="hidden flex-col pl-12 pr-4 space-y-1 mt-1">
@@ -149,8 +160,13 @@
                         <a href="#" class="py-2 text-gray-500 hover:text-primary dark:text-gray-400">Kursus Premium</a>
                     </div>
                 </div>
-                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-comments w-5"></i> Group Diskusi</a>
-                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-users w-5"></i> My Courses</a>
+                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-comments w-5 text-center text-gray-500 dark:text-gray-400"></i> Group Diskusi</a>
+                <a href="#" class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg flex items-center gap-3"><i class="fa-solid fa-users w-5 text-center text-gray-500 dark:text-gray-400"></i> My Courses</a>
+                
+                <div class="border-t border-gray-100 dark:border-gray-800 my-2 mx-2"></div>
+                <button onclick="logOut()" class="px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg flex items-center gap-3 w-full text-left">
+                    <i class="fa-solid fa-sign-out-alt w-5 text-center"></i> Log Out
+                </button>
             </nav>
         </div>
     </div>
@@ -159,7 +175,7 @@
         
         <aside id="sidebar-progress" class="hidden md:flex flex-col w-80 lg:w-96 flex-shrink-0 bg-white dark:bg-bgCardDark rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 transition-all duration-300 mr-6 lg:mr-8 h-full overflow-hidden">
             
-            <div class="p-6 border-b border-gray-100 dark:border-gray-800">
+            <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-bgCardDark">
                 <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary dark:text-gray-400 flex items-center mb-4 transition-colors">
                     <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
                 </a>
@@ -182,12 +198,20 @@
         </aside>
         
         <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity duration-300">
-            <div id="mobile-sidebar-content" class="fixed top-[76px] left-0 h-[calc(100%-76px)] w-80 bg-white dark:bg-bgCardDark flex flex-col transition-transform duration-300 translate-x-[-100%] shadow-xl z-50">
-                <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                    <h2 class="font-bold text-gray-900 dark:text-white">Daftar Materi</h2>
+            <div id="mobile-sidebar-content" class="fixed top-[76px] right-0 h-[calc(100%-76px)] w-80 bg-white dark:bg-bgCardDark flex flex-col transition-transform duration-300 translate-x-[100%] shadow-xl z-50">
+                <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-bgCardDark">
+                    <h2 class="font-bold text-gray-900 dark:text-white text-lg">Progres Kursus</h2>
                     <button onclick="toggleMobileSidebarProgress()" class="text-gray-500 hover:text-gray-800 dark:text-gray-300 text-xl p-2">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
+                </div>
+                <div class="p-4 border-b border-gray-100 dark:border-gray-800">
+                    <div class="flex justify-between items-center text-sm mb-2">
+                        <span class="text-gray-600 dark:text-gray-400 font-semibold">100% Complete</span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                        <div id="mobile-progress-bar-fill" class="h-full bg-[#019e7c] rounded-full transition-all duration-500" style="width: 0%;"></div>
+                    </div>
                 </div>
                 <div id="mobile-materi-list" class="flex-1 overflow-y-auto">
                     </div>
@@ -218,7 +242,7 @@
     </div>
 
     <script>
-        // --- DATA MATERI LINUX (Sesuai Prompt Awal) ---
+        // --- DATA MATERI LINUX ---
         const linuxCourseData = [
             { 
                 id: 1, 
@@ -252,14 +276,10 @@
             },
             { 
                 id: 3, 
-                title: "3. Manajemen Paket & Repository", 
-                video: "https://www.youtube.com/embed/v_1zbOUXYzI",
+                title: "3. OSI Layer VS TCP IP Layer", 
+                video: "https://www.youtube.com/embed/3g1Bh7PmK-s",
                 desc: `
-                    <p class="mb-3">Pelajari cara menginstal, memperbarui, dan menghapus aplikasi (software) di lingkungan Linux menggunakan sistem manajemen paket.</p>
-                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50 mt-4">
-                        <p class="text-sm font-semibold text-primary mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p>
-                        <p class="text-sm font-mono text-gray-600 dark:text-gray-400">apt update, apt upgrade, apt install [paket], apt remove</p>
-                    </div>` 
+                    <p class="mb-3">Pelajari perbedaan mendasar antara model OSI dan arsitektur TCP/IP dalam komunikasi jaringan.</p>` 
             },
             { 
                 id: 4, 
@@ -358,7 +378,7 @@
 
             updateProgressBar();
             
-            // Kloning ke mobile sidebar
+            // Kloning ke mobile sidebar progress
             document.getElementById('mobile-materi-list').innerHTML = listDesktop.innerHTML;
             
             // Re-attach event listener ke klon seluler
@@ -380,6 +400,9 @@
             
             document.getElementById('progress-bar-fill').style.width = percent + '%';
             document.getElementById('progress-percentage').textContent = percent + '%';
+            
+            // Mobile specific
+            document.getElementById('mobile-progress-bar-fill').style.width = percent + '%';
         }
 
         // --- FUNGSI LOAD MATERI ---
@@ -420,21 +443,27 @@
             }
         }
 
-        // --- FUNGSI TOGGLE MAXIMIZE / SIDEBAR PROGRESS ---
+        // --- FUNGSI TOGGLE MAXIMIZE / SIDEBAR PROGRESS (Mengecek Lebar Layar) ---
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar-progress');
-            const maximizeIcon = document.getElementById('maximize-icon');
-            
-            isSidebarVisible = !isSidebarVisible;
-            
-            if (isSidebarVisible) {
-                sidebar.classList.remove('sidebar-hidden');
-                maximizeIcon.classList.remove('fa-compress');
-                maximizeIcon.classList.add('fa-expand');
+            // Jika layar adalah perangkat mobile (kurang dari 768px/md breakpoint pada Tailwind)
+            if (window.innerWidth < 768) {
+                toggleMobileSidebarProgress();
             } else {
-                sidebar.classList.add('sidebar-hidden');
-                maximizeIcon.classList.remove('fa-expand');
-                maximizeIcon.classList.add('fa-compress');
+                // Logika Desktop
+                const sidebar = document.getElementById('sidebar-progress');
+                const maximizeIcon = document.getElementById('maximize-icon');
+                
+                isSidebarVisible = !isSidebarVisible;
+                
+                if (isSidebarVisible) {
+                    sidebar.classList.remove('sidebar-hidden');
+                    maximizeIcon.classList.remove('fa-compress');
+                    maximizeIcon.classList.add('fa-expand');
+                } else {
+                    sidebar.classList.add('sidebar-hidden');
+                    maximizeIcon.classList.remove('fa-expand');
+                    maximizeIcon.classList.add('fa-compress');
+                }
             }
         }
 
@@ -444,28 +473,50 @@
             const content = document.getElementById('mobile-sidebar-content');
             
             overlay.classList.toggle('hidden');
-            content.classList.toggle('translate-x-[-100%]');
+            // Ganti animasi dari kanan ke kiri
+            content.classList.toggle('translate-x-[100%]');
         }
+
+        // Tutup modal progress course bila overlay di klik
+        document.getElementById('mobile-sidebar-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('mobile-sidebar-overlay')) {
+                toggleMobileSidebarProgress();
+            }
+        });
 
         // --- LOGIKA UI UMUM (Dark Mode, Dropdown, Mobile Menu) ---
         const html = document.documentElement;
         
+        // Desktop Dark Mode Toggle
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         darkModeToggle.addEventListener('change', () => {
             if (darkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); } 
             else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); }
+            
+            const mobileToggle = document.getElementById('mobile-menu-dark-mode-toggle');
+            if (mobileToggle) mobileToggle.checked = darkModeToggle.checked;
         });
         
-        const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
-        mobileDarkModeToggle.addEventListener('change', () => {
-            if (mobileDarkModeToggle.checked) { html.classList.add('dark'); localStorage.setItem('theme', 'dark'); darkModeToggle.checked = true; } 
-            else { html.classList.remove('dark'); localStorage.setItem('theme', 'light'); darkModeToggle.checked = false; }
-        });
+        // Mobile Dark Mode Toggle (di menu navigasi hamburger)
+        const mobileMenuDarkModeToggle = document.getElementById('mobile-menu-dark-mode-toggle');
+        if(mobileMenuDarkModeToggle) {
+            mobileMenuDarkModeToggle.addEventListener('change', () => {
+                if (mobileMenuDarkModeToggle.checked) { 
+                    html.classList.add('dark'); 
+                    localStorage.setItem('theme', 'dark'); 
+                    darkModeToggle.checked = true; 
+                } else { 
+                    html.classList.remove('dark'); 
+                    localStorage.setItem('theme', 'light'); 
+                    darkModeToggle.checked = false; 
+                }
+            });
+        }
 
         if (localStorage.getItem('theme') === 'dark') {
             html.classList.add('dark');
             darkModeToggle.checked = true;
-            mobileDarkModeToggle.checked = true;
+            if(mobileMenuDarkModeToggle) mobileMenuDarkModeToggle.checked = true;
         }
 
         const profileBtn = document.getElementById('profile-dropdown-button');
@@ -475,15 +526,16 @@
         profileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             profileContent.classList.toggle('hidden');
-            profileArrow.classList.toggle('rotate-180');
+            if (profileArrow) profileArrow.classList.toggle('rotate-180');
         });
         window.addEventListener('click', (e) => {
             if (!profileBtn.contains(e.target)) {
                 profileContent.classList.add('hidden');
-                profileArrow.classList.remove('rotate-180');
+                if (profileArrow) profileArrow.classList.remove('rotate-180');
             }
         });
 
+        // Hamburger Nav Menu (Kiri)
         const mobileMenuBtn = document.getElementById('mobile-menu-button');
         const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
         const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
@@ -505,7 +557,7 @@
         function setupBackNavigation() {
             history.pushState({page: 'materi'}, "NeoCourse - Materi Kursus", location.href);
             window.addEventListener('popstate', function(event) {
-                // Sesuai instruksi koreksi terbaru: diarahkan ke materi.html
+                // Sesuai instruksi: diarahkan me-reload/kembali ke materi.html
                 location.replace('materi.html');
             });
         }
