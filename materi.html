@@ -39,7 +39,7 @@
         }
 
         /* Toggle Dark Mode Desktop */
-        .toggle-checkbox:checked + .toggle-label { background-color: #385DFF; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #2563EB; }
         .toggle-checkbox:checked + .toggle-label .toggle-circle { transform: translateX(100%); }
         
         /* Toggle Dark Mode Mobile (Hanya Ikon) */
@@ -81,86 +81,88 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#385DFF',
-                        primaryHover: '#1E42DD',
-                        redBrand: '#EB4E4F',
-                        bgDark: '#0f172a',
-                        bgCardDark: '#1e293b',
+                        primary: '#2563EB', /* Biru standar premium UI */
+                        primaryHover: '#1D4ED8',
+                        redBrand: '#EF4444',
+                        bgDark: '#0B1120', /* Dark background lebih deep */
+                        bgCardDark: '#1E293B',
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-[#FAFBFD] text-slate-600 dark:bg-bgDark dark:text-slate-400 transition-colors duration-300">
+<body class="bg-gray-50 text-slate-600 dark:bg-bgDark dark:text-slate-400 transition-colors duration-300">
     
-    <div id="global-loader" class="fixed inset-0 bg-white/90 dark:bg-bgDark/90 z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
+    <div id="global-loader" class="fixed inset-0 bg-white/95 dark:bg-bgDark/95 z-[99] flex flex-col items-center justify-center transition-opacity duration-300">
         <i class="fa-solid fa-circle-notch fa-spin text-4xl text-primary mb-4"></i>
-        <p class="font-semibold text-gray-700 dark:text-gray-300 mt-2">Menyinkronkan Workspace...</p>
+        <p class="font-medium text-gray-700 dark:text-gray-300 mt-2">Menyinkronkan Workspace...</p>
     </div>
 
-    <nav class="bg-white dark:bg-bgCardDark border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 h-[70px] flex items-center shadow-sm">
-        <div class="w-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center justify-between">
+    <nav class="bg-white dark:bg-bgCardDark border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 h-[70px] shadow-sm">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center justify-between h-full">
             
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-4 w-auto lg:w-1/4">
                 <button onclick="toggleMobileNav()" class="lg:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
-                    <i class="fa-solid fa-bars-staggered text-2xl"></i>
+                    <i class="fa-solid fa-bars-staggered text-xl"></i>
                 </button>
 
                 <a href="index.html" class="flex items-center space-x-3">
-                    <img src="assets/img/Neokademi.png" alt="Logo" class="h-8 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=NK&background=385DFF&color=fff'">
-                    <span class="text-xl font-bold text-gray-900 dark:text-white">Neo<span class="text-primary">Course</span></span>
+                    <img src="assets/img/Neokademi.png" alt="Logo" class="h-8 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=NK&background=2563eb&color=fff'">
+                    <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Neo<span class="text-primary">Course</span></span>
                 </a>
-
-                <div class="hidden lg:flex items-center space-x-6 ml-8 text-sm font-semibold text-gray-600 dark:text-gray-300">
-                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-house"></i> Beranda</a>
-                    <div class="relative group h-[70px] flex items-center">
-                        <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-layer-group"></i> Pilihan Kursus <i class="fa-solid fa-angle-down text-[10px]"></i>
-                        </a>
-                        <div class="absolute top-[70px] left-0 w-48 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 shadow-lg rounded-b-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
-                            <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-video mr-2"></i> Kursus Gratis</a>
-                            <a href="#" class="px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"><i class="fa-solid fa-award mr-2"></i> Kursus Premium</a>
-                        </div>
-                    </div>
-                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-comments"></i> Group Diskusi</a>
-                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2"><i class="fa-solid fa-users"></i> My Courses</a>
-                </div>
             </div>
 
-            <div class="flex items-center space-x-4 md:space-x-6">
+            <div class="hidden lg:flex flex-1 items-center justify-center space-x-8 text-sm font-medium text-gray-600 dark:text-gray-300">
+                <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 py-2"><i class="fa-solid fa-house"></i> Beranda</a>
+                <div class="relative group h-[70px] flex items-center">
+                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-layer-group"></i> Pilihan Kursus <i class="fa-solid fa-angle-down text-[10px] mt-0.5"></i>
+                    </a>
+                    <div class="absolute top-[65px] left-1/2 transform -translate-x-1/2 w-52 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
+                        <a href="#" class="px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-3"><i class="fa-solid fa-video text-gray-400"></i> Kursus Gratis</a>
+                        <a href="#" class="px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-3"><i class="fa-solid fa-award text-amber-500"></i> Kursus Premium</a>
+                    </div>
+                </div>
+                <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 py-2"><i class="fa-solid fa-comments"></i> Group Diskusi</a>
+                <a href="#" class="text-primary font-semibold transition-colors flex items-center gap-2 py-2"><i class="fa-solid fa-users"></i> My Courses</a>
+            </div>
+
+            <div class="flex items-center justify-end space-x-4 md:space-x-5 w-auto lg:w-1/4">
                 
-                <button onclick="toggleProgressPanel()" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 text-gray-500 hover:text-primary dark:text-gray-400 transition-all border border-gray-200 dark:border-gray-700" title="Progress Course">
-                    <i id="expand-icon" class="fa-solid fa-expand text-lg"></i>
+                <button onclick="toggleProgressPanel()" class="text-gray-500 hover:text-primary dark:text-gray-400 transition-colors focus:outline-none flex items-center justify-center p-2" title="Progress Course">
+                    <i id="expand-icon" class="fa-solid fa-up-right-and-down-left-from-center text-[19px] transition-transform duration-300"></i>
                 </button>
 
-                <div class="hidden sm:flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-sun text-yellow-500 text-lg"></i>
-                    <div class="relative inline-block w-11 h-6 align-middle select-none">
-                        <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-gray-200 dark:border-gray-600 appearance-none cursor-pointer transition-transform duration-300"/>
-                        <label for="dark-mode-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer transition-colors duration-300">
-                            <span class="toggle-circle absolute block w-6 h-6 rounded-full bg-white shadow-sm transition-transform duration-300"></span>
+                <div class="hidden sm:flex items-center justify-center space-x-2 border-l border-r border-gray-200 dark:border-gray-700 px-4">
+                    <i class="fa-solid fa-sun text-yellow-500 text-sm"></i>
+                    <div class="relative inline-block w-10 h-5 align-middle select-none">
+                        <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-200 dark:border-gray-600 appearance-none cursor-pointer transition-transform duration-300"/>
+                        <label for="dark-mode-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer transition-colors duration-300">
+                            <span class="toggle-circle absolute block w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300"></span>
                         </label>
                     </div>
-                    <i class="fa-solid fa-moon text-gray-400 text-lg"></i>
+                    <i class="fa-solid fa-moon text-gray-400 text-sm"></i>
                 </div>
 
-                <button id="btn-header-cert" onclick="checkCertificate()" class="hidden md:flex bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold items-center space-x-2 transition-colors border border-gray-200 dark:border-gray-700">
-                    <i class="fa-solid fa-award text-amber-500 text-lg" id="header-cert-icon"></i>
+                <button id="btn-header-cert" onclick="checkCertificate()" class="hidden md:flex bg-white dark:bg-bgCardDark text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 px-4 py-2 rounded-lg text-sm font-medium items-center space-x-2 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <i class="fa-solid fa-award text-amber-500 text-base" id="header-cert-icon"></i>
                     <span id="header-cert-text">Sertifikat</span>
                 </button>
 
-                <div class="hidden md:flex items-center space-x-3 pl-4 border-l border-gray-200 dark:border-gray-700 relative">
-                    <button id="profile-btn" class="flex items-center space-x-3 focus:outline-none">
-                        <span class="text-sm font-semibold text-gray-800 dark:text-white" id="user-greeting">Siswa</span>
-                        <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-gray-200 dark:border-gray-700">
-                            <i class="fa-solid fa-user text-gray-400"></i>
+                <div class="hidden md:flex items-center relative">
+                    <button id="profile-btn" class="flex items-center space-x-3 focus:outline-none ml-2">
+                        <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                            <i class="fa-solid fa-user text-primary text-sm"></i>
                         </div>
-                        <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 transition-transform"></i>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-semibold text-gray-800 dark:text-white" id="user-greeting">Siswa</span>
+                            <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 text-xs transition-transform"></i>
+                        </div>
                     </button>
                     <div id="profile-dropdown" class="hidden absolute right-0 top-12 mt-2 w-48 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl z-50">
                         <div class="p-2">
-                            <button onclick="logout()" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3">
+                            <button onclick="logout()" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center space-x-3 transition-colors">
                                 <i class="fa-solid fa-sign-out-alt"></i> <span>Log Out</span>
                             </button>
                         </div>
@@ -181,22 +183,22 @@
             <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 border border-primary/20">
                 <i class="fa-solid fa-user text-primary text-xl"></i>
             </div>
-            <span class="font-bold text-gray-900 dark:text-white text-lg" id="mobile-user-greeting">Siswa</span>
+            <span class="font-bold tracking-tight text-gray-900 dark:text-white text-lg" id="mobile-user-greeting">Siswa</span>
             <span class="text-xs text-gray-500">Siswa NeoCourse</span>
         </div>
         
         <div class="flex-1 py-4 overflow-y-auto hide-scrollbar">
             <nav class="px-4 space-y-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-house w-5 text-center"></i> Beranda</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-layer-group w-5 text-center"></i> Pilihan Kursus</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"><i class="fa-solid fa-comments w-5 text-center"></i> Group Diskusi</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-primary/5 text-primary dark:bg-primary/10 rounded-xl"><i class="fa-solid fa-users w-5 text-center"></i> My Courses</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"><i class="fa-solid fa-house w-5 text-center"></i> Beranda</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"><i class="fa-solid fa-layer-group w-5 text-center"></i> Pilihan Kursus</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"><i class="fa-solid fa-comments w-5 text-center"></i> Group Diskusi</a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-primary/5 text-primary dark:bg-primary/10 rounded-xl transition-colors"><i class="fa-solid fa-users w-5 text-center"></i> My Courses</a>
                 
                 <div class="h-px bg-gray-100 dark:bg-gray-800 my-2 mx-2"></div>
-                <button onclick="checkCertificate()" id="btn-mobile-cert" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl w-full text-left">
+                <button onclick="checkCertificate()" id="btn-mobile-cert" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl w-full text-left transition-colors">
                     <i class="fa-solid fa-award w-5 text-center text-amber-500 text-lg" id="mobile-cert-icon"></i> <span id="mobile-cert-text">Sertifikat</span>
                 </button>
-                <button onclick="logout()" class="flex items-center gap-4 px-4 py-3 text-redBrand hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl w-full text-left">
+                <button onclick="logout()" class="flex items-center gap-4 px-4 py-3 text-redBrand hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl w-full text-left transition-colors">
                     <i class="fa-solid fa-sign-out-alt w-5 text-center"></i> Log Out
                 </button>
             </nav>
@@ -213,38 +215,38 @@
     </div>
 
     <div id="progress-overlay" class="fixed inset-0 bg-black/40 z-[55] hidden transition-opacity opacity-0"></div>
-    <div id="mobile-progress-panel" class="fixed inset-y-0 left-0 w-80 md:w-96 bg-white dark:bg-bgCardDark z-[56] transform -translate-x-full shadow-2xl flex flex-col">
-        <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-bgCardDark">
+    <div id="mobile-progress-panel" class="fixed inset-y-0 left-0 w-80 md:w-96 bg-white dark:bg-bgCardDark z-[56] transform -translate-x-full shadow-2xl flex flex-col border-r border-gray-200 dark:border-gray-800">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-bgCardDark">
             <div class="flex justify-between items-start mb-6">
-                <h2 class="font-bold text-gray-900 dark:text-white text-xl leading-tight" id="mobile-course-title">Modul Pembelajaran</h2>
+                <h2 class="font-bold tracking-tight text-gray-900 dark:text-white text-xl leading-tight" id="mobile-course-title">Modul Pembelajaran</h2>
                 <button onclick="toggleProgressPanel()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
             </div>
             <div class="flex justify-between text-xs font-bold mb-2">
                 <span class="text-gray-500 uppercase tracking-wider">Progres Belajar</span>
-                <span id="mobile-progress-percent" class="text-[#019e7c]">0%</span>
+                <span id="mobile-progress-percent" class="text-emerald-500">0%</span>
             </div>
-            <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div id="mobile-progress-bar" class="h-full bg-[#019e7c] transition-all duration-700" style="width: 0%"></div>
+            <div class="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div id="mobile-progress-bar" class="h-full bg-emerald-500 transition-all duration-700" style="width: 0%"></div>
             </div>
         </div>
         <div id="mobile-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-2">
             </div>
     </div>
 
-    <div class="flex h-[calc(100vh-70px)] overflow-hidden bg-gray-50 dark:bg-bgDark">
+    <div class="flex h-[calc(100vh-70px)] overflow-hidden">
         
         <aside id="desktop-sidebar" class="sidebar-desktop-hidden w-80 lg:w-96 bg-white dark:bg-bgCardDark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 flex-shrink-0 relative z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-none">
-            <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-bgCardDark">
-                <a href="#" class="text-xs font-semibold text-gray-500 hover:text-primary transition-colors flex items-center mb-3">
-                    <i class="fa-solid fa-angle-left mr-2"></i> Back to Course
+            <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-bgCardDark">
+                <a href="#" class="text-xs font-semibold text-gray-400 hover:text-primary transition-colors flex items-center mb-4">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back to Course
                 </a>
-                <h2 class="font-extrabold text-gray-900 dark:text-white text-xl mb-4 leading-tight" id="desktop-course-title">Modul Pembelajaran</h2>
+                <h2 class="font-bold tracking-tight text-gray-900 dark:text-white text-xl mb-6 leading-tight" id="desktop-course-title">Modul Pembelajaran</h2>
                 <div class="flex justify-between text-xs font-bold mb-2">
                     <span class="text-gray-500 uppercase tracking-wider">Progres Belajar</span>
-                    <span id="desktop-progress-percent" class="text-[#019e7c]">0%</span>
+                    <span id="desktop-progress-percent" class="text-emerald-500">0%</span>
                 </div>
-                <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-2">
-                    <div id="desktop-progress-bar" class="h-full bg-[#019e7c] transition-all duration-700" style="width: 0%"></div>
+                <div class="w-full h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-2">
+                    <div id="desktop-progress-bar" class="h-full bg-emerald-500 transition-all duration-700" style="width: 0%"></div>
                 </div>
             </div>
             
@@ -252,69 +254,69 @@
                 </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto hide-scrollbar p-4 md:p-8 lg:p-10 relative" id="main-content-area">
-            <div class="max-w-4xl mx-auto space-y-8 pb-12">
+        <main class="flex-1 overflow-y-auto hide-scrollbar p-4 md:p-8 lg:p-10 relative bg-gray-50 dark:bg-bgDark" id="main-content-area">
+            <div class="max-w-4xl mx-auto space-y-6 pb-12">
                 
                 <div id="content-container" class="animate-content">
-                    <div class="bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-xl aspect-video relative border border-gray-200 dark:border-gray-800 mb-8">
+                    <div class="bg-black rounded-xl md:rounded-2xl overflow-hidden shadow-md aspect-video relative border border-gray-200 dark:border-gray-800 mb-6">
                         <iframe id="video-player" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
                     </div>
 
-                    <div class="bg-white dark:bg-bgCardDark p-6 md:p-10 rounded-2xl md:rounded-[32px] border border-gray-100 dark:border-gray-800 shadow-sm">
+                    <div class="bg-white dark:bg-bgCardDark p-6 md:p-8 rounded-xl md:rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
                         <div class="mb-4">
-                            <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide border border-primary/20">Video Materi</span>
+                            <span class="bg-blue-50 dark:bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-md uppercase tracking-wide border border-blue-100 dark:border-primary/20">Video Materi</span>
                         </div>
-                        <h1 id="chapter-title" class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">Memuat...</h1>
+                        <h1 id="chapter-title" class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">Memuat...</h1>
                         
-                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed mb-10">
+                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed mb-8">
                         </div>
 
-                        <div class="flex justify-end border-t border-gray-100 dark:border-gray-800 pt-8" id="action-container">
+                        <div class="flex justify-end border-t border-gray-100 dark:border-gray-800 pt-6" id="action-container">
                             </div>
                     </div>
                 </div>
 
                 <div id="quiz-container" class="hidden animate-content">
-                    <div class="bg-white dark:bg-bgCardDark rounded-2xl md:rounded-[32px] p-6 md:p-10 shadow-sm border border-gray-100 dark:border-gray-800">
+                    <div class="bg-white dark:bg-bgCardDark rounded-xl md:rounded-2xl p-6 md:p-10 shadow-sm border border-gray-200 dark:border-gray-800">
                         
                         <div id="quiz-intro" class="text-center pb-8 border-b border-gray-100 dark:border-gray-800 mb-8 hidden">
-                            <div class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 text-primary flex items-center justify-center rounded-[20px] mx-auto mb-6 text-4xl shadow-inner"><i class="fa-solid fa-list-check"></i></div>
-                            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-3">Final Quiz Modul</h2>
+                            <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 text-primary flex items-center justify-center rounded-2xl mx-auto mb-6 text-4xl border border-blue-100 dark:border-blue-800/50"><i class="fa-solid fa-list-check"></i></div>
+                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-3">Final Quiz Modul</h2>
                             <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-8">Uji pemahaman Anda dengan menjawab 15 pertanyaan seputar materi yang telah dipelajari untuk mendapatkan sertifikat.</p>
-                            <button id="btn-start-quiz" onclick="startQuizEngine()" class="px-10 py-4 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-lg hover:-translate-y-1 text-lg">Mulai Quiz Sekarang</button>
+                            <button id="btn-start-quiz" onclick="startQuizEngine()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-medium rounded-xl transition-all shadow-sm text-base">Mulai Quiz Sekarang</button>
                         </div>
 
                         <div id="quiz-area" class="hidden">
                             <div class="flex justify-between items-center mb-8">
-                                <span class="bg-primary/10 text-primary text-xs font-bold px-4 py-1.5 rounded-full border border-primary/20" id="quiz-progress-badge">Soal 1/15</span>
+                                <span class="bg-blue-50 dark:bg-primary/10 text-primary text-xs font-bold px-3 py-1.5 rounded-md border border-blue-100 dark:border-primary/20" id="quiz-progress-badge">Soal 1/15</span>
                             </div>
-                            <h3 id="question-text" class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-8 leading-relaxed">Pertanyaan dimuat...</h3>
-                            <div id="options-container" class="space-y-4"></div>
-                            <div class="mt-10 flex justify-end">
-                                <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-8 py-3.5 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold rounded-full transition-all cursor-not-allowed">Lanjut <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                            <h3 id="question-text" class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-6 leading-relaxed">Pertanyaan dimuat...</h3>
+                            <div id="options-container" class="space-y-3"></div>
+                            <div class="mt-8 flex justify-end">
+                                <button id="btn-next-question" onclick="nextQuestion()" disabled class="px-8 py-3 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 font-medium rounded-xl transition-colors cursor-not-allowed border border-gray-200 dark:border-gray-700">Lanjut <i class="fa-solid fa-arrow-right ml-2"></i></button>
                             </div>
                         </div>
 
                         <div id="quiz-result" class="hidden text-center py-8">
                             <div id="result-icon" class="text-6xl md:text-7xl mb-6"></div>
-                            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">Quiz Selesai!</h2>
+                            <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">Quiz Selesai!</h2>
                             <p class="text-gray-600 dark:text-gray-400 mb-2">Nilai Akhir Anda:</p>
                             <div class="text-7xl font-black text-primary mb-8" id="result-score">100</div>
                             <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-8"></div>
                             <p class="text-base text-gray-500 mb-10" id="result-msg"></p>
                             
-                            <div class="flex flex-col sm:flex-row justify-center gap-4" id="quiz-action-buttons">
+                            <div class="flex flex-col sm:flex-row justify-center gap-3" id="quiz-action-buttons">
                             </div>
                         </div>
 
                         <div id="quiz-review" class="hidden">
                             <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-100 dark:border-gray-800">
                                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Pembahasan Kuis</h2>
-                                <button onclick="showQuizResult(quizScoreVal)" class="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center"><i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Skor</button>
+                                <button onclick="showQuizResult(quizScoreVal)" class="text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Skor</button>
                             </div>
                             <div id="review-content" class="space-y-6"></div>
                             <div class="mt-10 text-center">
-                                <button onclick="showQuizResult(quizScoreVal)" class="px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-full transition-all hover:bg-primary dark:hover:bg-primary dark:hover:text-white">Selesai Review</button>
+                                <button onclick="showQuizResult(quizScoreVal)" class="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-medium rounded-xl transition-colors hover:bg-primary dark:hover:bg-primary dark:hover:text-white shadow-sm">Selesai Review</button>
                             </div>
                         </div>
 
@@ -336,13 +338,13 @@
             "linux": {
                 courseName: "Linux System Administration",
                 chapters: [
-                    { id: 1, title: "Bab 1: Instalasi & Pemahaman Direktori Dasar", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", desc: `<p class="mb-3">Pada bab pertama ini, kita akan mempelajari fondasi utama dari sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Pemahaman direktori utama: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/</code>, <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/home</code>, <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">/etc</code>.</li><li>Navigasi via terminal CLI.</li><li>Perintah dasar manajemen file dan folder.</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">pwd, ls -la, cd, mkdir, rm -rf, cp, mv</p></div>` },
-                    { id: 2, title: "Bab 2: Manajemen User, Group & Permission", video: "https://www.youtube.com/embed/rrB13utjYV4", desc: `<p class="mb-3">Keamanan adalah prioritas utama di Linux. Bab ini membahas cara mengelola pengguna dan membatasi hak akses file agar server tidak mudah diretas.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Membuat dan menghapus User serta Group.</li><li>Konsep otorisasi Superuser (Root) dan Sudo.</li><li>Membaca hak akses file: Read (4), Write (2), Execute (1).</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">useradd, usermod, passwd, chmod 755, chown user:group</p></div>` },
-                    { id: 3, title: "Bab 3: Manajemen Paket & Repository", video: "https://www.youtube.com/embed/v_1zbOUXYzI", desc: `<p class="mb-3">Pelajari cara menginstal, memperbarui, dan menghapus aplikasi (software) di lingkungan Linux menggunakan sistem manajemen paket.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Perbedaan Package Manager APT dan YUM/DNF.</li><li>Cara kerja file sources.list dan Repository pihak ketiga.</li><li>Update patch keamanan sistem secara rutin.</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">apt update, apt upgrade, apt install [paket], apt remove</p></div>` },
-                    { id: 4, title: "Bab 4: Konfigurasi Jaringan & SSH Server", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p class="mb-3">Server Linux biasanya berada di Data Center tanpa layar. Bab ini memandu Anda mengonfigurasi IP dan mengakses server dari jarak jauh (Remote).</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Cek dan konfigurasi IP Address (Static & DHCP).</li><li>Troubleshooting koneksi jaringan.</li><li>Instalasi OpenSSH Server dan login aman menggunakan SSH Keys.</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">ip a, ping, netstat, ssh user@ip_address</p></div>` },
-                    { id: 5, title: "Bab 5: Monitoring Sistem & Manajemen Proses", video: "https://www.youtube.com/embed/H5G9Oun_9U0", desc: `<p class="mb-3">Seorang System Administrator harus tahu cara menganalisis beban server (Resource) dan mematikan program yang bermasalah.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Membaca statistik RAM, CPU, dan penggunaan Hardisk.</li><li>Monitoring proses secara *Real-time*.</li><li>Menghentikan paksa aplikasi yang hang (Not Responding).</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">top, htop, free -m, df -h, ps aux, kill -9 [PID]</p></div>` },
-                    { id: 6, title: "Bab 6: Instalasi Web Server & Database", video: "https://www.youtube.com/embed/Z0bE8v8XmG4", desc: `<p class="mb-3">Mulai praktik membangun infrastruktur web. Kita akan menyulap Linux kosong menjadi server *Production* yang siap menjalankan website.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Instalasi dan Konfigurasi Nginx (LEMP Stack).</li><li>Instalasi sistem Database MySQL / MariaDB.</li><li>Manajemen Service (Menghidupkan dan merestart layanan di *background*).</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">systemctl start nginx, systemctl enable, systemctl status</p></div>` },
-                    { id: 7, title: "Bab 7: Dasar-dasar Bash Scripting", video: "https://www.youtube.com/embed/e7B7vX7DscI", desc: `<p class="mb-3">Bab terakhir! Pelajari cara mengotomatisasi pekerjaan yang berulang-ulang dengan menulis skrip pemrograman sederhana di terminal Linux.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Struktur dasar skrip (penggunaan Shebang <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">#!/bin/bash</code>).</li><li>Variabel, argumen, dan perulangan (Loops).</li><li>Menjadikan file skrip bisa dieksekusi secara mandiri.</li></ul><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800/50"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">nano script.sh, chmod +x script.sh, ./script.sh</p></div>` }
+                    { id: 1, title: "Bab 1: Instalasi & Pemahaman Direktori Dasar", video: "https://www.youtube.com/embed/wBp0Rb-ZJak", desc: `<p class="mb-3">Pada bab pertama ini, kita akan mempelajari fondasi utama dari sistem operasi Linux, yaitu struktur direktorinya (Filesystem Hierarchy Standard).</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Pemahaman direktori utama: <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm border border-gray-200 dark:border-gray-700">/</code>, <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm border border-gray-200 dark:border-gray-700">/home</code>, <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm border border-gray-200 dark:border-gray-700">/etc</code>.</li><li>Navigasi via terminal CLI.</li><li>Perintah dasar manajemen file dan folder.</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">pwd, ls -la, cd, mkdir, rm -rf, cp, mv</p></div>` },
+                    { id: 2, title: "Bab 2: Manajemen User, Group & Permission", video: "https://www.youtube.com/embed/rrB13utjYV4", desc: `<p class="mb-3">Keamanan adalah prioritas utama di Linux. Bab ini membahas cara mengelola pengguna dan membatasi hak akses file agar server tidak mudah diretas.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Membuat dan menghapus User serta Group.</li><li>Konsep otorisasi Superuser (Root) dan Sudo.</li><li>Membaca hak akses file: Read (4), Write (2), Execute (1).</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">useradd, usermod, passwd, chmod 755, chown user:group</p></div>` },
+                    { id: 3, title: "Bab 3: Manajemen Paket & Repository", video: "https://www.youtube.com/embed/v_1zbOUXYzI", desc: `<p class="mb-3">Pelajari cara menginstal, memperbarui, dan menghapus aplikasi (software) di lingkungan Linux menggunakan sistem manajemen paket.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Perbedaan Package Manager APT dan YUM/DNF.</li><li>Cara kerja file sources.list dan Repository pihak ketiga.</li><li>Update patch keamanan sistem secara rutin.</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">apt update, apt upgrade, apt install [paket], apt remove</p></div>` },
+                    { id: 4, title: "Bab 4: Konfigurasi Jaringan & SSH Server", video: "https://www.youtube.com/embed/jBzwzrDvZ18", desc: `<p class="mb-3">Server Linux biasanya berada di Data Center tanpa layar. Bab ini memandu Anda mengonfigurasi IP dan mengakses server dari jarak jauh (Remote).</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Cek dan konfigurasi IP Address (Static & DHCP).</li><li>Troubleshooting koneksi jaringan.</li><li>Instalasi OpenSSH Server dan login aman menggunakan SSH Keys.</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">ip a, ping, netstat, ssh user@ip_address</p></div>` },
+                    { id: 5, title: "Bab 5: Monitoring Sistem & Manajemen Proses", video: "https://www.youtube.com/embed/H5G9Oun_9U0", desc: `<p class="mb-3">Seorang System Administrator harus tahu cara menganalisis beban server (Resource) dan mematikan program yang bermasalah.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Membaca statistik RAM, CPU, dan penggunaan Hardisk.</li><li>Monitoring proses secara *Real-time*.</li><li>Menghentikan paksa aplikasi yang hang (Not Responding).</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">top, htop, free -m, df -h, ps aux, kill -9 [PID]</p></div>` },
+                    { id: 6, title: "Bab 6: Instalasi Web Server & Database", video: "https://www.youtube.com/embed/Z0bE8v8XmG4", desc: `<p class="mb-3">Mulai praktik membangun infrastruktur web. Kita akan menyulap Linux kosong menjadi server *Production* yang siap menjalankan website.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Instalasi dan Konfigurasi Nginx (LEMP Stack).</li><li>Instalasi sistem Database MySQL / MariaDB.</li><li>Manajemen Service (Menghidupkan dan merestart layanan di *background*).</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">systemctl start nginx, systemctl enable, systemctl status</p></div>` },
+                    { id: 7, title: "Bab 7: Dasar-dasar Bash Scripting", video: "https://www.youtube.com/embed/e7B7vX7DscI", desc: `<p class="mb-3">Bab terakhir! Pelajari cara mengotomatisasi pekerjaan yang berulang-ulang dengan menulis skrip pemrograman sederhana di terminal Linux.</p><h4 class="font-bold text-gray-800 dark:text-white mt-4 mb-2">Materi Pembahasan:</h4><ul class="list-disc pl-5 space-y-1 mb-4"><li>Struktur dasar skrip (penggunaan Shebang <code class="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm border border-gray-200 dark:border-gray-700">#!/bin/bash</code>).</li><li>Variabel, argumen, dan perulangan (Loops).</li><li>Menjadikan file skrip bisa dieksekusi secara mandiri.</li></ul><div class="bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-800/30"><p class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2"><i class="fa-solid fa-terminal mr-2"></i>Perintah Wajib:</p><p class="text-sm font-mono text-gray-600 dark:text-gray-400">nano script.sh, chmod +x script.sh, ./script.sh</p></div>` }
                 ]
             }
         };
@@ -485,22 +487,23 @@
                 let bgClass = 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border-b border-gray-100 dark:border-gray-800';
                 
                 if (isActive) {
-                    bgClass = 'bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-primary border-b border-gray-100 dark:border-gray-800';
-                    iconHtml = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-primary"><i class="fa-regular fa-circle-dot text-sm"></i></div>`;
+                    bgClass = 'bg-blue-50/50 dark:bg-blue-900/10 border-l-[3px] border-l-primary border-b border-gray-100 dark:border-gray-800';
+                    iconHtml = `<div class="w-5 h-5 rounded-full flex items-center justify-center text-primary"><i class="fa-regular fa-circle-dot text-sm"></i></div>`;
                 } else if (isCompleted) {
-                    iconHtml = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-[#019e7c]"><i class="fa-solid fa-circle-check text-lg"></i></div>`;
+                    iconHtml = `<div class="w-5 h-5 rounded-full flex items-center justify-center text-emerald-500"><i class="fa-solid fa-circle-check text-base"></i></div>`;
                 } else {
-                    iconHtml = `<div class="w-6 h-6 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-600"><i class="fa-regular fa-circle text-sm"></i></div>`;
+                    iconHtml = `<div class="w-5 h-5 rounded-full flex items-center justify-center text-gray-300 dark:text-gray-600"><i class="fa-regular fa-circle text-sm"></i></div>`;
                 }
 
                 const btn = document.createElement('button');
-                btn.className = `w-full text-left px-6 py-4 flex items-center justify-between transition-colors ${bgClass}`;
+                btn.className = `w-full text-left px-5 py-3.5 flex items-center justify-between transition-colors ${bgClass}`;
                 btn.setAttribute('data-id', materi.id);
                 
+                // Hapus line-through untuk desain lebih clean
                 btn.innerHTML = `
-                    <div class="flex items-center space-x-4 pr-2">
+                    <div class="flex items-center space-x-3 pr-2">
                         <div class="flex-shrink-0">${iconHtml}</div>
-                        <span class="text-[13.5px] leading-snug ${isActive ? 'font-bold text-primary' : (isCompleted ? 'font-medium text-gray-500 line-through' : 'font-medium text-gray-700 dark:text-gray-300')}">
+                        <span class="text-[13.5px] leading-snug ${isActive ? 'font-semibold text-primary' : (isCompleted ? 'font-medium text-gray-500 dark:text-gray-400' : 'font-medium text-gray-700 dark:text-gray-300')}">
                             ${materi.title}
                         </span>
                     </div>
@@ -516,19 +519,19 @@
             const quizText = quizScoreVal !== null ? `Hasil Quiz (${quizScoreVal})` : `Final Quiz`;
             
             if(isAllDone) {
-                quizBtn.className = `w-full text-left p-6 transition-all flex items-center justify-between border-t border-gray-100 dark:border-gray-800 ${isQuizActive ? 'bg-blue-50 dark:bg-blue-900/10 border-l-4 border-l-primary' : 'bg-blue-50/30 hover:bg-blue-50/80 dark:bg-blue-900/5 dark:hover:bg-blue-900/20'}`;
+                quizBtn.className = `w-full text-left p-5 transition-colors flex items-center justify-between border-t border-gray-100 dark:border-gray-800 ${isQuizActive ? 'bg-blue-50/50 dark:bg-blue-900/10 border-l-[3px] border-l-primary' : 'bg-white hover:bg-gray-50 dark:bg-bgCardDark dark:hover:bg-gray-800'}`;
                 quizBtn.innerHTML = `
-                    <div class="flex items-center space-x-4">
-                        <i class="fa-solid fa-medal text-primary text-lg ml-1"></i>
-                        <span class="text-[13.5px] font-bold text-primary">${quizText}</span> 
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-medal text-primary text-base ml-1"></i>
+                        <span class="text-[13.5px] font-semibold text-primary">${quizText}</span> 
                     </div>`;
                 quizBtn.setAttribute('data-quiz', 'true');
             } else {
-                quizBtn.className = `w-full text-left p-6 transition-all flex items-center justify-between opacity-50 cursor-not-allowed border-t border-gray-100 dark:border-gray-800`;
+                quizBtn.className = `w-full text-left p-5 transition-colors flex items-center justify-between opacity-60 cursor-not-allowed border-t border-gray-100 dark:border-gray-800`;
                 quizBtn.innerHTML = `
-                    <div class="flex items-center space-x-4">
-                        <i class="fa-solid fa-lock text-gray-400 text-lg ml-1"></i>
-                        <span class="text-[13.5px] font-bold text-gray-500">Final Quiz</span> 
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-lock text-gray-400 text-base ml-1"></i>
+                        <span class="text-[13.5px] font-medium text-gray-500">Final Quiz</span> 
                     </div>`;
             }
             listDesktop.appendChild(quizBtn);
@@ -584,7 +587,7 @@
 
             document.getElementById('video-player').src = chapter.video;
             document.getElementById('chapter-title').textContent = chapter.title;
-            document.getElementById('chapter-desc').innerHTML = `<p class="mb-6 font-semibold">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` + chapter.desc;
+            document.getElementById('chapter-desc').innerHTML = `<p class="mb-6 font-medium text-gray-800 dark:text-gray-200">Silahkan klik tombol "Mark Complete" di bawah ini untuk lanjut ke materi berikutnya.</p>` + chapter.desc;
             
             const isCompleted = completedChapters.includes(id);
             const isLastChapter = (id === activeData.chapters[activeData.chapters.length - 1].id);
@@ -592,12 +595,12 @@
             
             if (isCompleted) {
                 if (isLastChapter) {
-                    actionContainer.innerHTML = `<button onclick="openQuizPage()" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 transition-all shadow-lg hover:-translate-y-1"><i class="fa-solid fa-medal"></i> Lanjut ke Final Quiz</button>`;
+                    actionContainer.innerHTML = `<button onclick="openQuizPage()" class="bg-primary hover:bg-primaryHover text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all shadow-sm hover:-translate-y-0.5"><i class="fa-solid fa-medal"></i> Lanjut ke Final Quiz</button>`;
                 } else {
-                    actionContainer.innerHTML = `<button disabled class="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 cursor-not-allowed border border-gray-200 dark:border-gray-700"><i class="fa-solid fa-check"></i> Selesai Dipelajari</button>`;
+                    actionContainer.innerHTML = `<button disabled class="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 cursor-not-allowed border border-gray-200 dark:border-gray-700"><i class="fa-solid fa-check"></i> Selesai Dipelajari</button>`;
                 }
             } else {
-                actionContainer.innerHTML = `<button onclick="markComplete(${id})" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 transition-all shadow-lg hover:-translate-y-1"><i class="fa-regular fa-circle-check text-lg"></i> Mark Complete</button>`;
+                actionContainer.innerHTML = `<button onclick="markComplete(${id})" class="bg-primary hover:bg-primaryHover text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all shadow-sm hover:-translate-y-0.5"><i class="fa-regular fa-circle-check text-base"></i> Mark Complete</button>`;
             }
 
             renderSidebarList();
@@ -614,9 +617,9 @@
                 const actionContainer = document.getElementById('action-container');
 
                 if (isLastChapter) {
-                    actionContainer.innerHTML = `<button onclick="openQuizPage()" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 transition-all shadow-lg hover:-translate-y-1 animate-content"><i class="fa-solid fa-medal"></i> Lanjut ke Final Quiz</button>`;
+                    actionContainer.innerHTML = `<button onclick="openQuizPage()" class="bg-primary hover:bg-primaryHover text-white px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 transition-all shadow-sm hover:-translate-y-0.5 animate-content"><i class="fa-solid fa-medal"></i> Lanjut ke Final Quiz</button>`;
                 } else {
-                    actionContainer.innerHTML = `<button disabled class="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 px-8 py-3.5 rounded-full text-sm font-bold flex items-center gap-2 cursor-not-allowed border border-gray-200 dark:border-gray-700 animate-content"><i class="fa-solid fa-check"></i> Selesai Dipelajari</button>`;
+                    actionContainer.innerHTML = `<button disabled class="bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 px-6 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 cursor-not-allowed border border-gray-200 dark:border-gray-700 animate-content"><i class="fa-solid fa-check"></i> Selesai Dipelajari</button>`;
                     
                     // Auto load next
                     const nextChapter = activeData.chapters.find(c => c.id === id + 1);
@@ -677,15 +680,15 @@
 
             qData.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = `w-full text-left p-5 border rounded-2xl font-medium transition-all ${selectedOption === index ? 'border-primary bg-blue-50 dark:bg-blue-900/10 text-primary' : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-darkSidebar hover:border-gray-300 text-gray-700 dark:text-gray-300'}`;
-                btn.innerHTML = `<span class="inline-block w-8 font-bold">${String.fromCharCode(65 + index)}.</span> ${opt}`;
+                btn.className = `w-full text-left px-5 py-4 border rounded-xl transition-colors ${selectedOption === index ? 'border-primary bg-blue-50/50 dark:bg-blue-900/10 text-primary' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-bgCardDark hover:border-gray-300 dark:hover:border-gray-600 text-gray-700 dark:text-gray-300'}`;
+                btn.innerHTML = `<span class="inline-block w-8 font-semibold">${String.fromCharCode(65 + index)}.</span> ${opt}`;
                 btn.onclick = () => selectOption(index, btn);
                 optionsContainer.appendChild(btn);
             });
 
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = true;
-            nextBtn.className = 'px-8 py-3.5 bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 font-bold rounded-full transition-all cursor-not-allowed';
+            nextBtn.className = 'px-8 py-3 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 font-medium rounded-xl transition-colors cursor-not-allowed border border-gray-200 dark:border-gray-700';
             nextBtn.innerHTML = currentQuizIndex === quizData.length - 1 ? `Selesai & Lihat Nilai` : `Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>`;
         }
 
@@ -693,13 +696,13 @@
             selectedOption = index;
             const allBtns = document.getElementById('options-container').children;
             for(let i=0; i<allBtns.length; i++) {
-                allBtns[i].className = `w-full text-left p-5 border rounded-2xl font-medium transition-all border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-darkSidebar text-gray-700 dark:text-gray-300`;
+                allBtns[i].className = `w-full text-left px-5 py-4 border rounded-xl transition-colors border-gray-200 dark:border-gray-700 bg-white dark:bg-bgCardDark text-gray-700 dark:text-gray-300`;
             }
-            btnEl.className = `w-full text-left p-5 border rounded-2xl font-medium transition-all border-primary bg-blue-50 dark:bg-blue-900/10 text-primary font-bold`;
+            btnEl.className = `w-full text-left px-5 py-4 border rounded-xl transition-colors border-primary bg-blue-50/50 dark:bg-blue-900/10 text-primary font-semibold`;
 
             const nextBtn = document.getElementById('btn-next-question');
             nextBtn.disabled = false;
-            nextBtn.className = 'px-8 py-3.5 bg-primary text-white dark:bg-primaryHover font-bold rounded-full transition-all shadow-md';
+            nextBtn.className = 'px-8 py-3 bg-primary text-white hover:bg-primaryHover font-medium rounded-xl transition-colors shadow-sm';
         }
 
         function nextQuestion() {
@@ -752,9 +755,9 @@
             const percentCorrect = Math.round((correctCount / quizData.length) * 100);
             const detailContainer = document.getElementById('result-detail-container');
             detailContainer.innerHTML = `
-                <div class="flex justify-between text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 px-2"><span>${correctCount} Benar</span><span>${quizData.length - correctCount} Salah</span></div>
-                <div class="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden flex">
-                    <div class="bg-[#019e7c] h-full transition-all duration-1000 ease-out" style="width: ${percentCorrect}%"></div>
+                <div class="flex justify-between text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 px-2"><span>${correctCount} Benar</span><span>${quizData.length - correctCount} Salah</span></div>
+                <div class="w-full h-3 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden flex">
+                    <div class="bg-emerald-500 h-full transition-all duration-1000 ease-out" style="width: ${percentCorrect}%"></div>
                 </div>
             `;
 
@@ -762,18 +765,18 @@
             const msgEl = document.getElementById('result-msg');
             
             let actionButtonsHtml = `
-                <button onclick="showReview()" class="px-8 py-3.5 bg-gray-800 hover:bg-gray-900 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-bold rounded-full transition-all whitespace-nowrap">
-                    <i class="fa-regular fa-eye mr-2"></i> Lihat Pembahasan
+                <button onclick="showReview()" class="px-6 py-2.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 dark:bg-bgCardDark dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 font-medium rounded-xl transition-colors shadow-sm whitespace-nowrap">
+                    <i class="fa-regular fa-eye mr-2"></i> Pembahasan
                 </button>
             `;
 
             if(score >= MIN_SCORE_PASS) {
-                iconEl.innerHTML = `<i class="fa-solid fa-trophy text-yellow-400"></i>`;
+                iconEl.innerHTML = `<i class="fa-solid fa-trophy text-amber-400"></i>`;
                 msgEl.innerHTML = `Luar Biasa! Anda <strong>LULUS</strong> penguasaan fundamental ini.`;
-                document.getElementById('result-score').className = "text-6xl font-black text-[#019e7c] mb-6";
+                document.getElementById('result-score').className = "text-6xl font-black text-emerald-500 mb-6";
                 
                 actionButtonsHtml += `
-                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-8 py-3.5 bg-primary hover:bg-primaryHover text-white font-bold rounded-full transition-all shadow-lg hover:-translate-y-1 whitespace-nowrap">
+                    <button id="btn-download-cert" onclick="downloadCertificate()" class="px-6 py-2.5 bg-primary hover:bg-primaryHover text-white font-medium rounded-xl transition-colors shadow-sm whitespace-nowrap">
                         <i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat
                     </button>
                 `;
@@ -783,7 +786,7 @@
                 document.getElementById('result-score').className = "text-6xl font-black text-redBrand mb-6";
                 
                 actionButtonsHtml += `
-                    <button id="btn-retake" onclick="retakeQuiz()" class="px-8 py-3.5 bg-redBrand hover:bg-red-600 text-white font-bold rounded-full transition-all whitespace-nowrap shadow-lg hover:-translate-y-1">
+                    <button id="btn-retake" onclick="retakeQuiz()" class="px-6 py-2.5 bg-redBrand hover:bg-red-600 text-white font-medium rounded-xl transition-colors shadow-sm whitespace-nowrap">
                         <i class="fa-solid fa-rotate-right mr-2"></i> Ulangi Kuis
                     </button>
                 `;
@@ -801,7 +804,7 @@
                 // Effect on Header Button
                 const headerIcon = document.getElementById('header-cert-icon');
                 const headerText = document.getElementById('header-cert-text');
-                if(headerIcon) headerIcon.className = "fa-solid fa-circle-notch fa-spin text-amber-500 text-lg";
+                if(headerIcon) headerIcon.className = "fa-solid fa-circle-notch fa-spin text-amber-500 text-base";
                 if(headerText) headerText.textContent = "Memuat...";
                 
                 // Effect on Mobile Button
@@ -811,7 +814,7 @@
                 if(mobileText) mobileText.textContent = "Memuat...";
                 
                 setTimeout(() => {
-                    if(headerIcon) headerIcon.className = "fa-solid fa-award text-amber-500 text-lg";
+                    if(headerIcon) headerIcon.className = "fa-solid fa-award text-amber-500 text-base";
                     if(headerText) headerText.textContent = "Sertifikat";
                     if(mobileIcon) mobileIcon.className = "fa-solid fa-award w-5 text-center text-amber-500 text-lg";
                     if(mobileText) mobileText.textContent = "Sertifikat";
@@ -826,11 +829,13 @@
             const btn = document.getElementById('btn-download-cert');
             if (userCertUrl && userCertUrl !== "") {
                 btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
-                btn.classList.replace('bg-primary', 'bg-[#019e7c]');
+                btn.classList.replace('bg-primary', 'bg-emerald-500');
+                btn.classList.replace('hover:bg-primaryHover', 'hover:bg-emerald-600');
                 window.open(userCertUrl, '_blank');
                 setTimeout(() => {
                     btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                    btn.classList.replace('bg-[#019e7c]', 'bg-primary');
+                    btn.classList.replace('bg-emerald-500', 'bg-primary');
+                    btn.classList.replace('hover:bg-emerald-600', 'hover:bg-primaryHover');
                     btn.disabled = false;
                 }, 3000);
                 return;
@@ -839,6 +844,7 @@
             btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Memuat...`;
             btn.disabled = true;
             btn.classList.replace('bg-primary', 'bg-gray-500');
+            btn.classList.replace('hover:bg-primaryHover', 'hover:bg-gray-600');
 
             if (isGeneratingCert) {
                 const checkInterval = setInterval(() => {
@@ -846,11 +852,13 @@
                         clearInterval(checkInterval);
                         if (userCertUrl && userCertUrl !== "") {
                             btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
-                            btn.classList.replace('bg-gray-500', 'bg-[#019e7c]');
+                            btn.classList.replace('bg-gray-500', 'bg-emerald-500');
+                            btn.classList.replace('hover:bg-gray-600', 'hover:bg-emerald-600');
                             window.open(userCertUrl, '_blank');
                             setTimeout(() => {
                                 btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                                btn.classList.replace('bg-[#019e7c]', 'bg-primary');
+                                btn.classList.replace('bg-emerald-500', 'bg-primary');
+                                btn.classList.replace('hover:bg-emerald-600', 'hover:bg-primaryHover');
                                 btn.disabled = false;
                             }, 3000);
                         } else { executeManualGen(btn); }
@@ -868,22 +876,26 @@
                 const result = await response.json();
                 if(result.status === 'success' && result.url) {
                     btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Berhasil Dibuat!`;
-                    btn.classList.replace('bg-gray-500', 'bg-[#019e7c]');
+                    btn.classList.replace('bg-gray-500', 'bg-emerald-500');
+                    btn.classList.replace('hover:bg-gray-600', 'hover:bg-emerald-600');
                     userCertUrl = result.url; 
                     window.open(result.url, '_blank');
                     setTimeout(() => {
                         btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
-                        btn.classList.replace('bg-[#019e7c]', 'bg-primary');
+                        btn.classList.replace('bg-emerald-500', 'bg-primary');
+                        btn.classList.replace('hover:bg-emerald-600', 'hover:bg-primaryHover');
                         btn.disabled = false;
                     }, 3000);
                 } else {
                     btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
                     btn.classList.replace('bg-gray-500', 'bg-primary');
+                    btn.classList.replace('hover:bg-gray-600', 'hover:bg-primaryHover');
                     btn.disabled = false;
                 }
             } catch(e) {
                 btn.innerHTML = `<i class="fa-solid fa-certificate mr-2"></i> Unduh Sertifikat`;
                 btn.classList.replace('bg-gray-500', 'bg-primary');
+                btn.classList.replace('hover:bg-gray-600', 'hover:bg-primaryHover');
                 btn.disabled = false;
             } finally {
                 isGeneratingCert = false;
@@ -923,20 +935,20 @@
                     let optClass = "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 bg-white dark:bg-bgCardDark";
                     let icon = "";
                     if (optIdx === q.ans) {
-                        optClass = "border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-bold border-2";
-                        icon = `<i class="fa-solid fa-check text-green-500 float-right mt-1"></i>`;
+                        optClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/10 text-emerald-700 dark:text-emerald-400 font-semibold border-2";
+                        icon = `<i class="fa-solid fa-check text-emerald-500 float-right mt-1"></i>`;
                     } else if (optIdx === userAnswer && !isCorrect) {
-                        optClass = "border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-bold border-2";
+                        optClass = "border-red-400 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold border-2";
                         icon = `<i class="fa-solid fa-xmark text-red-500 float-right mt-1"></i>`;
                     }
-                    return `<div class="p-4 border rounded-xl mb-3 text-sm ${optClass}">${String.fromCharCode(65+optIdx)}. ${opt} ${icon}</div>`;
+                    return `<div class="px-4 py-3 border rounded-xl mb-2.5 text-[14px] ${optClass}">${String.fromCharCode(65+optIdx)}. ${opt} ${icon}</div>`;
                 }).join('');
 
                 reviewContent.innerHTML += `
-                    <div class="p-6 border rounded-2xl bg-gray-50 dark:bg-darkSidebar ${isCorrect ? 'border-green-200 dark:border-green-900/50' : 'border-red-200 dark:border-red-900/50'}">
+                    <div class="p-6 border rounded-2xl bg-white dark:bg-bgCardDark shadow-sm ${isCorrect ? 'border-emerald-100 dark:border-emerald-900/30' : 'border-red-100 dark:border-red-900/30'}">
                         <div class="flex items-start">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs mr-4 ${isCorrect ? 'bg-green-500' : 'bg-red-500'}">${i+1}</span>
-                            <div class="flex-1"><p class="font-bold text-gray-900 dark:text-white mb-5 text-lg">${q.q}</p>${optionsHtml}</div>
+                            <span class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-bold text-white text-xs mr-4 mt-0.5 ${isCorrect ? 'bg-emerald-500' : 'bg-redBrand'}">${i+1}</span>
+                            <div class="flex-1"><p class="font-semibold text-gray-900 dark:text-white mb-4 text-base">${q.q}</p>${optionsHtml}</div>
                         </div>
                     </div>`;
             });
@@ -951,6 +963,8 @@
 
         // --- TOGGLE PANELS (Mobile & Desktop) ---
         function toggleProgressPanel() {
+            const icon = document.getElementById('expand-icon');
+            
             // Pada Mobile (< 1024px/lg breakpoint pada tailwind)
             if (window.innerWidth < 1024) {
                 const panel = document.getElementById('mobile-progress-panel');
@@ -959,26 +973,24 @@
                 if (panel.classList.contains('-translate-x-full')) {
                     // Buka (Muncul dari Kiri secara Smooth)
                     overlay.classList.remove('hidden');
-                    // Tunggu sebentar untuk memicu transisi opacity
                     setTimeout(() => overlay.classList.add('opacity-100'), 10);
                     panel.classList.remove('-translate-x-full');
                 } else {
                     // Tutup
                     panel.classList.add('-translate-x-full');
                     overlay.classList.remove('opacity-100');
-                    setTimeout(() => overlay.classList.add('hidden'), 300); // Sesuaikan dengan durasi animasi css
+                    setTimeout(() => overlay.classList.add('hidden'), 300);
                 }
             } else {
                 // Pada Desktop
                 const sidebar = document.getElementById('desktop-sidebar');
-                const icon = document.getElementById('expand-icon');
                 
                 if (sidebar.classList.contains('sidebar-desktop-hidden')) {
                     sidebar.classList.remove('sidebar-desktop-hidden');
-                    icon.className = 'fa-solid fa-compress text-lg';
+                    if(icon) icon.className = 'fa-solid fa-down-left-and-up-right-to-center text-[19px] transition-transform duration-300';
                 } else {
                     sidebar.classList.add('sidebar-desktop-hidden');
-                    icon.className = 'fa-solid fa-expand text-lg';
+                    if(icon) icon.className = 'fa-solid fa-up-right-and-down-left-from-center text-[19px] transition-transform duration-300';
                 }
             }
         }
