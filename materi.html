@@ -81,10 +81,10 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2563EB', /* Biru standar premium UI */
+                        primary: '#2563EB',
                         primaryHover: '#1D4ED8',
                         redBrand: '#EF4444',
-                        bgDark: '#0B1120', /* Dark background lebih deep */
+                        bgDark: '#0B1120',
                         bgCardDark: '#1E293B',
                     }
                 }
@@ -100,23 +100,22 @@
     </div>
 
     <nav class="bg-white dark:bg-bgCardDark border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 h-[70px] shadow-sm">
-        <div class="w-full max-w-screen-2xl mx-auto px-4 lg:px-8 flex items-center justify-between h-full">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 lg:px-6 flex items-center justify-between h-full gap-4">
             
-            <div class="flex items-center gap-4 w-auto lg:w-1/4">
+            <div class="flex items-center gap-3 shrink-0">
                 <button onclick="toggleMobileNav()" class="lg:hidden text-gray-500 hover:text-primary dark:text-gray-400 focus:outline-none">
                     <i class="fa-solid fa-bars-staggered text-xl"></i>
                 </button>
-
-                <a href="index.html" class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center space-x-2">
                     <img src="assets/img/Neokademi.png" alt="Logo" class="h-8 object-contain" onerror="this.src='https://ui-avatars.com/api/?name=NK&background=2563eb&color=fff'">
-                    <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Neo<span class="text-primary">Course</span></span>
+                    <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white hidden sm:block">Neo<span class="text-primary">Course</span></span>
                 </a>
             </div>
 
-            <div class="hidden lg:flex flex-1 items-center justify-center space-x-8 text-sm font-medium text-gray-600 dark:text-gray-300">
-                <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 py-2"><i class="fa-solid fa-house"></i> Beranda</a>
+            <div class="hidden lg:flex flex-1 items-center justify-center gap-5 xl:gap-8 text-sm font-medium text-gray-600 dark:text-gray-300">
+                <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 py-2 whitespace-nowrap"><i class="fa-solid fa-house"></i> Beranda</a>
                 <div class="relative group h-[70px] flex items-center">
-                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap">
                         <i class="fa-solid fa-layer-group"></i> Pilihan Kursus <i class="fa-solid fa-angle-down text-[10px] mt-0.5"></i>
                     </a>
                     <div class="absolute top-[65px] left-1/2 transform -translate-x-1/2 w-52 bg-white dark:bg-bgCardDark border border-gray-100 dark:border-gray-800 shadow-xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all flex flex-col py-2 z-50">
@@ -124,39 +123,41 @@
                         <a href="#" class="px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-3"><i class="fa-solid fa-award text-amber-500"></i> Kursus Premium</a>
                     </div>
                 </div>
-                <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 py-2"><i class="fa-solid fa-comments"></i> Group Diskusi</a>
-                <a href="#" class="text-primary font-semibold transition-colors flex items-center gap-2 py-2"><i class="fa-solid fa-users"></i> My Courses</a>
+                <a href="#" class="hover:text-primary transition-colors flex items-center gap-2 py-2 whitespace-nowrap"><i class="fa-solid fa-comments"></i> Group Diskusi</a>
+                <a href="#" class="text-primary font-semibold transition-colors flex items-center gap-2 py-2 whitespace-nowrap"><i class="fa-solid fa-users"></i> My Courses</a>
             </div>
 
-            <div class="flex items-center justify-end space-x-4 md:space-x-5 w-auto lg:w-1/4">
+            <div class="flex items-center justify-end gap-3 shrink-0">
                 
-                <button onclick="toggleProgressPanel()" class="text-gray-500 hover:text-primary dark:text-gray-400 transition-colors focus:outline-none flex items-center justify-center p-2" title="Progress Course">
-                    <i id="expand-icon" class="fa-solid fa-up-right-and-down-left-from-center text-[19px] transition-transform duration-300"></i>
+                <button onclick="toggleProgressPanel()" class="text-gray-500 hover:text-primary dark:text-gray-400 transition-colors focus:outline-none flex items-center justify-center p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800" title="Toggle Progress">
+                    <i id="expand-icon" class="fa-solid fa-up-right-and-down-left-from-center text-[19px] transition-all duration-300 ease-in-out transform rotate-0 scale-100 opacity-100"></i>
                 </button>
 
-                <div class="hidden sm:flex items-center justify-center space-x-2 border-l border-r border-gray-200 dark:border-gray-700 px-4">
-                    <i class="fa-solid fa-sun text-yellow-500 text-sm"></i>
+                <div class="hidden sm:flex items-center justify-center space-x-2 border-l border-gray-200 dark:border-gray-700 pl-3 xl:pl-4">
+                    <i class="fa-solid fa-sun text-yellow-500 text-sm hidden xl:block"></i>
                     <div class="relative inline-block w-10 h-5 align-middle select-none">
                         <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-200 dark:border-gray-600 appearance-none cursor-pointer transition-transform duration-300"/>
                         <label for="dark-mode-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-200 dark:bg-gray-700 cursor-pointer transition-colors duration-300">
                             <span class="toggle-circle absolute block w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-300"></span>
                         </label>
                     </div>
-                    <i class="fa-solid fa-moon text-gray-400 text-sm"></i>
+                    <i class="fa-solid fa-moon text-gray-400 text-sm hidden xl:block"></i>
                 </div>
 
-                <button id="btn-header-cert" onclick="checkCertificate()" class="hidden md:flex bg-white dark:bg-bgCardDark text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 px-4 py-2 rounded-lg text-sm font-medium items-center space-x-2 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm">
-                    <i class="fa-solid fa-award text-amber-500 text-base" id="header-cert-icon"></i>
-                    <span id="header-cert-text">Sertifikat</span>
-                </button>
+                <div class="hidden md:flex items-center pl-2 xl:pl-4">
+                    <button id="btn-header-cert" onclick="checkCertificate()" class="bg-white dark:bg-bgCardDark text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 xl:px-4 py-2 rounded-lg text-sm font-medium items-center space-x-2 transition-colors border border-gray-200 dark:border-gray-700 shadow-sm whitespace-nowrap">
+                        <i class="fa-solid fa-award text-amber-500 text-base" id="header-cert-icon"></i>
+                        <span id="header-cert-text" class="hidden xl:inline">Sertifikat</span>
+                    </button>
+                </div>
 
-                <div class="hidden md:flex items-center relative">
-                    <button id="profile-btn" class="flex items-center space-x-3 focus:outline-none ml-2">
+                <div class="hidden md:flex items-center relative pl-2 border-l border-gray-200 dark:border-gray-700 ml-1">
+                    <button id="profile-btn" class="flex items-center space-x-3 focus:outline-none pl-2 hover:opacity-80 transition-opacity">
                         <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
                             <i class="fa-solid fa-user text-primary text-sm"></i>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm font-semibold text-gray-800 dark:text-white" id="user-greeting">Siswa</span>
+                            <span class="text-sm font-semibold text-gray-800 dark:text-white max-w-[100px] truncate" id="user-greeting">Siswa</span>
                             <i id="profile-arrow" class="fa-solid fa-angle-down text-gray-400 text-xs transition-transform"></i>
                         </div>
                     </button>
@@ -174,39 +175,61 @@
     </nav>
 
     <div id="mobile-nav-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden transition-opacity opacity-0"></div>
+    
     <div id="mobile-nav-content" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-bgCardDark z-[61] transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         
-        <div class="p-6 flex flex-col border-b border-gray-100 dark:border-gray-800 relative">
-            <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 dark:hover:text-white">
-                <i class="fa-solid fa-xmark text-xl"></i>
+        <div class="p-6 flex flex-col border-b border-gray-100 dark:border-gray-800 relative bg-gray-50/50 dark:bg-bgCardDark">
+            <button id="close-mobile-menu" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
             </button>
-            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 border border-primary/20">
-                <i class="fa-solid fa-user text-primary text-xl"></i>
+            <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4 border border-primary/20 shadow-sm">
+                <i class="fa-solid fa-user text-primary text-2xl"></i>
             </div>
-            <span class="font-bold tracking-tight text-gray-900 dark:text-white text-lg" id="mobile-user-greeting">Siswa</span>
-            <span class="text-xs text-gray-500">Siswa NeoCourse</span>
+            <span class="font-bold tracking-tight text-gray-900 dark:text-white text-lg truncate" id="mobile-user-greeting">Siswa</span>
+            <span class="text-xs font-medium text-gray-500 mt-0.5">Siswa NeoCourse</span>
         </div>
         
         <div class="flex-1 py-4 overflow-y-auto hide-scrollbar">
-            <nav class="px-4 space-y-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"><i class="fa-solid fa-house w-5 text-center"></i> Beranda</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"><i class="fa-solid fa-layer-group w-5 text-center"></i> Pilihan Kursus</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"><i class="fa-solid fa-comments w-5 text-center"></i> Group Diskusi</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-primary/5 text-primary dark:bg-primary/10 rounded-xl transition-colors"><i class="fa-solid fa-users w-5 text-center"></i> My Courses</a>
-                
-                <div class="h-px bg-gray-100 dark:bg-gray-800 my-2 mx-2"></div>
-                <button onclick="checkCertificate()" id="btn-mobile-cert" class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl w-full text-left transition-colors">
-                    <i class="fa-solid fa-award w-5 text-center text-amber-500 text-lg" id="mobile-cert-icon"></i> <span id="mobile-cert-text">Sertifikat</span>
-                </button>
-                <button onclick="logout()" class="flex items-center gap-4 px-4 py-3 text-redBrand hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl w-full text-left transition-colors">
-                    <i class="fa-solid fa-sign-out-alt w-5 text-center"></i> Log Out
-                </button>
-            </nav>
+            <div class="px-5 mb-6">
+                <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 px-2">Menu Utama</p>
+                <nav class="space-y-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <a href="#" class="flex items-center gap-4 px-3 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                        <i class="fa-solid fa-house w-5 text-center text-gray-400 dark:text-gray-500"></i> Beranda
+                    </a>
+                    <a href="#" class="flex items-center gap-4 px-3 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                        <i class="fa-solid fa-layer-group w-5 text-center text-gray-400 dark:text-gray-500"></i> Pilihan Kursus
+                    </a>
+                    <a href="#" class="flex items-center gap-4 px-3 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                        <i class="fa-solid fa-comments w-5 text-center text-gray-400 dark:text-gray-500"></i> Group Diskusi
+                    </a>
+                    <a href="#" class="flex items-center gap-4 px-3 py-3 bg-blue-50/70 text-primary dark:bg-primary/10 rounded-xl transition-colors font-semibold">
+                        <i class="fa-solid fa-users w-5 text-center text-primary"></i> My Courses
+                    </a>
+                </nav>
+            </div>
+
+            <div class="h-px bg-gray-100 dark:bg-gray-800 mx-5 mb-5"></div>
+
+            <div class="px-5">
+                <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3 px-2">Pengaturan</p>
+                <nav class="space-y-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <button onclick="checkCertificate()" id="btn-mobile-cert" class="flex items-center gap-4 px-3 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl w-full text-left transition-colors">
+                        <i class="fa-solid fa-award w-5 text-center text-amber-500 text-lg" id="mobile-cert-icon"></i> 
+                        <span id="mobile-cert-text" class="font-semibold text-gray-900 dark:text-white">Sertifikat Belajar</span>
+                    </button>
+                    <button onclick="logout()" class="flex items-center gap-4 px-3 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl w-full text-left transition-colors mt-2">
+                        <i class="fa-solid fa-sign-out-alt w-5 text-center"></i> Log Out Akun
+                    </button>
+                </nav>
+            </div>
         </div>
 
-        <div class="p-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50 dark:bg-bgCardDark">
-            <span class="text-sm font-semibold text-gray-500">Mode Gelap</span>
-            <div class="dark-switch" onclick="toggleDarkMode()">
+        <div class="p-5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50 dark:bg-bgCardDark">
+            <div class="flex items-center gap-3 text-gray-600 dark:text-gray-300">
+                <i class="fa-solid fa-moon text-lg"></i>
+                <span class="text-sm font-semibold">Mode Gelap</span>
+            </div>
+            <div class="dark-switch shadow-sm border border-gray-200 dark:border-gray-700" onclick="toggleDarkMode()">
                 <div class="dark-switch-circle">
                     <i class="fa-solid fa-moon"></i>
                 </div>
@@ -219,7 +242,7 @@
         <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-bgCardDark">
             <div class="flex justify-between items-start mb-6">
                 <h2 class="font-bold tracking-tight text-gray-900 dark:text-white text-xl leading-tight" id="mobile-course-title">Modul Pembelajaran</h2>
-                <button onclick="toggleProgressPanel()" class="text-gray-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-2xl"></i></button>
+                <button onclick="toggleProgressPanel()" class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="flex justify-between text-xs font-bold mb-2">
                 <span class="text-gray-500 uppercase tracking-wider">Progres Belajar</span>
@@ -229,15 +252,14 @@
                 <div id="mobile-progress-bar" class="h-full bg-emerald-500 transition-all duration-700" style="width: 0%"></div>
             </div>
         </div>
-        <div id="mobile-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-2">
-            </div>
+        <div id="mobile-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-2"></div>
     </div>
 
     <div class="flex h-[calc(100vh-70px)] overflow-hidden">
         
         <aside id="desktop-sidebar" class="sidebar-desktop-hidden w-80 lg:w-96 bg-white dark:bg-bgCardDark border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 flex-shrink-0 relative z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-none">
             <div class="p-6 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-bgCardDark">
-                <a href="#" class="text-xs font-semibold text-gray-400 hover:text-primary transition-colors flex items-center mb-4">
+                <a href="#" class="text-xs font-semibold text-gray-400 hover:text-primary transition-colors flex items-center mb-4 w-max">
                     <i class="fa-solid fa-arrow-left mr-2"></i> Back to Course
                 </a>
                 <h2 class="font-bold tracking-tight text-gray-900 dark:text-white text-xl mb-6 leading-tight" id="desktop-course-title">Modul Pembelajaran</h2>
@@ -250,8 +272,7 @@
                 </div>
             </div>
             
-            <div id="desktop-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-2">
-                </div>
+            <div id="desktop-materi-list" class="flex-1 overflow-y-auto hide-scrollbar py-2"></div>
         </aside>
 
         <main class="flex-1 overflow-y-auto hide-scrollbar p-4 md:p-8 lg:p-10 relative bg-gray-50 dark:bg-bgDark" id="main-content-area">
@@ -268,11 +289,9 @@
                         </div>
                         <h1 id="chapter-title" class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">Memuat...</h1>
                         
-                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed mb-8">
-                        </div>
+                        <div id="chapter-desc" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed mb-8"></div>
 
-                        <div class="flex justify-end border-t border-gray-100 dark:border-gray-800 pt-6" id="action-container">
-                            </div>
+                        <div class="flex justify-end border-t border-gray-100 dark:border-gray-800 pt-6" id="action-container"></div>
                     </div>
                 </div>
 
@@ -282,7 +301,7 @@
                         <div id="quiz-intro" class="text-center pb-8 border-b border-gray-100 dark:border-gray-800 mb-8 hidden">
                             <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 text-primary flex items-center justify-center rounded-2xl mx-auto mb-6 text-4xl border border-blue-100 dark:border-blue-800/50"><i class="fa-solid fa-list-check"></i></div>
                             <h2 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-3">Final Quiz Modul</h2>
-                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-8">Uji pemahaman Anda dengan menjawab 15 pertanyaan seputar materi yang telah dipelajari untuk mendapatkan sertifikat.</p>
+                            <p class="text-gray-600 dark:text-gray-400 max-w-lg mx-auto mb-8">Uji pemahaman Anda dengan menjawab pertanyaan seputar materi yang telah dipelajari untuk mendapatkan sertifikat.</p>
                             <button id="btn-start-quiz" onclick="startQuizEngine()" class="px-8 py-3 bg-primary hover:bg-primaryHover text-white font-medium rounded-xl transition-all shadow-sm text-base">Mulai Quiz Sekarang</button>
                         </div>
 
@@ -305,8 +324,7 @@
                             <div id="result-detail-container" class="w-full max-w-sm mx-auto mb-8"></div>
                             <p class="text-base text-gray-500 mb-10" id="result-msg"></p>
                             
-                            <div class="flex flex-col sm:flex-row justify-center gap-3" id="quiz-action-buttons">
-                            </div>
+                            <div class="flex flex-col sm:flex-row justify-center gap-3" id="quiz-action-buttons"></div>
                         </div>
 
                         <div id="quiz-review" class="hidden">
@@ -329,7 +347,7 @@
 
     <script>
         // ==============================================================
-        // 1. BACKEND & DATA
+        // 1. BACKEND & DATA 
         // ==============================================================
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyJcarKrJQUYKMK81f531gpgwY8UVQxSVz6NExABGst1fnprd8DnCdhIH0VpQzeDg/exec';
         const MIN_SCORE_PASS = 80;
@@ -499,7 +517,6 @@
                 btn.className = `w-full text-left px-5 py-3.5 flex items-center justify-between transition-colors ${bgClass}`;
                 btn.setAttribute('data-id', materi.id);
                 
-                // Hapus line-through untuk desain lebih clean
                 btn.innerHTML = `
                     <div class="flex items-center space-x-3 pr-2">
                         <div class="flex-shrink-0">${iconHtml}</div>
@@ -961,25 +978,46 @@
             }
         }
 
+        // --- FUNGSI ANIMASI ICON EXPAND ---
+        function runIconAnimation(isOpening) {
+            const icon = document.getElementById('expand-icon');
+            if(!icon) return;
+            
+            // Animasi Fade Out + Scale Down + Putar
+            icon.classList.remove('rotate-0', 'scale-100', 'opacity-100');
+            icon.classList.add('-rotate-90', 'scale-50', 'opacity-0');
+            
+            setTimeout(() => {
+                // Tukar Icon saat transparan
+                if(isOpening) {
+                    icon.classList.replace('fa-up-right-and-down-left-from-center', 'fa-down-left-and-up-right-to-center');
+                } else {
+                    icon.classList.replace('fa-down-left-and-up-right-to-center', 'fa-up-right-and-down-left-from-center');
+                }
+                
+                // Animasi Fade In + Scale Normal + Putar Normal
+                icon.classList.remove('-rotate-90', 'scale-50', 'opacity-0');
+                icon.classList.add('rotate-0', 'scale-100', 'opacity-100');
+            }, 150); 
+        }
+
         // --- TOGGLE PANELS (Mobile & Desktop) ---
         function toggleProgressPanel() {
-            const icon = document.getElementById('expand-icon');
-            
             // Pada Mobile (< 1024px/lg breakpoint pada tailwind)
             if (window.innerWidth < 1024) {
                 const panel = document.getElementById('mobile-progress-panel');
                 const overlay = document.getElementById('progress-overlay');
                 
                 if (panel.classList.contains('-translate-x-full')) {
-                    // Buka (Muncul dari Kiri secara Smooth)
                     overlay.classList.remove('hidden');
                     setTimeout(() => overlay.classList.add('opacity-100'), 10);
                     panel.classList.remove('-translate-x-full');
+                    runIconAnimation(true); // Putar Icon Expand -> Compress
                 } else {
-                    // Tutup
                     panel.classList.add('-translate-x-full');
                     overlay.classList.remove('opacity-100');
                     setTimeout(() => overlay.classList.add('hidden'), 300);
+                    runIconAnimation(false); // Putar Icon Compress -> Expand
                 }
             } else {
                 // Pada Desktop
@@ -987,10 +1025,10 @@
                 
                 if (sidebar.classList.contains('sidebar-desktop-hidden')) {
                     sidebar.classList.remove('sidebar-desktop-hidden');
-                    if(icon) icon.className = 'fa-solid fa-down-left-and-up-right-to-center text-[19px] transition-transform duration-300';
+                    runIconAnimation(true); // Putar Icon Expand -> Compress
                 } else {
                     sidebar.classList.add('sidebar-desktop-hidden');
-                    if(icon) icon.className = 'fa-solid fa-up-right-and-down-left-from-center text-[19px] transition-transform duration-300';
+                    runIconAnimation(false); // Putar Icon Compress -> Expand
                 }
             }
         }
